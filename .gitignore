@@ -1,0 +1,4 @@
+*.o
+*.dll
+*_files
+.vscode

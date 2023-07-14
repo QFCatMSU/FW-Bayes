@@ -1,0 +1,205 @@
+---
+title: Applied Bayesian Modeling for Natural Resource Management
+title-slide-attributes:
+    data-background-image: "https://qfcatmsu.github.io/Images/dark-big.png"  
+    data-background-size: "40%"
+    data-background-position: "6% 95%"
+subtitle: FW 891
+author: Christopher Cahill & Jim Bence 
+date: 4 September 2023
+date-format: "D MMMM YYYY"
+format: 
+  revealjs:
+    css: "https://qfcatmsu.github.io/css/presStyle.css"
+    slide-number: c/t  
+    theme: simple 
+editor: visual
+highlight-style: kate
+---
+
+## Outline: Part I
+
+-   Introductions
+-   Syllabus and recommended background
+-   Course organization
+-   Some Bayesian examples from my own work
+-   Philosophy and course themes
+-   Software and website
+-   Expectations and disclaimers
+-   Break
+
+## Introduction to FW 891
+
+-   Welcome
+-   Housekeeping
+    -   Washrooms, Zoom, UPLA, office hours, etc.
+-   Round-table introductions
+    -   Background, area of study, why are you here, ice breaker
+
+## Syllabus
+
+-   Going to do everything through Github
+    -   \<Githublinkhere.com\>
+-   Syllabus, links to readings, etc.
+-   All presentations and code
+-   Office hours by appointment
+    -   [cahill11\@msu.edu](mailto:cahill11@msu.edu){.email}
+
+## Course organization
+
+-   Monday lectures where we generally cover theory/concepts
+-   Wednesday labs where we work on implementation and in-class exercises
+-   4 homework assignments
+-   1 class project
+    -   Preliminary draft due 25 Sept
+    -   Final presentation/write-up 6 and 11 Dec
+
+## Recommended background
+
+-   Previous experience with statistics
+-   Previous experience programming
+    -   for-loops, functions, data visualization
+-   You can get by without this background, but you should expect to put in more time
+
+## Bayesian examples from my work
+
+![](images/LBR.png){fig-align="center" width="800" height="400"}
+
+-   Decline was *not* statistically significant (Frequentist)
+-   88% chance of population decline (Bayesian)
+
+## Bayesian examples from my work
+
+![](images/CBC.png){fig-align="center" width="600" height="600"}
+
+## Examples from my work cont'd
+
+-   Reconstructing population dynamics across landscapes
+
+![](images/unveiling.png){fig-align="center" width="800" height="500"}
+
+## Examples from my work cont'd
+
+![](images/recruitment.png){fig-align="center" width="900" height="600"}
+
+## Examples from my work cont'd
+
+![](images/status.png){fig-align="center" width="700" height="600"}
+
+## My philosophy on statistical modeling
+
+-   The reliability of inferences matters when *management of public-trust natural resources* might be affected by your analyses
+    -   We will spend *a lot* of time evaluating models
+-   Intuition is critical in applied ecological analyses
+    -   We will be trying to improve your intuition with Bayesian modeling
+-   There are rarely cookbook solutions to hard problems
+    -   All about improving your statistical toolbox
+
+## Course themes
+
+-   Development of fairly advanced implementation skills using R and Stan
+    -   Why?
+-   There are easier ways to do some of the analyses we will learn
+-   By learning to do easy things the hard way, the hard things become easy (Royle and Dorazio 2008)
+-   Open source and reproducible science
+
+## Software, implementation, website
+
+-   We are primarily going to use R and Stan
+-   Recommend Rstudio
+-   Lectures and code will be available through GitHub
+    -   You do not need to know how to use GitHub, but that is where you can find code and presentations
+
+![](images/Rlogo.png){style="width:185px; position: absolute; bottom:10.5%; left:0%;"} ![](images/logo_website.png){style="width:150px; position: absolute; bottom:6%; right:66%;"} ![](images/tidyverse.png){style="width:165px; position: absolute; bottom:7%; right:47%;"} ![](images/GitHub_Logo.png){style="width:275px; position: absolute; bottom:8%; right:20%;"} ![](images/quarto.png){style="width:275px; position: absolute; bottom:23%; right:20%;"} ![](images/tidybayes.png){style="width:185px; position: absolute; bottom:5%; right:1%;"}
+
+## Stan is not:
+
+![](images/southpark.png){style="width:400px; position: absolute; bottom:5%; right:1%;"}
+
+![](images/eminem.png){style="width:550px; position: absolute; bottom:30%; left:1%;"}
+
+## What is Stan, why use it?
+
+-   Stan is a state-of-the-art platform for statistical modeling and high-performance statistical computation
+
+-   Named after [Stanislav Ulam](https://ahf.nuclearmuseum.org/voices/oral-histories/stanislaus-ulams-interview-1979/)
+
+-   Unique class of algorithms (HMC, NUTS), scales well
+
+-   Cannot do everything (discrete unknowns)
+
+![](images/Stanislaw_Ulam.png){style="width:225px; height = 150px; position: absolute; bottom:3%; left:1%;"}
+
+![](images/Castle%20Bravo.png){style="width:350px; height = 350px; position: absolute; bottom:5%; right:35%;"}
+
+![](images/Manhattan_Project.png){style="width:300px; height = 300px; position: absolute; bottom:3%; right:1%;"}
+
+![](images/stan.png){style="width:250px; position: absolute; top:0%; right: 0%;"}
+
+## Expectations
+
+-   Be kind
+-   Make an honest effort to learn this stuff
+-   Share your code
+    -   I share my code with all of you, so please do the same
+    -   Sharing code is critical for reproducible science
+-   This course lies at the intersection of mathematics, statistics, ecology, and numerical computing
+    -   Failure is okay and to be expected
+
+## Some disclaimers
+
+1.  Bayesian statistics is a vast and difficult topic
+2.  This is not a mathematical statistics course
+3.  I will do my best to track down answers
+4.  I don't know everything\
+5.  Please ask questions
+6.  When in doubt, see disclaimers 3-5
+
+## Break
+
+-   Return in 10 minutes
+
+## Outline: Part II
+
+## Statistical inference essentials
+
+-   This class is about model-based inference
+    -   Focus on the development of arbitrarily abstract statistical models
+-   These models always contain:
+    -   Deterministic (i.e., systematic) components
+    -   Random (i.e., stochastic) components
+-   Typically use a model to estimate parameters of interest, conduct an inference, or predict something
+
+## Random variables: words
+
+-   Any observation can be viewed as the realization (or outcome) of a stochastic process
+    -   Phrased differently: chance plays a part in what we observe
+-   Simplest example: binary outcome
+    -   Alive or dead, mature or not mature, detected or sneaky (not-detected)
+-   Element of chance in all of outcomes, and we need a way to deal with that
+
+## Random variables: maths
+
+#### Consider a model of the binary random variable Y:
+
+$$
+\text{suppose } p=\operatorname{Pr}(Y=1) \\
+\operatorname{Pr}(Y=1)+\operatorname{Pr}(Y=0)=1 \\
+\operatorname{Pr}(Y=0)=1-p
+$$
+
+## Bayesian statistics
+
+-   This
+
+## Before next class
+
+-   Make sure you have R, Rstudio, and Stan installed and working
+    -   Rstudio and R:
+    -   <https://posit.co/download/rstudio-desktop/>
+
+# References
+
+-   Gelman et al. 2015. Stan: A probabilistic programming language for \# Bayesian inference and optimization.
+-   Atomic Heritage Foundation (images on Stanislav Ulam slide) <https://ahf.nuclearmuseum.org/> <https://en.wikipedia.org/wiki/Castle_Bravo>
+-   some images wikipedia
