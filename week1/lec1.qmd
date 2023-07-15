@@ -5,7 +5,7 @@ title-slide-attributes:
     data-background-size: "40%"
     data-background-position: "6% 95%"
 subtitle: FW 891
-author: Christopher Cahill & Jim Bence 
+author: Christopher Cahill
 date: 4 September 2023
 date-format: "D MMMM YYYY"
 format: 
