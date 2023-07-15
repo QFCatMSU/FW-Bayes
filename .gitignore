@@ -2,3 +2,4 @@
 *.dll
 *_files
 .vscode
+*.html

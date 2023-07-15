@@ -39,7 +39,7 @@ highlight-style: kate
 ## Syllabus
 
 -   Going to do everything through Github
-    -   \<Githublinkhere.com\>
+    -   <https://github.com/QFCatMSU/FW-Bayes>
 -   Syllabus, links to readings, etc.
 -   All presentations and code
 -   Office hours by appointment
