@@ -294,7 +294,7 @@ $$
 ## An example to start us off
 
 -   Determine the detection probability of invasive Alabama sneak turtles by releasing some into a small pond and counting them on a later occasion
--   We release n = 50 and later count y = 6 sneakers
+-   We release n = 30 and later count y = 6 sneakers
     -   successes vs. trials
 -   What's probability of detecting a turtle, i.e., $\theta$?
 
@@ -472,7 +472,7 @@ my_data = data.frame(logPost, theta) # for plotting
 
 ```
 
-## Plot the log-posterior
+## Plot the unstandardized log-posterior
 
 ```{R echo = T}
 my_data %>% 
@@ -484,11 +484,11 @@ my_data %>%
     theme_qfc()
 ```
 
-## Plot the posterior
+## Plot the standardized posterior
 
 ```{R echo = T}
 my_data %>% 
-    ggplot(aes(x = theta, y = exp(logPost))) + # note exp() 
+    ggplot(aes(x = theta, y = exp(logPost)/sum(exp(logPost)))) + # note exp() 
     geom_point(size = 1.4) + 
     ylab("Posterior") + xlab(expression(theta)) +
     geom_vline(xintercept = MAP, linetype = 2, linewidth = 2, 
