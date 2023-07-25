@@ -16,11 +16,5 @@ model {
   // NOTE: stan sets up the ln posterior in the background for you:
   // ln(posterior) = ln(priors)+ln(l)
 }
-generated quantities { // generated quantities
-    vector[n] log_lik; 
-    for (i in 1:n) {
-    log_lik[i] = bernoulli_lpmf(y[i] | p);
-   }
-}
 
 
