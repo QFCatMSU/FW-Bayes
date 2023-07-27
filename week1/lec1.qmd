@@ -6,7 +6,7 @@ title-slide-attributes:
     data-background-position: "6% 95%"
 subtitle: FW 891
 author: Christopher Cahill
-date: 4 September 2023
+date: 28 August 2023
 date-format: "D MMMM YYYY"
 format: 
   revealjs:
@@ -229,9 +229,19 @@ $$ \operatorname{Pr}(Y=y)=p^{y}(1-p)^{1-y} $$
 
 ## More notation notes for everyone's sanity
 
--   For each distribution, will try provide its pmf (or pdf) expressed as a function of $y$ and the parameters of the distribution.
--   For example, will use $y\sim \mathrm{N}\left(\mu, \sigma^{2}\right)$ to indicate a random variable $Y$ is normally distributed with mean $\mu$ and variance $\sigma^2$
+-   Will try provide its pmf (or pdf) expressed as a function of $y$ and the parameters of the distribution.
+
+-   For example, will use $y\sim \mathrm{N}(\mu, \sigma)$ to indicate a random variable $Y$ is normally distributed with mean $\mu$ and standard deviation $\sigma$
+
 -   Regular font for scalars and a bold font for **vectors** or **matrices**
+
+## More notation notes for everyon's sanity
+
+-   May write it this way, too:
+
+$$
+\operatorname{Normal}(y \mid \mu, \sigma)=\frac{1}{\sqrt{2 \pi} \sigma} \exp \left(-\frac{1}{2}\left(\frac{y-\mu}{\sigma}\right)^{2}\right).
+$$
 
 ## Conducting a statistical inference
 
@@ -360,7 +370,7 @@ my_data %>%
     ylab("log-likelihood") + xlab(expression(theta)) +
     geom_vline(xintercept = MLE, linetype = 2, linewidth = 2, 
     color = "steelblue") + # add MLE
-    theme_qfc()
+    theme_qfc() + theme(text = element_text(size = 20))
 ```
 
 ## Moving from log-likelihood to likelihood
@@ -372,7 +382,7 @@ my_data %>%
     ylab("likelihood") + xlab(expression(theta)) + 
     geom_vline(xintercept = MLE, linetype = 2, linewidth = 2, 
     color = "steelblue") + 
-    theme_qfc()
+    theme_qfc() + theme(text = element_text(size = 20))
 ```
 
 ## How might we do the sneak turtle analysis in a Bayesian framework?
@@ -380,6 +390,7 @@ my_data %>%
 -   Remember: $$
     \color{darkgreen}{posterior} \propto \color{#E78021}{likelihood} \cdot \color{#3697DC}{prior}
     $$
+    1. 
 
 -   What do we currently have, what do we know?
 
@@ -397,7 +408,7 @@ db = dbeta(x, shape1 = 4, shape2 = 2) # see ?dbeta
 ggplot() + geom_line(aes(x,db)) + 
     xlab(expression(value~of~theta)) + 
     ylab("probability density") + 
-    theme_qfc() 
+    theme_qfc() + theme(text = element_text(size = 20))
 ```
 
 -   always a good idea to visualize
@@ -410,7 +421,7 @@ db = dbeta(x, 2, 4) # see ?dbeta
 ggplot() + geom_line(aes(x,db)) + 
     xlab(expression(value~of~theta)) + 
     ylab("probability density") + 
-    theme_qfc() 
+    theme_qfc() + theme(text = element_text(size = 20))
 ```
 
 -   always a good idea to visualize
@@ -423,7 +434,7 @@ db = dbeta(x, 40, 47) # see ?dbeta
 ggplot() + geom_line(aes(x,db)) + 
     xlab(expression(value~of~theta)) + 
     ylab("probability density") + 
-    theme_qfc() 
+    theme_qfc() + theme(text = element_text(size = 20))
 ```
 
 -   always a good idea to visualize
@@ -436,7 +447,7 @@ db = dbeta(x, 1, 1) # see ?dbeta
 ggplot() + geom_line(aes(x,db)) + 
     xlab(expression(value~of~theta)) + 
     ylab("probability density") + 
-    theme_qfc() 
+    theme_qfc() + theme(text = element_text(size = 20))
 ```
 
 -   always a good idea to visualize
@@ -481,7 +492,7 @@ my_data %>%
     ylab("log-posterior") + xlab(expression(theta)) +
     geom_vline(xintercept = MAP, linetype = 2, linewidth = 2, 
                color = "steelblue") + # add MAP estimate
-    theme_qfc()
+    theme_qfc() + theme(text = element_text(size = 20))
 ```
 
 ## Plot the standardized posterior
@@ -493,7 +504,7 @@ my_data %>%
     ylab("Posterior") + xlab(expression(theta)) +
     geom_vline(xintercept = MAP, linetype = 2, linewidth = 2, 
                color = "steelblue") + # add MAP estimate 
-    theme_qfc()
+    theme_qfc() + theme(text = element_text(size = 20))
 ```
 
 ## Frequentist MLEs vs. Bayesian MAP
@@ -537,11 +548,12 @@ MAP             # Bayesian theta solution
         -   Many algorithms are gauranteed to converge in the mathematical limit, but not in your graduate degree timeline (or even lifetime)
 
 ## Summary and outlook
+
 -   A crash course in statistical inference
-    - Frequentist and Bayesian paradigms
--   Talked about some commonly used distributions 
--   Simple turtle example 
-    - This example had analytical solutions, but used it to better understand what is actually going on 'under the hood' aka in the math
+    -   Frequentist and Bayesian paradigms
+-   Talked about some commonly used distributions
+-   Simple turtle example
+    -   This example had analytical solutions, but used it to better understand what is actually going on 'under the hood' aka in the math
 -   Most Bayesian analyses require the approximation of a posterior distribution via simulation techniques (i.e., algorithms like MCMC)
 
 ## Before next class
