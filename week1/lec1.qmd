@@ -337,25 +337,25 @@ L(y \mid \theta)\propto \theta^{y}(1-\theta)^{n-y}
 $$
 
 ```{R echo = T}
-library(tidyverse) # for plotting 
+library(tidyverse) # for plotting
 # install.packages("devtools")
-# devtools::install_github("ChrisFishCahill/gg-qfc") 
+# devtools::install_github("ChrisFishCahill/gg-qfc")
 library(ggqfc) # formatting, run previous 2 lines for first gg-qfc install
 
-y = 2 # successes 
-n = 30 # trials 
-eps = 1e-6 # buffer because theta must lie within [0,1]
-theta = seq(eps, 1 - eps, length.out = 1e4) # sequence to thetas to try
-logLike = y * log(theta) + (n - y) * log(1 - theta) # plug thetas into pmf 
-MLE = theta[which.max(logLike)] # maximum likelihood estimate
-my_data = data.frame(logLike, theta) # for plotting 
+y <- 2 # successes
+n <- 30 # trials
+eps <- 1e-6 # buffer because theta must lie within [0,1]
+theta <- seq(eps, 1 - eps, length.out = 1e4) # sequence to thetas to try
+logLike <- y * log(theta) + (n - y) * log(1 - theta) # plug thetas into pmf
+MLE <- theta[which.max(logLike)] # maximum likelihood estimate
+my_data <- data.frame(logLike, theta) # for plotting
 ```
 
 ## Analytical vs. numerical MLEs (frequentist)
 
 ```{R echo = T}
-y / n           # analytical theta 
-MLE             # numerical approximation theta
+y / n # analytical theta
+MLE # numerical approximation theta
 ```
 
 -   pretty darn close
@@ -364,25 +364,33 @@ MLE             # numerical approximation theta
 ## Alabama sneak turtles: log-likelihood
 
 ```{R echo = T}
-my_data %>% 
-    ggplot(aes(x = theta, y = logLike)) + 
-    geom_point(size = 1.4) + 
-    ylab("log-likelihood") + xlab(expression(theta)) +
-    geom_vline(xintercept = MLE, linetype = 2, linewidth = 2, 
-    color = "steelblue") + # add MLE
-    theme_qfc() + theme(text = element_text(size = 20))
+my_data %>%
+  ggplot(aes(x = theta, y = logLike)) +
+  geom_point(size = 1.4) +
+  ylab("log-likelihood") +
+  xlab(expression(theta)) +
+  geom_vline(
+    xintercept = MLE, linetype = 2, linewidth = 2,
+    color = "steelblue"
+  ) + # add MLE
+  theme_qfc() +
+  theme(text = element_text(size = 20))
 ```
 
 ## Moving from log-likelihood to likelihood
 
 ```{R echo = T}
-my_data %>% 
-    ggplot(aes(x = theta, y = exp(logLike))) + # note exp()
-    geom_point(size = 1.4) + 
-    ylab("likelihood") + xlab(expression(theta)) + 
-    geom_vline(xintercept = MLE, linetype = 2, linewidth = 2, 
-    color = "steelblue") + 
-    theme_qfc() + theme(text = element_text(size = 20))
+my_data %>%
+  ggplot(aes(x = theta, y = exp(logLike))) + # note exp()
+  geom_point(size = 1.4) +
+  ylab("likelihood") +
+  xlab(expression(theta)) +
+  geom_vline(
+    xintercept = MLE, linetype = 2, linewidth = 2,
+    color = "steelblue"
+  ) +
+  theme_qfc() +
+  theme(text = element_text(size = 20))
 ```
 
 ## How might we do the sneak turtle analysis in a Bayesian framework?
@@ -403,12 +411,14 @@ my_data %>%
 ## Visualizing a $\mathrm{beta}(\alpha, \beta)$ prior
 
 ```{R echo = T}
-x = seq(0,1, len = 100) # create a sequence 
-db = dbeta(x, shape1 = 4, shape2 = 2) # see ?dbeta 
-ggplot() + geom_line(aes(x,db)) + 
-    xlab(expression(value~of~theta)) + 
-    ylab("probability density") + 
-    theme_qfc() + theme(text = element_text(size = 20))
+x <- seq(0, 1, len = 100) # create a sequence
+db <- dbeta(x, shape1 = 4, shape2 = 2) # see ?dbeta
+ggplot() +
+  geom_line(aes(x, db)) +
+  xlab(expression(value ~ of ~ theta)) +
+  ylab("probability density") +
+  theme_qfc() +
+  theme(text = element_text(size = 20))
 ```
 
 -   always a good idea to visualize
@@ -416,12 +426,14 @@ ggplot() + geom_line(aes(x,db)) +
 ## Visualizing a $\mathrm{beta}(\alpha, \beta)$ prior
 
 ```{R echo = T}
-x = seq(0,1, len = 100) # create a sequence 
-db = dbeta(x, 2, 4) # see ?dbeta 
-ggplot() + geom_line(aes(x,db)) + 
-    xlab(expression(value~of~theta)) + 
-    ylab("probability density") + 
-    theme_qfc() + theme(text = element_text(size = 20))
+x <- seq(0, 1, len = 100) # create a sequence
+db <- dbeta(x, 2, 4) # see ?dbeta
+ggplot() +
+  geom_line(aes(x, db)) +
+  xlab(expression(value ~ of ~ theta)) +
+  ylab("probability density") +
+  theme_qfc() +
+  theme(text = element_text(size = 20))
 ```
 
 -   always a good idea to visualize
@@ -429,12 +441,14 @@ ggplot() + geom_line(aes(x,db)) +
 ## Visualizing a $\mathrm{beta}(\alpha, \beta)$ prior
 
 ```{R echo = T}
-x = seq(0,1, len = 100) # create a sequence 
-db = dbeta(x, 40, 47) # see ?dbeta 
-ggplot() + geom_line(aes(x,db)) + 
-    xlab(expression(value~of~theta)) + 
-    ylab("probability density") + 
-    theme_qfc() + theme(text = element_text(size = 20))
+x <- seq(0, 1, len = 100) # create a sequence
+db <- dbeta(x, 40, 47) # see ?dbeta
+ggplot() +
+  geom_line(aes(x, db)) +
+  xlab(expression(value ~ of ~ theta)) +
+  ylab("probability density") +
+  theme_qfc() +
+  theme(text = element_text(size = 20))
 ```
 
 -   always a good idea to visualize
@@ -442,12 +456,14 @@ ggplot() + geom_line(aes(x,db)) +
 ## Visualizing a $\mathrm{beta}(\alpha, \beta)$ prior
 
 ```{R echo = T}
-x = seq(0,1, len = 100) # create a sequence 
-db = dbeta(x, 1, 1) # see ?dbeta 
-ggplot() + geom_line(aes(x,db)) + 
-    xlab(expression(value~of~theta)) + 
-    ylab("probability density") + 
-    theme_qfc() + theme(text = element_text(size = 20))
+x <- seq(0, 1, len = 100) # create a sequence
+db <- dbeta(x, 1, 1) # see ?dbeta
+ggplot() +
+  geom_line(aes(x, db)) +
+  xlab(expression(value ~ of ~ theta)) +
+  ylab("probability density") +
+  theme_qfc() +
+  theme(text = element_text(size = 20))
 ```
 
 -   always a good idea to visualize
@@ -470,49 +486,56 @@ $$
 ## Let's do that in code
 
 ```{R echo = T}
-y = 2 # successes 
-n = 30 # trials 
-eps = 1e-6 # buffer because theta must lie within [0,1]
-a = b = 1 # alpha, beta parameters of the beta(shape1, shape2) prior
-theta = seq(eps, 1 - eps, length.out = 1e4) # sequence to thetas to try
+y <- 2 # successes
+n <- 30 # trials
+eps <- 1e-6 # buffer because theta must lie within [0,1]
+a <- b <- 1 # alpha, beta parameters of the beta(shape1, shape2) prior
+theta <- seq(eps, 1 - eps, length.out = 1e4) # sequence to thetas to try
 
 # calculate log posterior:
-logPost = (y + a - 1) * log(theta) + (n - y + b - 1) * log(1 - theta) 
-MAP = theta[which.max(logPost)] # maximum a posteriori estimate
-my_data = data.frame(logPost, theta) # for plotting 
-
+logPost <- (y + a - 1) * log(theta) + (n - y + b - 1) * log(1 - theta)
+MAP <- theta[which.max(logPost)] # maximum a posteriori estimate
+my_data <- data.frame(logPost, theta) # for plotting
 ```
 
 ## Plot the unstandardized log-posterior
 
 ```{R echo = T}
-my_data %>% 
-    ggplot(aes(x = theta, y = logPost)) + 
-    geom_point(size = 1.4) + 
-    ylab("log-posterior") + xlab(expression(theta)) +
-    geom_vline(xintercept = MAP, linetype = 2, linewidth = 2, 
-               color = "steelblue") + # add MAP estimate
-    theme_qfc() + theme(text = element_text(size = 20))
+my_data %>%
+  ggplot(aes(x = theta, y = logPost)) +
+  geom_point(size = 1.4) +
+  ylab("log-posterior") +
+  xlab(expression(theta)) +
+  geom_vline(
+    xintercept = MAP, linetype = 2, linewidth = 2,
+    color = "steelblue"
+  ) + # add MAP estimate
+  theme_qfc() +
+  theme(text = element_text(size = 20))
 ```
 
 ## Plot the standardized posterior
 
 ```{R echo = T}
-my_data %>% 
-    ggplot(aes(x = theta, y = exp(logPost)/sum(exp(logPost)))) + # note exp() 
-    geom_point(size = 1.4) + 
-    ylab("Posterior") + xlab(expression(theta)) +
-    geom_vline(xintercept = MAP, linetype = 2, linewidth = 2, 
-               color = "steelblue") + # add MAP estimate 
-    theme_qfc() + theme(text = element_text(size = 20))
+my_data %>%
+  ggplot(aes(x = theta, y = exp(logPost) / sum(exp(logPost)))) + # note exp()
+  geom_point(size = 1.4) +
+  ylab("Posterior") +
+  xlab(expression(theta)) +
+  geom_vline(
+    xintercept = MAP, linetype = 2, linewidth = 2,
+    color = "steelblue"
+  ) + # add MAP estimate
+  theme_qfc() +
+  theme(text = element_text(size = 20))
 ```
 
 ## Frequentist MLEs vs. Bayesian MAP
 
 ```{R echo = T}
-y / n           # analytical theta (frequentist)
-MLE             # numerical approximation theta (frequentist)
-MAP             # Bayesian theta solution 
+y / n # analytical theta (frequentist)
+MLE # numerical approximation theta (frequentist)
+MAP # Bayesian theta solution
 ```
 
 -   Why is this convergence among methods happening?

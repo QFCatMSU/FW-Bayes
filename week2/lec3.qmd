@@ -1,0 +1,207 @@
+---
+title: An introduction to Stan for applied Bayesian inference 
+title-slide-attributes:
+    data-background-image: "https://qfcatmsu.github.io/Images/dark-big.png"  
+    data-background-size: "40%"
+    data-background-position: "6% 95%"
+subtitle: FW 891
+author: Christopher Cahill
+date: 06 September 2023
+date-format: "D MMMM YYYY"
+format: 
+  revealjs:
+    css: "https://qfcatmsu.github.io/css/presStyle.css"
+    slide-number: c/t  
+    theme: simple 
+editor: visual
+highlight-style: kate
+---
+
+## Purpose
+
+-   Learn the basic syntax of the Stan language
+-   Write code to elicit simple models and implement Bayesian inference in Stan
+-   Use the cmdstanr interface
+-   Develop familiarity with a few packages that make your life easier
+-   Make sure you have these programs/packages installed\
+    ![](images/Rlogo.png){style="width:185px; position: absolute; bottom:10.5%; left:0%;"} ![](images/logo_website.png){style="width:150px; position: absolute; bottom:6%; right:66%;"} ![](images/tidyverse.png){style="width:165px; position: absolute; bottom:7%; right:47%;"} ![](images/tidybayes.png){style="width:185px; position: absolute; bottom:7.5%; right:28%;"}
+
+## Installing CmdStanR
+
+-   See the [installation instructions here](https://mc-stan.org/cmdstanr/)
+
+```{R echo = T, eval = T}
+library(cmdstanr)
+# use a built in file that comes with cmdstanr:
+file <- file.path(
+  cmdstan_path(), "examples",
+  "bernoulli", "bernoulli.stan"
+)
+mod <- cmdstan_model(file)
+```
+
+see also [CmdStan user's guide](https://mc-stan.org/docs/cmdstan-guide/index.html)
+
+## Now let's make sure it works
+
+```{R echo = T, eval = F}
+# tagged list where names correspond to the .stan data block
+stan_data <- list(N = 10, y = c(0, 1, 0, 0, 0, 0, 0, 0, 0, 1))
+
+fit <- mod$sample(
+  data = stan_data,
+  seed = 123,
+  chains = 4,
+  parallel_chains = 4,
+  refresh = 500 # print update every 500 iters
+)
+```
+
+## Do the bottom numbers match up?
+
+```{R echo = F, eval = T, style= "font-size: 19.5pt;"}
+# tagged list where names correspond to the .stan data block
+stan_data <- list(N = 10, y = c(0, 1, 0, 0, 0, 0, 0, 0, 0, 1))
+
+fit <- mod$sample(
+  data = stan_data,
+  seed = 123,
+  chains = 4,
+  parallel_chains = 4,
+  refresh = 2000
+)
+```
+
+```{R echo = T, eval = T}
+fit$summary() # you should get these numbers:
+```
+
+## Presumably this broke someone
+
+![](images/depression.png){style="width:150px; position: absolute; bottom:6%; right:1%;"}
+
+[[image credit](https://www.youtube.com/watch?v=f1R0qLh61Yw)]{.footerLeft}
+
+## Onward!
+
+### Stan: the basics
+
+Stan is a probablistic modeling language <https://mc-stan.org/>
+
+-   Freely available
+
+-   Implements HMC, and an algorithm called NUTS
+
+    -   No U-Turn Sampler
+    -   We are using it for full Bayesian inference, but it can do other things too (we will not talk about these things)
+
+-   The Stan [documentation](https://mc-stan.org/users/documentation/) and [community](https://discourse.mc-stan.org/) is legendary in my opinion, albeit dense at times
+
+## Using Stan requires writing a `.stan` file 
+
+- Coding in Stan is something of a cross between R, WINBUGS/JAGS, and C++
+
+- It is a Turing complete programming language
+
+- Stan requires you to be explicit
+  - Need to tell it whether something is a real, integer, vector, matrix, array, etc. 
+  - Lines need to end in a `;`
+
+- A `.stan` file relies on program blocks to read in your data and contruct your model 
+
+- Many built in functions you can use 
+
+- Why must we confront misery of a new language? 
+
+## Structure of a `.stan` file
+
+::: {style="font-size: 75%;"}
+
+```stan 
+// this is a comment 
+// program block demonstration
+data{
+  // read in data here -- this section is executed one time per Stan run
+}
+transformed data {
+  // transform the data here -- this section is also executed one time per Stan run 
+}
+parameters {
+  // declare the **estimated** parameters here 
+}
+transformed parameters{ 
+  // this section takes parameter estimates and data (or transformed data) 
+  // and transforms them for use later on in model section
+}
+model{
+  // this section specifies the prior(s) and likelihood terms, 
+  // and defines a log probability function (i.e., log posterior) of the model
+}
+generated quantities{
+  // this section creates derived quantities based on parameters, 
+  // models, data, and (optionally) pseudo-random numbers. 
+}
+```
+- Can also write custom functions (although we won't in this class)
+:::
+
+## In words, rather than code
+
+As per the comments in the code, each of the program blocks does certain stuff
+
+::: {style="font-size: 75%;"}
+
+- `data{ }` reads data into the .stan program
+- `transformed data{ }` runs calculations on those data (once)
+- `parameters{ }` declares the _**estimated**_ parameters in a Stan program
+- `transformed parameters{ }` takes the parameters, data, and transformed data, and calculates stuff you need for your model 
+- `model{ }` constructs a log probability function: 
+  - $log(posterior) = log(priors) + log(likelihood)$
+- `generated quantities{ }` is only executed after you have your sampled posterior
+  - useful for calculating derived quantities given your model, data, and parameters
+
+:::
+
+## A crash course in coding a `.stan` model
+
+- Let's build a linear regression model to demonstrate how these sections can be used 
+
+- The point here is to get you used to writing a `.stan`, compiling it, and reading data into Stan for an analysis  
+
+## `Hello World` in Stan 
+
+- Let's build a simple linear regression model in Stan
+
+```{R echo = F}
+# create some fake linear regression data
+nobs <- 84
+b0 <- 2.3
+b1 <- 0.7
+sd <- 1
+
+set.seed(1)
+x <- rnorm(nobs, mean = 5, sd = 5)
+y <- rnorm(nobs, b0 + b1 * x, sd)
+data <- data.frame(y = y, x = x)
+
+saveRDS(data, file = "data/linreg.rds")
+```
+
+- [data](https://github.com/QFCatMSU/FW-Bayes/blob/main/hwk1/cubs.rds?raw=true)
+
+## Priors 
+
+- If you don't specify priors, Stan will specify flat priors
+  - Not always a good thing 
+- Let's talk about priors a bit 
+
+
+## Standardizing covariates
+
+$$
+z_{i}=\frac{x_{i}-\mu}{s d_{X}}
+$$
+
+[Stan reference](https://mc-stan.org/docs/2_18/stan-users-guide/standardizing-predictors-and-outputs.html)
+
+https://academic.oup.com/jrsssa/article/182/2/389/7070184?login=false

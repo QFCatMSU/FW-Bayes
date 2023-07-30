@@ -12,7 +12,7 @@ n <- length(y) # trials
 grid_size <- 10
 
 # p ~ uniform(0, 1):
-p_grid = seq(from = 1e-3, to = 0.999, length.out = grid_size)
+p_grid <- seq(from = 1e-3, to = 0.999, length.out = grid_size)
 prior_p <- dunif(p_grid, 0, 1) # note, the same as rep(1, grid_size)
 
 my_df <- data.frame(prior_p, p_grid)

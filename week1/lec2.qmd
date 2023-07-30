@@ -48,18 +48,18 @@ highlight-style: kate
 ```{R echo = T}
 library(tidyverse)
 library(ggqfc)
-y =  c(
+y <- c(
   0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0,
   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 ) # sucesses (turtle detections)
-n =  length(y) # trials
+n <- length(y) # trials
 
 # define a grid
-grid_size =  10
-p_grid =  seq(from = 1e-3, to = 0.999, length.out = grid_size)
+grid_size <- 10
+p_grid <- seq(from = 1e-3, to = 0.999, length.out = grid_size)
 
 # calculate likelihood
-lik =  dbinom(sum(y), n, p_grid)
+lik <- dbinom(sum(y), n, p_grid)
 lik # likelihood of having observed the data | each p_grid value
 ```
 
@@ -86,7 +86,7 @@ When we multiply likelihoods together they get smaller and may surpass machine p
 log(lik)
 
 # is the same as
-log_lik =  dbinom(sum(y), n, p_grid, TRUE)
+log_lik <- dbinom(sum(y), n, p_grid, TRUE)
 log_lik
 ```
 
@@ -99,7 +99,7 @@ log_lik
 - We can calculate the log(prior probability) for each $p$ in our grid given a uniform prior via: 
 
 ```{R echo = T}
-log_prior =  dunif(p_grid, 0, 1, TRUE)
+log_prior <- dunif(p_grid, 0, 1, TRUE)
 log_prior
 ```
 
@@ -108,8 +108,8 @@ log_prior
 ## Visualizing the Uniform prior  
 
 ```{R echo = F}
-my_df =  data.frame(log_prior, p_grid)
-p =  my_df %>%
+my_df <- data.frame(log_prior, p_grid)
+p <- my_df %>%
   ggplot(aes(x = p_grid, y = exp(log_prior))) +
   geom_line() +
   xlab("value of p") +
@@ -125,16 +125,16 @@ p
 
 ```{R echo = T}
 # unstandardized log posterior
-log_unstd_post =  log_lik + log_prior
+log_unstd_post <- log_lik + log_prior
 
 # exponentiate the log posterior
-unstd_post =  exp(log_unstd_post)
+unstd_post <- exp(log_unstd_post)
 
 # standardize it (so probabilities sum to one)
-post_prob =  unstd_post / sum(unstd_post)
+post_prob <- unstd_post / sum(unstd_post)
 
 # Put everything together in a data frame
-posterior =  data.frame(
+posterior <- data.frame(
   p = p_grid, log_lik, log_prior,
   log_unstd_post, post_prob
 )
@@ -165,7 +165,7 @@ For each value of $p$ in `p_grid` we get
 
 ## Comparing our grid approximation with the analytical MLE
 ```{R echo=F}
-MAP =  posterior[which.max(posterior$post_prob), ]$p # best estimate of p
+MAP <- posterior[which.max(posterior$post_prob), ]$p # best estimate of p
 posterior %>%
   ggplot(aes(x = p, y = post_prob)) +
   geom_point() +
@@ -195,34 +195,34 @@ posterior %>%
 
 ```{R echo=F}
 # write a function to do this
-get_post =  function(grid_size = 10) {
-  p_grid =  seq(from = 1e-3, to = 0.999, length.out = grid_size)
+get_post <- function(grid_size = 10) {
+  p_grid <- seq(from = 1e-3, to = 0.999, length.out = grid_size)
 
   # calculate likelihood
-  lik =  dbinom(sum(y), n, p_grid)
-  log_lik =  dbinom(sum(y), n, p_grid, TRUE)
-  log_prior =  dunif(p_grid, 0, 1, TRUE)
+  lik <- dbinom(sum(y), n, p_grid)
+  log_lik <- dbinom(sum(y), n, p_grid, TRUE)
+  log_prior <- dunif(p_grid, 0, 1, TRUE)
 
   # unstandardized log posterior
-  log_unstd_post =  log_lik + log_prior
+  log_unstd_post <- log_lik + log_prior
 
   # exponentiate the log posterior
-  unstd_post =  exp(log_unstd_post)
+  unstd_post <- exp(log_unstd_post)
 
   # standardize it (so probabilities sum to one)
-  post_prob =  unstd_post / sum(unstd_post)
+  post_prob <- unstd_post / sum(unstd_post)
 
   # Put everything together in a data frame
-  posterior =  data.frame(
+  posterior <- data.frame(
     p = p_grid, log_lik, log_prior,
     log_unstd_post, post_prob
   )
   posterior
 }
 
-grid_size =  20
-posterior =  get_post(grid_size = grid_size)
-MAP =  posterior[which.max(posterior$post_prob), ]$p # best estimate of p
+grid_size <- 20
+posterior <- get_post(grid_size = grid_size)
+MAP <- posterior[which.max(posterior$post_prob), ]$p # best estimate of p
 
 posterior %>%
   ggplot(aes(x = p, y = post_prob)) +
@@ -252,9 +252,9 @@ posterior %>%
 ## Comparing our grid approximation with the analytical MLE
 
 ```{R echo = F}
-grid_size =  30
-posterior =  get_post(grid_size = grid_size)
-MAP =  posterior[which.max(posterior$post_prob), ]$p # best estimate of p
+grid_size <- 30
+posterior <- get_post(grid_size = grid_size)
+MAP <- posterior[which.max(posterior$post_prob), ]$p # best estimate of p
 
 posterior %>%
   ggplot(aes(x = p, y = post_prob)) +
@@ -284,9 +284,9 @@ posterior %>%
 ## Comparing our grid approximation with the analytical MLE
 
 ```{R echo = F}
-grid_size =  100
-posterior =  get_post(grid_size = grid_size)
-MAP =  posterior[which.max(posterior$post_prob), ]$p # best estimate of p
+grid_size <- 100
+posterior <- get_post(grid_size = grid_size)
+MAP <- posterior[which.max(posterior$post_prob), ]$p # best estimate of p
 
 posterior %>%
   ggplot(aes(x = p, y = post_prob)) +
@@ -316,9 +316,9 @@ posterior %>%
 ## Comparing our grid approximation with the analytical MLE
 
 ```{R echo = F}
-grid_size =  1000
-posterior =  get_post(grid_size = grid_size)
-MAP =  posterior[which.max(posterior$post_prob), ]$p # best estimate of p
+grid_size <- 1000
+posterior <- get_post(grid_size = grid_size)
+MAP <- posterior[which.max(posterior$post_prob), ]$p # best estimate of p
 
 posterior %>%
   ggplot(aes(x = p, y = post_prob)) +
@@ -354,15 +354,15 @@ posterior %>%
 ## Solution
 
 ```{R echo = F}
-p_grid =  seq(from = 1e-3, to = 0.999, length.out = 10000)
-log_lik =  dbinom(sum(y), n, p_grid, TRUE)
-log_prior =  dnorm(p_grid, 0.13, 0.12, TRUE)
-log_unstd_post =  log_lik + log_prior
-unstd_post =  exp(log_unstd_post)
-post_prob =  unstd_post / sum(unstd_post)
+p_grid <- seq(from = 1e-3, to = 0.999, length.out = 10000)
+log_lik <- dbinom(sum(y), n, p_grid, TRUE)
+log_prior <- dnorm(p_grid, 0.13, 0.12, TRUE)
+log_unstd_post <- log_lik + log_prior
+unstd_post <- exp(log_unstd_post)
+post_prob <- unstd_post / sum(unstd_post)
 
 # Put everything together in a data frame
-posterior =  data.frame(
+posterior <- data.frame(
   p = p_grid, log_lik, log_prior,
   log_unstd_post, post_prob
 )
@@ -492,18 +492,17 @@ n
 First, write three helper functions: 
 
 ```{R echo = T}
-l_prior = function(param){ # log(prior) 
-  dunif(param, min=0, max=1, log = T) # uniform(0,1) prior
+l_prior <- function(param) { # log(prior)
+  dunif(param, min = 0, max = 1, log = T) # uniform(0,1) prior
 }
 
-l_lik = function(param){ # log(likelihood) 
+l_lik <- function(param) { # log(likelihood)
   dbinom(sum(y), n, param, log = T)
 }
 
-l_post = function(param){ # log(posterior) = log(likelihood) + log(prior) 
+l_post <- function(param) { # log(posterior) = log(likelihood) + log(prior)
   l_lik(param) + l_prior(param)
 }
-
 ```
 
 ## Building a Metropolis-Hastings algorithm for sneak turtles 🐢
@@ -511,10 +510,9 @@ l_post = function(param){ # log(posterior) = log(likelihood) + log(prior)
 Second, declare some stuff 
 
 ```{R echo = T}
-n_iter =  10000 # number of iterations to run the MCMC
-chain = rep(NA, n_iter) # place to store values of p 
-chain[1] =  0.5 # initial guess at p
-
+n_iter <- 10000 # number of iterations to run the MCMC
+chain <- rep(NA, n_iter) # place to store values of p
+chain[1] <- 0.5 # initial guess at p
 ```
 
 ## Building a Metropolis-Hastings algorithm for sneak turtles 🐢
@@ -522,24 +520,21 @@ chain[1] =  0.5 # initial guess at p
 Now we run the algorithm 
 
 ```{R, echo = T}
+for (i in 2:n_iter) {
+  p_new <- rnorm(1, chain[i - 1], 0.1) # new proposed p based on previous p
 
+  # next two lines ensure new p stays between [0,1] - ignore them
+  if (p_new < 0) p_new <- abs(p_new)
+  if (p_new > 1) p_new <- 2 - p_new
 
-for(i in 2:n_iter){
- p_new = rnorm(1, chain[i - 1], 0.1) # new proposed p based on previous p
- 
- # next two lines ensure new p stays between [0,1] - ignore them 
- if (p_new < 0) p_new  = abs(p_new) 
- if (p_new > 1) p_new =  2 - p_new  
- 
- a_prob = exp(l_post(p_new) - l_post(chain[i - 1])) # acceptance prob 
- 
- if (runif(1) < a_prob){
-   chain[i] = p_new # accept the proposal
- }else{
-   chain[i] = chain[i-1] # reject the proposal 
- }
+  a_prob <- exp(l_post(p_new) - l_post(chain[i - 1])) # acceptance prob
+
+  if (runif(1) < a_prob) {
+    chain[i] <- p_new # accept the proposal
+  } else {
+    chain[i] <- chain[i - 1] # reject the proposal
+  }
 }
-
 ```
 
 [see also Gelman et al. 2003; Robert and Casella 2010]{.footerRight}
@@ -547,7 +542,7 @@ for(i in 2:n_iter){
 ## Metropolis-Hastings results 
 
 ```{R echo = F}
-my_df =  data.frame(p = chain, iter = 1:n_iter)
+my_df <- data.frame(p = chain, iter = 1:n_iter)
 
 my_df %>%
   ggplot(aes(x = p)) +
@@ -608,39 +603,38 @@ Report your findings back to the group
 ## Proposal distribution sd = 0.001
 
 ```{R, echo = F}
+get_chain <- function(proposal_sd = 0.001, init = 0.5) { # wrap it in a function for ease
+  n_iter <- 10000 # number of iterations to run the MCMC
+  chain <- rep(NA, n_iter) # place to store values of p
+  chain[1] <- init # initial guess at p
 
-get_chain = function(proposal_sd = 0.001, init = 0.5){ # wrap it in a function for ease
-  n_iter =  10000 # number of iterations to run the MCMC
-  chain = rep(NA, n_iter) # place to store values of p 
-  chain[1] = init # initial guess at p
+  for (i in 2:n_iter) {
+    p_new <- rnorm(1, chain[i - 1], proposal_sd) # new proposed p based on previous p
 
-  for(i in 2:n_iter){
-   p_new = rnorm(1, chain[i - 1], proposal_sd) # new proposed p based on previous p
-   
-   # next two lines ensure new p stays between [0,1] - ignore them 
-   if (p_new < 0) p_new  = abs(p_new) 
-   if (p_new > 1) p_new =  2 - p_new  
-   
-   a_prob = exp(l_post(p_new) - l_post(chain[i - 1])) # acceptance prob 
-   
-   if (runif(1) < a_prob){
-     chain[i] = p_new # accept the proposal
-   }else{
-     chain[i] = chain[i-1] # reject the proposal 
-   }
+    # next two lines ensure new p stays between [0,1] - ignore them
+    if (p_new < 0) p_new <- abs(p_new)
+    if (p_new > 1) p_new <- 2 - p_new
+
+    a_prob <- exp(l_post(p_new) - l_post(chain[i - 1])) # acceptance prob
+
+    if (runif(1) < a_prob) {
+      chain[i] <- p_new # accept the proposal
+    } else {
+      chain[i] <- chain[i - 1] # reject the proposal
+    }
   }
- chain
+  chain
 }
 
-chain = get_chain(proposal_sd = 0.001, init = )
-my_df =  data.frame(p = chain, iter = 1:n_iter)
+chain <- get_chain(proposal_sd = 0.001, init = )
+my_df <- data.frame(p = chain, iter = 1:n_iter)
 
 my_df %>%
   ggplot(aes(x = iter, y = p)) +
   geom_line() +
   theme_qfc() +
-  ylim(0, 1) + 
-  annotate('rect', xmin=-Inf, xmax=5000, ymin=-Inf, ymax=Inf, alpha=0.2, fill='gray') +
+  ylim(0, 1) +
+  annotate("rect", xmin = -Inf, xmax = 5000, ymin = -Inf, ymax = Inf, alpha = 0.2, fill = "gray") +
   geom_hline(aes(yintercept = sum(y) / n, color = "analytical MLE"),
     lty = 1, lwd = 2, alpha = 0.6
   ) +
@@ -656,22 +650,20 @@ my_df %>%
     legend.position = c(0.85, 0.9), text = element_text(size = 20),
     legend.background = element_rect(fill = "white")
   )
-
 ```
 
 ## Proposal distribution sd = 0.002
 
 ```{R, echo = F}
-
-chain = get_chain(proposal_sd = 0.002, init = 0.5)
-my_df =  data.frame(p = chain, iter = 1:n_iter)
+chain <- get_chain(proposal_sd = 0.002, init = 0.5)
+my_df <- data.frame(p = chain, iter = 1:n_iter)
 
 my_df %>%
   ggplot(aes(x = iter, y = p)) +
   geom_line() +
   theme_qfc() +
-  ylim(0, 1) + 
-  annotate('rect', xmin=-Inf, xmax=5000, ymin=-Inf, ymax=Inf, alpha=0.2, fill='gray') +
+  ylim(0, 1) +
+  annotate("rect", xmin = -Inf, xmax = 5000, ymin = -Inf, ymax = Inf, alpha = 0.2, fill = "gray") +
   geom_hline(aes(yintercept = sum(y) / n, color = "analytical MLE"),
     lty = 1, lwd = 2, alpha = 0.6
   ) +
@@ -687,22 +679,20 @@ my_df %>%
     legend.position = c(0.85, 0.9), text = element_text(size = 20),
     legend.background = element_rect(fill = "white")
   )
-
 ```
 
 ## Proposal distribution sd = 0.005
 
 ```{R, echo = F}
-
-chain = get_chain(proposal_sd = 0.005, init = 0.5)
-my_df =  data.frame(p = chain, iter = 1:n_iter)
+chain <- get_chain(proposal_sd = 0.005, init = 0.5)
+my_df <- data.frame(p = chain, iter = 1:n_iter)
 
 my_df %>%
   ggplot(aes(x = iter, y = p)) +
   geom_line() +
   theme_qfc() +
-  ylim(0, 1) + 
-  annotate('rect', xmin=-Inf, xmax=5000, ymin=-Inf, ymax=Inf, alpha=0.2, fill='gray') +
+  ylim(0, 1) +
+  annotate("rect", xmin = -Inf, xmax = 5000, ymin = -Inf, ymax = Inf, alpha = 0.2, fill = "gray") +
   geom_hline(aes(yintercept = sum(y) / n, color = "analytical MLE"),
     lty = 1, lwd = 2, alpha = 0.6
   ) +
@@ -718,22 +708,20 @@ my_df %>%
     legend.position = c(0.85, 0.9), text = element_text(size = 20),
     legend.background = element_rect(fill = "white")
   )
-
 ```
 
 ## Proposal distribution sd = 0.01
 
 ```{R, echo = F}
-
-chain = get_chain(proposal_sd = 0.01, init = 0.5)
-my_df =  data.frame(p = chain, iter = 1:n_iter)
+chain <- get_chain(proposal_sd = 0.01, init = 0.5)
+my_df <- data.frame(p = chain, iter = 1:n_iter)
 
 my_df %>%
   ggplot(aes(x = iter, y = p)) +
   geom_line() +
   theme_qfc() +
-  ylim(0, 1) + 
-  annotate('rect', xmin=-Inf, xmax=5000, ymin=-Inf, ymax=Inf, alpha=0.2, fill='gray') +
+  ylim(0, 1) +
+  annotate("rect", xmin = -Inf, xmax = 5000, ymin = -Inf, ymax = Inf, alpha = 0.2, fill = "gray") +
   geom_hline(aes(yintercept = sum(y) / n, color = "analytical MLE"),
     lty = 1, lwd = 2, alpha = 0.6
   ) +
@@ -749,22 +737,20 @@ my_df %>%
     legend.position = c(0.85, 0.9), text = element_text(size = 20),
     legend.background = element_rect(fill = "white")
   )
-
 ```
 
 ## Proposal distribution sd = 0.1
 
 ```{R, echo = F}
-
-chain = get_chain(proposal_sd = 0.1, init = 0.5)
-my_df =  data.frame(p = chain, iter = 1:n_iter)
+chain <- get_chain(proposal_sd = 0.1, init = 0.5)
+my_df <- data.frame(p = chain, iter = 1:n_iter)
 
 my_df %>%
   ggplot(aes(x = iter, y = p)) +
   geom_line() +
   theme_qfc() +
-  ylim(0, 1) + 
-  annotate('rect', xmin=-Inf, xmax=5000, ymin=-Inf, ymax=Inf, alpha=0.2, fill='gray') +
+  ylim(0, 1) +
+  annotate("rect", xmin = -Inf, xmax = 5000, ymin = -Inf, ymax = Inf, alpha = 0.2, fill = "gray") +
   geom_hline(aes(yintercept = sum(y) / n, color = "analytical MLE"),
     lty = 1, lwd = 2, alpha = 0.6
   ) +
@@ -780,22 +766,20 @@ my_df %>%
     legend.position = c(0.85, 0.9), text = element_text(size = 20),
     legend.background = element_rect(fill = "white")
   )
-
 ```
 
 ## Proposal distribution sd = 0.2
 
 ```{R, echo = F}
-
-chain = get_chain(proposal_sd = 0.2, init = 0.5)
-my_df =  data.frame(p = chain, iter = 1:n_iter)
+chain <- get_chain(proposal_sd = 0.2, init = 0.5)
+my_df <- data.frame(p = chain, iter = 1:n_iter)
 
 my_df %>%
   ggplot(aes(x = iter, y = p)) +
   geom_line() +
   theme_qfc() +
-  ylim(0, 1) + 
-  annotate('rect', xmin=-Inf, xmax=5000, ymin=-Inf, ymax=Inf, alpha=0.2, fill='gray') +
+  ylim(0, 1) +
+  annotate("rect", xmin = -Inf, xmax = 5000, ymin = -Inf, ymax = Inf, alpha = 0.2, fill = "gray") +
   geom_hline(aes(yintercept = sum(y) / n, color = "analytical MLE"),
     lty = 1, lwd = 2, alpha = 0.6
   ) +
@@ -811,22 +795,20 @@ my_df %>%
     legend.position = c(0.85, 0.9), text = element_text(size = 20),
     legend.background = element_rect(fill = "white")
   )
-
 ```
 
 ## Proposal distribution sd = 0.4
 
 ```{R, echo = F}
-
-chain = get_chain(proposal_sd = 0.4, init = 0.5)
-my_df =  data.frame(p = chain, iter = 1:n_iter)
+chain <- get_chain(proposal_sd = 0.4, init = 0.5)
+my_df <- data.frame(p = chain, iter = 1:n_iter)
 
 my_df %>%
   ggplot(aes(x = iter, y = p)) +
   geom_line() +
   theme_qfc() +
-  ylim(0, 1) + 
-  annotate('rect', xmin=-Inf, xmax=5000, ymin=-Inf, ymax=Inf, alpha=0.2, fill='gray') +
+  ylim(0, 1) +
+  annotate("rect", xmin = -Inf, xmax = 5000, ymin = -Inf, ymax = Inf, alpha = 0.2, fill = "gray") +
   geom_hline(aes(yintercept = sum(y) / n, color = "analytical MLE"),
     lty = 1, lwd = 2, alpha = 0.6
   ) +
@@ -842,22 +824,21 @@ my_df %>%
     legend.position = c(0.85, 0.9), text = element_text(size = 20),
     legend.background = element_rect(fill = "white")
   )
-
 ```
 
 ## Proposal distribution sd = 0.42
 
 ```{R, echo = F}
 set.seed(1)
-chain = get_chain(proposal_sd = 0.42, init = 0.5)
-my_df =  data.frame(p = chain, iter = 1:n_iter)
+chain <- get_chain(proposal_sd = 0.42, init = 0.5)
+my_df <- data.frame(p = chain, iter = 1:n_iter)
 
 my_df %>%
   ggplot(aes(x = iter, y = p)) +
   geom_line() +
   theme_qfc() +
-  ylim(0, 1) + 
-  annotate('rect', xmin=-Inf, xmax=5000, ymin=-Inf, ymax=Inf, alpha=0.2, fill='gray') +
+  ylim(0, 1) +
+  annotate("rect", xmin = -Inf, xmax = 5000, ymin = -Inf, ymax = Inf, alpha = 0.2, fill = "gray") +
   geom_hline(aes(yintercept = sum(y) / n, color = "analytical MLE"),
     lty = 1, lwd = 2, alpha = 0.6
   ) +
@@ -873,22 +854,20 @@ my_df %>%
     legend.position = c(0.85, 0.9), text = element_text(size = 20),
     legend.background = element_rect(fill = "white")
   )
-
 ```
 
 ## Proposal distribution sd = 0.44
 
 ```{R, echo = F}
-
-chain = get_chain(proposal_sd = 0.44, init = 0.5)
-my_df =  data.frame(p = chain, iter = 1:n_iter)
+chain <- get_chain(proposal_sd = 0.44, init = 0.5)
+my_df <- data.frame(p = chain, iter = 1:n_iter)
 
 my_df %>%
   ggplot(aes(x = iter, y = p)) +
   geom_line() +
   theme_qfc() +
-  ylim(0, 1) + 
-  annotate('rect', xmin=-Inf, xmax=5000, ymin=-Inf, ymax=Inf, alpha=0.2, fill='gray') +
+  ylim(0, 1) +
+  annotate("rect", xmin = -Inf, xmax = 5000, ymin = -Inf, ymax = Inf, alpha = 0.2, fill = "gray") +
   geom_hline(aes(yintercept = sum(y) / n, color = "analytical MLE"),
     lty = 1, lwd = 2, alpha = 0.6
   ) +
@@ -904,7 +883,6 @@ my_df %>%
     legend.position = c(0.85, 0.9), text = element_text(size = 20),
     legend.background = element_rect(fill = "white")
   )
-
 ```
 
 ## Proposal distribution sd > 0.44
@@ -912,8 +890,8 @@ my_df %>%
 Breaks the following lines and dies because gives p outside [0,1]
 
 ```{R echo = T, eval = F}
- if (p_new < 0) p_new  = abs(p_new) 
- if (p_new > 1) p_new =  2 - p_new  
+if (p_new < 0) p_new <- abs(p_new)
+if (p_new > 1) p_new <- 2 - p_new
 ```
 
 - There are smarter ways to keep a value between [0,1]
@@ -944,30 +922,29 @@ Breaks the following lines and dies because gives p outside [0,1]
 
 ```{R, echo = F}
 set.seed(2)
-chain1 = get_chain(proposal_sd = 0.01, init = 0.3)
-chain2 = get_chain(proposal_sd = 0.01, init = 0.7)
-chain3 = get_chain(proposal_sd = 0.01, init = 0.95)
-chain4 = get_chain(proposal_sd = 0.01, init = 0.01)
-chain1 =  data.frame(p = chain1, iter = 1:n_iter, chain = "chain 1")
-chain2 =  data.frame(p = chain2, iter = 1:n_iter, chain = "chain 2")
-chain3 =  data.frame(p = chain3, iter = 1:n_iter, chain = "chain 3")
-chain4 =  data.frame(p = chain4, iter = 1:n_iter, chain = "chain 4")
+chain1 <- get_chain(proposal_sd = 0.01, init = 0.3)
+chain2 <- get_chain(proposal_sd = 0.01, init = 0.7)
+chain3 <- get_chain(proposal_sd = 0.01, init = 0.95)
+chain4 <- get_chain(proposal_sd = 0.01, init = 0.01)
+chain1 <- data.frame(p = chain1, iter = 1:n_iter, chain = "chain 1")
+chain2 <- data.frame(p = chain2, iter = 1:n_iter, chain = "chain 2")
+chain3 <- data.frame(p = chain3, iter = 1:n_iter, chain = "chain 3")
+chain4 <- data.frame(p = chain4, iter = 1:n_iter, chain = "chain 4")
 
-my_df = as.data.frame(rbind(chain1, chain2, chain3, chain4))
+my_df <- as.data.frame(rbind(chain1, chain2, chain3, chain4))
 
 my_df %>%
   ggplot(aes(x = iter, y = p, group = chain, color = chain)) +
   geom_line(alpha = 0.4) +
   theme_qfc() +
-  ylim(0, 1) + 
-  annotate('rect', xmin=-Inf, xmax=5000, ymin=-Inf, ymax=Inf, alpha=0.2, fill='gray') +
+  ylim(0, 1) +
+  annotate("rect", xmin = -Inf, xmax = 5000, ymin = -Inf, ymax = Inf, alpha = 0.2, fill = "gray") +
   xlab("iteration of algorithm") +
   ylab("value of p") +
   theme(
     legend.position = c(0.8, 0.8), text = element_text(size = 20),
     legend.background = element_rect(fill = "white")
-  ) 
-
+  )
 ```
 
 ## Running multiple chains each with different initialization values 
@@ -977,18 +954,18 @@ my_df %>%
   ggplot(aes(x = iter, y = p, group = chain, color = chain)) +
   geom_line(alpha = 0.4) +
   theme_qfc() +
-  ylim(0, 1) + 
-  annotate('rect', xmin=-Inf, xmax=5000, ymin=-Inf, ymax=Inf, alpha=0.2, fill='gray') +
+  ylim(0, 1) +
+  annotate("rect", xmin = -Inf, xmax = 5000, ymin = -Inf, ymax = Inf, alpha = 0.2, fill = "gray") +
   xlab("iteration of algorithm") +
   ylab("value of p") +
   theme(
     legend.position = c(0.8, 0.8), text = element_text(size = 20),
     legend.background = element_rect(fill = "white")
-  ) + 
-  geom_hline(aes(yintercept = sum(y) / n), color = "darkorange2",
+  ) +
+  geom_hline(aes(yintercept = sum(y) / n),
+    color = "darkorange2",
     lty = 1, lwd = 2, alpha = 0.6
   )
-
 ```
 
 ## Software that can run MCMC for you 
