@@ -897,7 +897,7 @@ if (p_new > 1) p_new <- 2 - p_new
 - There are smarter ways to keep a value between [0,1]
 - Key points: 
   - tuning the algorithm impacts its ability to sample the posterior 
-  - correlation in the Markov chain means you don't get indpendent samples of the parameters of interest  
+  - correlation in the Markov chain means you don't get independent samples of the parameters of interest  
 
 ## What do we want the chains to do 
 

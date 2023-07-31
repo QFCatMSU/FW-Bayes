@@ -7,17 +7,18 @@ library(ggqfc)
 data <- readRDS("week2/data/linreg.rds")
 
 # compile the .stan model
-mod <- cmdstan_model("week2/src/linreg.stan")
+mod <- cmdstan_model("week2/src/linreg_ppc.stan")
 mod # look at the model
 
 # names in tagged list correspond to the data block in the Stan program
 stan_data <- list(n = nrow(data), y = data$y, x = data$x)
 
+# write a function to get starting values
 inits <- function() {
   list(
     b0 = jitter(0, amount = 0.05),
-    b1 = jitter(0),
-    sd = jitter(1)
+    b1 = jitter(0, amount = 1),
+    sd = jitter(1, amount = 0.5)
   )
 }
 
@@ -51,8 +52,8 @@ p <- mcmc_trace(posterior, np = np) +
 p
 
 # plot a chunk of chain
-p <- mcmc_trace(posterior, pars = "sd", window = c(600, 721), np = np) + 
-theme_qfc()
+p <- mcmc_trace(posterior, pars = "sd", window = c(600, 721), np = np) +
+  theme_qfc()
 p
 
 # highlight chain 2:
@@ -114,7 +115,6 @@ ppc_dens_overlay(y = data$y, yrep = as.matrix(y_rep[1:35, ]))
 # ppcs, another way
 
 y_reps <- y_rep[sample(nrow(y_rep), 9), ]
-
 ind <- sample(9, 1)
 y_reps[ind, ] <- as.list(data$y)
 
@@ -134,3 +134,31 @@ yrep_df %>%
   scale_y_continuous(breaks = NULL) +
   theme(strip.background = element_blank()) +
   ggtitle("Can you spot the real data?")
+
+#-----------------------------------------------------------
+# prior predictive checks
+# note this is exactly like our other models
+# except for the fact that we comment out the likelihood
+# compile the .stan model
+mod <- cmdstan_model("week2/src/linreg_priorpc.stan")
+
+fit <- mod$sample(
+  data = stan_data,
+  init = inits,
+  seed = 13, # ensure simulations are reproducible
+  chains = 4, # multiple chains
+  iter_warmup = 1000, # how long to warm up the chains
+  iter_sampling = 1000, # how many samples after warmp
+  parallel_chains = 4, # run them in parallel?
+  refresh = 500 # print update every 500 iters
+)
+
+# extract the prior draws and plot the chains:
+prior_draws <- fit$draws(format = "df") # extract draws x variables data frame
+
+y_rep <- prior_draws[grepl("y_rep", names(prior_draws))]
+ppc_hist(y = data$y, yrep = as.matrix(y_rep[1:35, ]))
+
+p <- ppc_dens_overlay(y = data$y, yrep = as.matrix(y_rep[1:35, ]))
+p <- p + ggtitle("prior predictive check")
+p

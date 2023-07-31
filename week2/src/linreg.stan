@@ -17,17 +17,9 @@ model {
   // likelihood - many ways to do it
   // one way (vectorized, dropping constant, additive terms)
   y ~ normal(b0 + b1*x, sd);  
-
-  // another way - log of the normal density
-  // target += normal_lpdf(y | b0 + b1*x, sd); 
-  
-  // third way - same as first way but in a loop 
-  // for(i in 1:nobs){
-  //   y[i] ~ normal(b0 + b1*x[i], sd); 
-  //}
 }
-generated quantities {
+// generated quantities {
   //replications for the posterior predictive distributions
-  array[n] real y_rep = normal_rng(b0 + b1*x, sd);
-}
+  // array[n] real y_rep = normal_rng(b0 + b1*x, sd);
+// }
 
