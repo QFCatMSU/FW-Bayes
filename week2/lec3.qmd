@@ -830,7 +830,7 @@ p + theme_qfc() + theme(text = element_text(size = 20))
 
 - Principled Bayesian workflow is an iterative process of model building (see Betancourt 2018) 
 - Data visualization is vital to helping us understand the performance of Bayesian models (Gabry et al. 2019)
-  - There were some checks we haven't yet done
+  - *There are more checks we haven't yet done*
 - In general, need to get good at this stuff if you intend to learn or use Bayesian statistics
 - Don't use these tools at your own risk
 
@@ -863,15 +863,20 @@ An improved R-hat for assessing convergence of MCMC*](https://arxiv.org/pdf/1903
 
 7. [Stan documentation](https://mc-stan.org/docs/stan-users-guide/index.html)
 
+:::
 
-Exercises:
+## Exercises:
 
-1. Calculate the probability that $\beta_{1}$ is < 0.51
+::: {style="font-size:25px"}
 
-2. Calculate the posterior predictive distribution one might expect for y if they went out and collected data at x1 = 1.23
+1. Calculate the posterior predictive distribution one might expect for y if they went out and collected data at $x_{i} = 1.23$
 
-3. Plot the median fit +/- 95% credible intervals from the posterior predictive distribution of y vs. x. 
+2. Plot the median fit +/- 95% credible intervals from the posterior predictive distribution of y vs. $x_{i}$. Can you think of other ways to visualize fits vs. data and the corresponding uncertainty in these fits?
 
-4. Repeat the exercises in this presentation by first simulating your own linear regression dataset to prove to yourself that your code is returning reasonable answers.
+3. Repeat the exercises in this presentation by first simulating your own linear regression dataset to prove to yourself that your code is returning reasonable answers.
+
+4. Assume this dataset represents the relationship between a measure of a stream contaminant (y) and a metric of industrial development (x).  Through an extensive structured decision making process it was determined by industrial representatives, resource managers, subject matter experts, and Indigenous Rightsholders that if this relationship indicated that $\beta_{1}$ exceeded 0.71 with $\text(Pr = 0.35)$ streamside development should be ceased.  What does your analysis suggest?  What are the limitations of your analysis, including things that might influence your assessment of $\Pr(\beta_{1} > 0.71)$? Take care to seperate explanation vs. advocacy.
+
+5. Someone in the structured decision making group hates the word probability, and is pointing out that it isn't even clear what is meant by $\Pr(\beta_{1} > 0.71)$.  Can you think of a metaphor for describing this uncertainty that does not use the word probability and which is easily understandable by folks who may lack technical training?
 
 :::
