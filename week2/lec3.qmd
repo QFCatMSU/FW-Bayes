@@ -728,8 +728,8 @@ head(posterior)
 ```{R eval = T, echo = T}
 y_rep <- posterior[grepl("y_rep", names(posterior))]
 
-# compare original data against 35 simulated datasets:
-p <- ppc_hist(y = data$y, yrep = as.matrix(y_rep[1:35, ]))
+# compare original data against 15 simulated datasets:
+p <- ppc_hist(y = data$y, yrep = as.matrix(y_rep[1:15, ]))
 p + theme_qfc() + theme(text = element_text(size = 20))
 ```
 
@@ -737,8 +737,8 @@ p + theme_qfc() + theme(text = element_text(size = 20))
 ```{R eval = T, echo = T}
 y_rep <- posterior[grepl("y_rep", names(posterior))]
 
-# compare original data against 35 simulated datasets:
-p <- ppc_dens_overlay(y = data$y, yrep = as.matrix(y_rep[1:35, ]))
+# compare original data against 15 simulated datasets:
+p <- ppc_dens_overlay(y = data$y, yrep = as.matrix(y_rep[1:15, ]))
 p + theme_qfc() + theme(text = element_text(size = 20))
 ```
 
@@ -769,7 +769,6 @@ yrep_df %>%
   facet_wrap(~name, nrow = 3) +
   labs(x = "", y = "") +
   scale_y_continuous(breaks = NULL) +
-  theme(strip.background = element_blank()) +
   ggtitle("Can you spot the real data?") +
   theme_qfc() +
   theme(text = element_text(size = 20))
@@ -788,10 +787,8 @@ yrep_df %>%
   facet_wrap(~name, nrow = 3) +
   labs(x = "", y = "") +
   scale_y_continuous(breaks = NULL) +
-  theme(strip.background = element_blank()) +
   ggtitle("Can you spot the real data?") +
-  theme_qfc() +
-  theme(text = element_text(size = 20))
+  theme_qfc() + theme(text = element_text(size = 20))
 ```
 
 ## Prior predictive checks 
@@ -849,13 +846,32 @@ p + theme_qfc() + theme(text = element_text(size = 20))
 
 ## References 
 
-[Stan reference](https://mc-stan.org/docs/2_18/stan-users-guide/standardizing-predictors-and-outputs.html)
+::: {style="font-size:25px"}
 
-https://academic.oup.com/jrsssa/article/182/2/389/7070184?login=false
+1. Betancourt 2017. [A conceptual introduction to Hamiltonian Monte Carlo](https://arxiv.org/abs/1701.02434)
 
-Betancourt 2017. [A conceptual introduction to Hamiltonian Monte Carlo](https://arxiv.org/abs/1701.02434)
+2. Vehtari et al. 2019. [Rank-normalization, folding, and localization:
+An improved R-hat for assessing convergence of MCMC*](https://arxiv.org/pdf/1903.08008.pdf)
 
-Vehtari et al. 2019. [Rank-normalization, folding, and localization:
-An improved Rb for assessing convergence of MCMC*](https://arxiv.org/pdf/1903.08008.pdf)
+3. Gabry et al. 2019. [Visualization in Bayesian workflow](https://academic.oup.com/jrsssa/article/182/2/389/7070184)
 
-Gabry et al. 2019. [Visualization in Bayesian workflow](https://academic.oup.com/jrsssa/article/182/2/389/7070184)
+4. Gelman et al. 2021.  Bayesian Data Analysis.  Edition 3. 
+
+5. Kery and Schaub. 2012. Bayesian Population Analysis using WinBUGS. 
+
+6. McElreath 2023.  Statistical Rethinking. Second Edition. 
+
+7. [Stan documentation](https://mc-stan.org/docs/stan-users-guide/index.html)
+
+
+Exercises:
+
+1. Calculate the probability that $\beta_{1}$ is < 0.51
+
+2. Calculate the posterior predictive distribution one might expect for y if they went out and collected data at x1 = 1.23
+
+3. Plot the median fit +/- 95% credible intervals from the posterior predictive distribution of y vs. x. 
+
+4. Repeat the exercises in this presentation by first simulating your own linear regression dataset to prove to yourself that your code is returning reasonable answers.
+
+:::
