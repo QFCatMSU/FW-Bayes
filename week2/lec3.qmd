@@ -23,6 +23,7 @@ highlight-style: kate
 -   Write code to elicit simple models and implement Bayesian inference in Stan
 -   Use the cmdstanr interface
 -   Develop familiarity with a few packages that make your life easier
+-   Walk through some model diagnostics 
 -   Make sure you have these programs/packages installed\
     ![](images/Rlogo.png){style="width:185px; position: absolute; bottom:10.5%; left:0%;"} ![](images/logo_website.png){style="width:150px; position: absolute; bottom:6%; right:66%;"} ![](images/tidyverse.png){style="width:165px; position: absolute; bottom:7%; right:47%;"} ![](images/tidybayes.png){style="width:185px; position: absolute; bottom:7.5%; right:28%;"}
 
@@ -113,6 +114,132 @@ Stan is a probablistic modeling language <https://mc-stan.org/>
 
 - Why must we confront misery of a new language? 
 
+## A linear regression in Stan
+
+::: {style="font-size: 85%;"}
+
+Let's build a linear regression model, which can be written a few ways: 
+
+$$
+y_{i}=\beta_{0}+\beta x_{i}+\epsilon_{i} \quad \text{where} \quad \epsilon_{i} \sim \operatorname{normal}(0, \sigma) \text {. }
+$$
+
+which is the same as 
+
+$$
+y_{i}-\left(\beta_{0}+\beta X_{i}\right) \sim \operatorname{normal}(0, \sigma)
+$$
+
+and reducing further: 
+
+$$
+y_{i} \sim \operatorname{normal}\left(\beta_{0}+\beta X_{i}, \sigma\right) .
+$$
+:::
+
+## Linear regression in Stan cont'd 
+
+- Let's build a simple linear regression model in Stan
+
+```{R echo = F}
+# create some fake linear regression data
+nobs <- 84
+b0 <- 2.3
+b1 <- 0.7
+sd <- 1
+
+set.seed(1)
+x <- rnorm(nobs, mean = 5, sd = 5)
+y <- rnorm(nobs, b0 + b1 * x, sd)
+data <- data.frame(y = y, x = x)
+
+saveRDS(data, file = "data/linreg.rds")
+```
+
+[The data](https://github.com/QFCatMSU/FW-Bayes/blob/main/week2/data/linreg.rds?raw=true)
+
+  - What do we do when we get some data? 
+
+## [Always]{style="text-decoration: underline;"} plot the data 
+
+```{R eval = T,echo = T}
+library(tidyverse)
+library(ggqfc)
+library(cmdstanr)
+
+data <- readRDS("data/linreg.rds")
+p <- data %>% ggplot(aes(y = y, x = x)) + 
+geom_point() + theme_qfc() + 
+  theme(text = element_text(size = 20))
+p 
+```
+
+## [Always]{style="text-decoration: underline;"} plot the data 
+
+```{R eval = T,echo = T}
+p + geom_smooth(method = lm, se = F)
+lm(data$y ~ data$x) # fit y = a + bx + e, where e ~ N(0, sd)
+```
+
+## *Thinking* through our model  
+
+$$
+\color{darkorange}{y_{i}} \sim \operatorname{normal}\left(\color{#8D44AD}{\beta_{0}}+\color{#8D44AD}{\beta X_{i}}, \color{#3697DC}{\sigma}\right).
+$$
+
+[signal]{style="color:darkorange;"} = [deterministic component]{style="color:#8D44AD;"} + [random component]{style="color:#3697DC;"} 
+
+## *Thinking* through our model  
+$$
+\color{darkorange}{y_{i}} \sim \operatorname{normal}\left(\color{#8D44AD}{\beta_{0}}+\color{#8D44AD}{\beta X_{i}}, \color{#3697DC}{\sigma}\right).
+$$
+
+[signal]{style="color:darkorange;"} = [deterministic component]{style="color:#8D44AD;"} + [random component]{style="color:#3697DC;"} 
+
+$\text { If } \mu_{i} \in \mathbb{R} \text { and } \sigma \in \mathbb{R}^{+} \text {, then for } y_{i} \in \mathbb{R} \text {, }$
+
+$$
+\operatorname{Normal}(y_{i} \mid \mu_{i}, \sigma)=\frac{1}{\sqrt{2 \pi} \sigma} \exp \left(-\frac{1}{2}\left(\frac{y_{i}-\mu_{i}}{\sigma}\right)^{2}\right)
+$$
+
+## *Thinking* through our model  
+$$
+\color{darkorange}{y_{i}} \sim \operatorname{normal}\left(\color{#8D44AD}{\beta_{0}+\beta X_{i}}, \color{#3697DC}{\sigma}\right).
+$$
+
+[signal]{style="color:darkorange;"} = [deterministic component]{style="color:#8D44AD;"} + [random component]{style="color:#3697DC;"} 
+
+$\text { If } \mu_{i} \in \mathbb{R} \text { and } \sigma \in \mathbb{R}^{+} \text {, then for } y_{i} \in \mathbb{R} \text {, }$
+
+$$
+\operatorname{Normal}(y_{i} \mid \color{#8D44AD}{\mu_{i}}, \sigma)=\frac{1}{\sqrt{2 \pi} \sigma} \exp \left(-\frac{1}{2}\left(\frac{y_{i}-\color{#8D44AD}{\mu_{i}}}{\sigma}\right)^{2}\right)
+$$
+
+$\text{where} \color{#8D44AD}{\mu_{i}} = \color{#8D44AD}{\beta_{0}+\beta X_{i}}$
+
+## *Thinking* through our model  
+
+$$
+y_{i} \sim \operatorname{normal}\left(\beta_{0}+\beta X_{i}, \sigma\right) .
+$$
+
+```{R eval = T,echo = F}
+fit <- lm(data$y ~ data$x)
+yhat <- fit$fitted.values
+diff <- data$y - yhat     
+p + geom_smooth(method = lm, se = F) + 
+  geom_segment(x=x, xend=x, y=y, yend=yhat, lty = 3)
+
+```
+
+## Writing our first `.stan` model
+
+Code to do what we are going through is in the `week2/` Github directory
+
+[`linreg.R`](https://github.com/QFCatMSU/FW-Bayes/blob/main/week2/R/linreg.r) and [`linreg.stan`](https://github.com/QFCatMSU/FW-Bayes/blob/main/week2/src/linreg.stan)
+
+![](images/logo_website.png){style="width:150px; position: absolute; bottom:6%; right:3%"}
+
 ## Structure of a `.stan` file
 
 ::: {style="font-size: 75%;"}
@@ -162,38 +289,106 @@ As per the comments in the code, each of the program blocks does certain stuff
 
 :::
 
-## A crash course in coding a `.stan` model
+## Writing the `linreg.stan` file 
 
-- Let's build a linear regression model to demonstrate how these sections can be used 
+::: {style="font-size: 85%;"}
 
-- The point here is to get you used to writing a `.stan`, compiling it, and reading data into Stan for an analysis  
-
-## `Hello World` in Stan 
-
-- Let's build a simple linear regression model in Stan
-
-```{R echo = F}
-# create some fake linear regression data
-nobs <- 84
-b0 <- 2.3
-b1 <- 0.7
-sd <- 1
-
-set.seed(1)
-x <- rnorm(nobs, mean = 5, sd = 5)
-y <- rnorm(nobs, b0 + b1 * x, sd)
-data <- data.frame(y = y, x = x)
-
-saveRDS(data, file = "data/linreg.rds")
+```{javascript eval = F, echo = T}
+data {
+  int<lower=0> n; // number of observations 
+  vector[n] y;    // vector of responses 
+  vector[n] x;    // covariate x
+}
+parameters {
+  real b0; 
+  real b1;      
+  real<lower = 0> sd;
+}
+model {
+  // priors
+  b0 ~ normal(0, 10);  
+  b1 ~ normal(0, 10);
+  sd ~ normal(0, 1);
+  
+  // likelihood - one way: 
+  y ~ normal(b0 + b1*x, sd);  // (vectorized, dropping constant, additive terms)
+}
 ```
+:::
 
-- [data](https://github.com/QFCatMSU/FW-Bayes/blob/main/hwk1/cubs.rds?raw=true)
+## Writing the `linreg.stan` file 
 
-## Priors 
+::: {style="font-size: 85%;"}
 
-- If you don't specify priors, Stan will specify flat priors
-  - Not always a good thing 
-- Let's talk about priors a bit 
+```{javascript eval = F, echo = T}
+data {
+  int<lower=0> n; // number of observations 
+  vector[n] y;    // vector of responses 
+  vector[n] x;    // covariate x
+}
+parameters {
+  real b0; 
+  real b1;      
+  real<lower = 0> sd;
+}
+model {
+  // priors
+  b0 ~ normal(0, 10);  
+  b1 ~ normal(0, 10);
+  sd ~ normal(0, 1);
+  
+  // likelihood - loopy way: 
+  for(i in 1:nobs){
+    y[i] ~ normal(b0 + b1*x[i], sd); 
+  }
+}
+```
+:::
+
+## Writing the `linreg.stan` file 
+
+::: {style="font-size: 85%;"}
+
+```{javascript eval = F, echo = T}
+data {
+  int<lower=0> n; // number of observations 
+  vector[n] y;    // vector of responses 
+  vector[n] x;    // covariate x
+}
+parameters {
+  real b0; 
+  real b1;      
+  real<lower = 0> sd;
+}
+model {
+  // priors
+  b0 ~ normal(0, 10);  
+  b1 ~ normal(0, 10);
+  sd ~ normal(0, 10);
+  
+  // likelihood - yet another way: 
+  target += normal_lpdf(y | b0 + b1*x, sd); // log of the normal density (constants included)
+}
+```
+:::
+
+## Key point
+
+Those three model configurations result in the same parameter estimates, but option (3) will give you a different log posterior (`lp__` in Stan speak)
+
+## Priors in Stan 
+
+::: {style="font-size: 85%;"}
+
+- If you don't specify priors, *Stan will specify flat priors for you*
+  - Not always a good thing, and it can lead to problems 
+- In this class we are either going to use vague or uninformative priors, OR we will use informative priors that incorporate domain expertise or information from previous studies
+- When we say this prior is "weakly informative," what we mean is that if there's a large amount of data, the likelihood will dominate, and the prior will not be important
+  - Prior can often only be understood in the context of the likelihood (Gelman et al. 2017; see also [prior recommendations in Stan](https://github.com/stan-dev/stan/wiki/Prior-Choice-Recommendations))
+
+[see arguments in Kery and Schaub 2012; Gelman et al. 2017; McElreath 2023]{.footerLeft}
+
+:::
 
 
 ## Standardizing covariates

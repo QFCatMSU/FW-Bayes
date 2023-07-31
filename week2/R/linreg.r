@@ -32,14 +32,12 @@ fit <- mod$sample(
   refresh = 500 # print update every 500 iters
 )
 
-# check diagnostics
+# check diagnostics -------------------------------------------
+
 fit$diagnostic_summary()
 fit$cmdstan_diagnose()
 
 # extract the posterior and plot the chains:
-library(ggplot2)
-library(ggqfc)
-
 posterior <- fit$draws(format = "df") # extract draws x variables data frame
 str(posterior)
 
@@ -100,7 +98,6 @@ mcmc_parcoord(posterior,
 ## Have the chains converged to a common distribution?
 rhats <- rhat(fit)
 mcmc_rhat(rhats) # should all be less than 1.05 as rule of thumb
-
 
 # number of effective samples
 eff <- neff_ratio(fit)

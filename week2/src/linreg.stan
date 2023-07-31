@@ -12,18 +12,18 @@ model {
   // priors
   b0 ~ normal(0, 10);  
   b1 ~ normal(0, 10);
-  sd ~ normal(0, 1);
+  sd ~ normal(0, 10);
   
   // likelihood - many ways to do it
   // one way (vectorized, dropping constant, additive terms)
   y ~ normal(b0 + b1*x, sd);  
 
   // another way - log of the normal density
-  // target += normal_lpdf(y | b0 + b1*x1, sd); 
+  // target += normal_lpdf(y | b0 + b1*x, sd); 
   
   // third way - same as first way but in a loop 
   // for(i in 1:nobs){
-  //   y[i] ~ normal(b0 + b1*x1[i], sd); 
+  //   y[i] ~ normal(b0 + b1*x[i], sd); 
   //}
 }
 generated quantities {
