@@ -1,4 +1,6 @@
 #------------------------------------------------------------------------------
+# You might need to install the packages gridExtra and hexbin  to execute --
+#    these are package dependencies that are not necessarily installed 
 library(tidyverse)
 library(cmdstanr)
 library(bayesplot)
