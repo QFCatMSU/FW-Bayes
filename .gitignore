@@ -4,3 +4,6 @@
 .vscode
 *.html
 *.exe
+.Rproj.user
+FW-Bayes.Rproj
+.Rhistory
