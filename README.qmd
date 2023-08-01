@@ -1,5 +1,5 @@
 ---
-title: "README"
+title: "FW 891: Applied Bayesian Methods"
 format: gfm
 ---
 
