@@ -217,7 +217,7 @@ $$
 \operatorname{Normal}(y_{i} \mid \color{#8D44AD}{\mu_{i}}, \sigma)=\frac{1}{\sqrt{2 \pi} \sigma} \exp \left(-\frac{1}{2}\left(\frac{y_{i}-\color{#8D44AD}{\mu_{i}}}{\sigma}\right)^{2}\right)
 $$
 
-$\text{where} \color{#8D44AD}{\mu_{i}} = \color{#8D44AD}{\beta_{0}+\beta X_{i}}$
+$\text{where } \color{#8D44AD}{\mu_{i}} = \color{#8D44AD}{\beta_{0}+\beta X_{i}}$
 
 ## *Thinking* through our model  
 
@@ -795,7 +795,7 @@ yrep_df %>%
 - Same idea as posterior predictive checks, but we ignore the likelihood
 - Simply sample replicate datasets from the prior(s)
 - Tries to get at whether our priors + model configuration are consistent with our knowledge of the system 
-- Usually would do these before posterior predictive checks, but easier to explain once you onderstand what posterior predictive checks are 
+- Usually would do these before posterior predictive checks, but easier to explain once you understand what posterior predictive checks are 
 
 ## Prior predictive checks
 
@@ -832,7 +832,7 @@ p + theme_qfc() + theme(text = element_text(size = 20))
 - Data visualization is vital to helping us understand the performance of Bayesian models (Gabry et al. 2019)
   - *There are more checks we haven't yet done*
 - In general, need to get good at this stuff if you intend to learn or use Bayesian statistics
-- Don't use these tools at your own risk
+- If you don't use these tools, you do so at your own risk
 
 ## Summary and outlook
 
