@@ -1,6 +1,6 @@
-# FW 891: Applied Bayesian Modeling
+# FW 891: Applied Bayesian Modeling for Natural Resource Management
 
-Class materials for FW 891, Applied Bayesian Modeling for Natural
+Class materials for FW 891: Applied Bayesian Modeling for Natural
 Resource Management. In this repository you will find the syllabus
 lecture material (.qmd, .pdf file extensions), R code (`R/` folders),
 Stan code (`src/` folders), data (`data/` folders), and homework
@@ -8,7 +8,8 @@ folders.
 
 ## Lecture recordings
 
-I will be posting lectures/labs (assuming I don’t forget) at TODO.
+Lectures/labs (assuming I don’t forget) will be posted after class at
+TODO.
 
 ## Software
 
