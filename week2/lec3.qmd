@@ -189,14 +189,14 @@ $$
 \color{darkorange}{y_{i}} \sim \operatorname{normal}\left(\color{#8D44AD}{\beta_{0}}+\color{#8D44AD}{\beta X_{i}}, \color{#3697DC}{\sigma}\right).
 $$
 
-[signal]{style="color:darkorange;"} = [deterministic component]{style="color:#8D44AD;"} + [random component]{style="color:#3697DC;"} 
+[response]{style="color:darkorange;"} = [deterministic component]{style="color:#8D44AD;"} + [random component]{style="color:#3697DC;"} 
 
 ## *Thinking* through our model  
 $$
 \color{darkorange}{y_{i}} \sim \operatorname{normal}\left(\color{#8D44AD}{\beta_{0}}+\color{#8D44AD}{\beta X_{i}}, \color{#3697DC}{\sigma}\right).
 $$
 
-[signal]{style="color:darkorange;"} = [deterministic component]{style="color:#8D44AD;"} + [random component]{style="color:#3697DC;"} 
+[response]{style="color:darkorange;"} = [deterministic component]{style="color:#8D44AD;"} + [random component]{style="color:#3697DC;"} 
 
 $\text { If } \mu_{i} \in \mathbb{R} \text { and } \sigma \in \mathbb{R}^{+} \text {, then for } y_{i} \in \mathbb{R} \text {, }$
 
@@ -209,7 +209,7 @@ $$
 \color{darkorange}{y_{i}} \sim \operatorname{normal}\left(\color{#8D44AD}{\beta_{0}+\beta X_{i}}, \color{#3697DC}{\sigma}\right).
 $$
 
-[signal]{style="color:darkorange;"} = [deterministic component]{style="color:#8D44AD;"} + [random component]{style="color:#3697DC;"} 
+[response]{style="color:darkorange;"} = [deterministic component]{style="color:#8D44AD;"} + [random component]{style="color:#3697DC;"} 
 
 $\text { If } \mu_{i} \in \mathbb{R} \text { and } \sigma \in \mathbb{R}^{+} \text {, then for } y_{i} \in \mathbb{R} \text {, }$
 
