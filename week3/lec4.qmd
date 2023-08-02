@@ -22,6 +22,7 @@ highlight-style: kate
 -   Introduce Generalized Linear Models
     - In particular, the Poisson and binomial GLMs
 -   Statistical models as response = signal + noise 
+-   
 -   Write code to elicit simple models and implement Bayesian inference in Stan
 -   Use the cmdstanr interface
 -   Develop familiarity with a few packages that make your life easier
