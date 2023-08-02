@@ -1,6 +1,36 @@
-# FW 891: Applied Bayesian Methods
+# FW 891: Applied Bayesian Modeling
 
-## Information about the class will go here
+Class materials for FW 891, Applied Bayesian Modeling for Natural
+Resource Management. In this repository you will find the syllabus
+lecture material (.qmd, .pdf file extensions), R code (`R/` folders),
+Stan code (`src/` folders), data (`data/` folders), and homework
+folders.
 
-The README.qmd is a Quarto document. When rendered, Quarto creates a
-README.md file that is viewable in GitHub.
+## Lecture recordings
+
+I will be posting lectures/labs (assuming I don’t forget) at TODO.
+
+## Software
+
+In this class we will be using the following software packages /
+libraries. Please try to install them before the first class.
+
+CmdStanR:
+
+https://mc-stan.org/cmdstanr/articles/cmdstanr.html
+
+See also Stan homepage here:
+
+https://mc-stan.org/
+
+tidyverse: for data manipulation and visualization
+
+https://www.tidyverse.org/
+
+tidybayes: even more visualization
+
+http://mjskay.github.io/tidybayes/
+
+gg-qfc: themes that I like for plotting
+
+https://github.com/ChrisFishCahill/gg-qfc
