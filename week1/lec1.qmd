@@ -339,7 +339,7 @@ $$
 ```{R echo = T}
 library(tidyverse) # for plotting
 # install.packages("devtools")
-# devtools::install_github("ChrisFishCahill/gg-qfc")
+# devtools::install_github("QFCatMSU/gg-qfc")
 library(ggqfc) # formatting, run previous 2 lines for first gg-qfc install
 
 y <- 2 # successes
