@@ -19,6 +19,8 @@ highlight-style: kate
 
 ## Purpose
 
+hello 
+
 -   Introduce Generalized Linear Models
     - In particular, the Poisson and binomial GLMs
 -   Statistical models as response = signal + noise 

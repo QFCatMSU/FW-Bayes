@@ -1,6 +1,7 @@
 library(tidyverse)
 library(cmdstanr)
 library(bayesplot)
+# devtools::install_github("QFCatMSU/gg-qfc")
 library(ggqfc)
 
 # in the sneak turtle example we released 30 turts,
