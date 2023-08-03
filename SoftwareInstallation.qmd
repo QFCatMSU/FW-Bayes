@@ -1,0 +1,78 @@
+---
+title: "Software Installation"
+author: "Charlie Belinsky"
+title-slide-attributes:
+    data-background-image: "https://qfcatmsu.github.io/Images/dark-big.png"  
+    data-background-size: "40%"
+    data-background-position: "6% 95%"
+subtitle: FW 891
+date: 3 August 2023
+date-format: "D MMMM YYYY"
+format: 
+  revealjs:
+    css: "https://qfcatmsu.github.io/css/presStyle.css"
+    slide-number: c/t  
+    theme: simple 
+editor: visual
+highlight-style: kate
+---
+
+## R and RStudio
+
+For this class you need to have at minimum R version 4.3 and a 2023 version of RStudio:
+
+Downloads:
+
+[R for Windows](https://cran.r-project.org/bin/windows/base/)
+
+[R for Mac](https://cran.r-project.org/bin/macosx/)
+
+-   There are two download options (M1/M2 and Intel) -- your Mac will tell you if you try to install the wrong version
+
+[RStudio for Windows and Mac](https://posit.co/download/rstudio-desktop/)
+
+## Rtools (Windows only)
+
+Make sure RStudio is closed for this step...
+
+You need to have a C++ compiler to compile packages. The easiest way on Windows is to download and install Rtools43. [The Rtools43 installer link is on this page](https://cran.r-project.org/bin/windows/Rtools/rtools43/rtools.html).
+
+You need to have a version of Rtools43 from 2023. If you installed RTools43 last year then reinstall it -- it has changed.
+
+## Homebrew (Mac only)
+
+Make sure RStudio is closed for this step...
+
+You have probably seen a Mac prompt to install the Command Line Developer Tools. The best way to do this is to install [Homebrew](https://brew.sh/). Homebrew is an indispensable program for programmers using Mac.
+
+To install Homebrew, copy the code on the [Homebrew](https://brew.sh/) page starting with `/bin/bash`. Paste the code to either a Mac Terminal or the Terminal tab in RStudio (they are the same thing) and hit Enter.
+
+## Packages
+
+You will need to install the following packages in R:
+
+tidyverse, bayesplot, remotes, devtools, gridExtra, and hexbin
+
+## Install CmdStanR
+
+For this class we will be using the cmdstanr package. This is not a package on CRAN, so it needs to be downloaded and compiled for the GitHub page using the following R code:
+
+`remotes::install_github("stan-dev/cmdstanr")`
+
+After installing camdstanr on Windows you will need to execute the dfollowing:
+
+`cmdstanr::check_cmdstan_toolchain(fix= TRUE)`
+
+For both Windows and Mac, you now need to install cmdstanr on your computer:
+
+`cmdstanr::install_cmdstan(overwrite=TRUE)`
+
+## Install QFC Package
+
+The GGPlots created in this class are done using a theme coded by the QFC which can be installed as a package:
+
+`devtools::install_github("QFCatMSU/gg-qfc")`
+
+## Questions or Issues
+
+Contact Charlie at belinsky\@msu.edu if you have any problems with the software.
