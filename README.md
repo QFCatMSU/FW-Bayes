@@ -34,4 +34,4 @@ http://mjskay.github.io/tidybayes/
 
 gg-qfc: themes that I like for plotting
 
-devtools::install_github(“QFCatMSU/gg-qfc”)
+https://github.com/QFCatMSU/gg-qfc
