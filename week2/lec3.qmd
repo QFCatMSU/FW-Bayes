@@ -189,14 +189,14 @@ $$
 \color{darkorange}{y_{i}} \sim \operatorname{normal}\left(\color{#8D44AD}{\beta_{0}}+\color{#8D44AD}{\beta X_{i}}, \color{#3697DC}{\sigma}\right).
 $$
 
-[signal]{style="color:darkorange;"} = [deterministic component]{style="color:#8D44AD;"} + [random component]{style="color:#3697DC;"} 
+[response]{style="color:darkorange;"} = [deterministic component]{style="color:#8D44AD;"} + [random component]{style="color:#3697DC;"} 
 
 ## *Thinking* through our model  
 $$
 \color{darkorange}{y_{i}} \sim \operatorname{normal}\left(\color{#8D44AD}{\beta_{0}}+\color{#8D44AD}{\beta X_{i}}, \color{#3697DC}{\sigma}\right).
 $$
 
-[signal]{style="color:darkorange;"} = [deterministic component]{style="color:#8D44AD;"} + [random component]{style="color:#3697DC;"} 
+[response]{style="color:darkorange;"} = [deterministic component]{style="color:#8D44AD;"} + [random component]{style="color:#3697DC;"} 
 
 $\text { If } \mu_{i} \in \mathbb{R} \text { and } \sigma \in \mathbb{R}^{+} \text {, then for } y_{i} \in \mathbb{R} \text {, }$
 
@@ -209,7 +209,7 @@ $$
 \color{darkorange}{y_{i}} \sim \operatorname{normal}\left(\color{#8D44AD}{\beta_{0}+\beta X_{i}}, \color{#3697DC}{\sigma}\right).
 $$
 
-[signal]{style="color:darkorange;"} = [deterministic component]{style="color:#8D44AD;"} + [random component]{style="color:#3697DC;"} 
+[response]{style="color:darkorange;"} = [deterministic component]{style="color:#8D44AD;"} + [random component]{style="color:#3697DC;"} 
 
 $\text { If } \mu_{i} \in \mathbb{R} \text { and } \sigma \in \mathbb{R}^{+} \text {, then for } y_{i} \in \mathbb{R} \text {, }$
 
@@ -734,6 +734,7 @@ p + theme_qfc() + theme(text = element_text(size = 20))
 ```
 
 ## Even more tidy: visualizing PPCs
+
 ```{R eval = T, echo = T}
 y_rep <- posterior[grepl("y_rep", names(posterior))]
 
@@ -875,7 +876,7 @@ An improved R-hat for assessing convergence of MCMC*](https://arxiv.org/pdf/1903
 
 3. Repeat the exercises in this presentation by first simulating your own linear regression dataset to prove to yourself that your code is returning reasonable answers.
 
-4. Assume this dataset represents the relationship between a measure of a stream contaminant (y) and a metric of industrial development (x).  Through an extensive structured decision making process it was determined by industrial representatives, resource managers, subject matter experts, and Indigenous Rightsholders that if this relationship indicated that $\beta_{1}$ exceeded 0.71 with $\text(Pr = 0.35)$ streamside development should be ceased.  What does your analysis suggest?  What are the limitations of your analysis, including things that might influence your assessment of $\Pr(\beta_{1} > 0.71)$? Take care to seperate explanation vs. advocacy.
+4. Assume this dataset represents the relationship between a measure of a stream contaminant (y) and a metric of industrial development (x).  Through an extensive structured decision making process it was determined by industrial representatives, resource managers, subject matter experts, and Indigenous Rightsholders that if this relationship indicated that $\beta_{1}$ exceeded 0.71 with $\text(Pr > 0.35)$ streamside development should be ceased.  What does your analysis suggest?  What are the limitations of your analysis, including things that might influence your assessment of $\Pr(\beta_{1} > 0.71)$? Take care to seperate explanation vs. advocacy.
 
 5. Someone in the structured decision making group hates the word probability, and is pointing out that it isn't even clear what is meant by $\Pr(\beta_{1} > 0.71)$.  Can you think of a metaphor for describing this uncertainty that does not use the word probability and which is easily understandable by folks who may lack technical training?
 

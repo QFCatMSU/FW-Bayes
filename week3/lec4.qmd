@@ -1,0 +1,29 @@
+---
+title: An introduction to Generalized Linear Models (GLMs) 
+title-slide-attributes:
+    data-background-image: "https://qfcatmsu.github.io/Images/dark-big.png"  
+    data-background-size: "40%"
+    data-background-position: "6% 95%"
+subtitle: FW 891
+author: Christopher Cahill
+date: 11 September 2023
+date-format: "D MMMM YYYY"
+format: 
+  revealjs:
+    css: "https://qfcatmsu.github.io/css/presStyle.css"
+    slide-number: c/t  
+    theme: simple 
+editor: visual
+highlight-style: kate
+---
+
+## Purpose
+
+-   Introduce Generalized Linear Models
+    - In particular, the Poisson and binomial GLMs
+-   Statistical models as response = signal + noise 
+-   
+-   Write code to elicit simple models and implement Bayesian inference in Stan
+-   Use the cmdstanr interface
+-   Develop familiarity with a few packages that make your life easier
+-   Walk through some model diagnostics 
