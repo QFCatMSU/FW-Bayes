@@ -1,3 +1,4 @@
+# ! means add an exception to the above rule
 *.o
 *.dll
 *_files
