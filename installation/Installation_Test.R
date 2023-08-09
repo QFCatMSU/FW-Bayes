@@ -16,8 +16,5 @@ fit <- mod$sample(
   refresh = 500 # print update every 500 iters
 )
 
-# draws_arr <- fit$draws() # or format="array"
-# str(draws_arr)
-
 plot1 = mcmc_hist(fit$draws("theta")) + theme_qfc()
 plot(plot1)
