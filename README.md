@@ -8,8 +8,11 @@ exercises and lessons. Also, see homework folders.
 
 ## Lecture recordings
 
-Lectures/labs (assuming I don’t forget) will be posted after class at
-TODO.
+Lectures/labs (assuming I don’t forget) will be posted here after
+class:  
+<https://mediaspace.msu.edu/channel/FW891_Bayesian/>  
+  
+You will need to log in with your MSU ID/ Guest ID
 
 ## Software
 
