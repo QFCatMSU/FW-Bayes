@@ -3,17 +3,17 @@ title: "FW 891: Applied Bayesian Modeling for Natural Resource Management"
 format: gfm
 ---
 
-Class materials for FW 891: Applied Bayesian Modeling for Natural Resource Management. In this repository you will find the syllabus, lecture materials (.qmd, .pdf file extensions), R code (`R/` folders), Stan code (`src/` folders), and data (`data/` folders) for in-class exercises and lessons.  Also, see homework folders. 
+Class materials for FW 891: Applied Bayesian Modeling for Natural Resource Management. In this repository you will find the syllabus, lecture materials (.qmd, .pdf file extensions), R code (`R/` folders), Stan code (`src/` folders), and data (`data/` folders) for in-class exercises and lessons. Also, see homework folders.
 
 ## Lecture recordings
 
-Lectures/labs (assuming I don't forget) will be posted after class at TODO. 
+Lectures/labs (assuming I don't forget) will be posted after class at TODO.
 
-## Software 
+## Software
 
 In this class we will be using the following software packages / libraries: cmdStanR, tidyverse, tidybayes, and gg-qfc.
 
-The software installation instructions for the class are here:
-https://qfcatmsu.github.io/FW-Bayes/installation/software_installation.html
+The software installation instructions for the class are here:\
+[https://qfcatmsu.github.io/FW-Bayes/installation/software_installation.html](https://qfcatmsu.github.io/FW-Bayes/installation/software_installation.html){target="_blank"}
 
 Please make sure you go through the installation before class starts
