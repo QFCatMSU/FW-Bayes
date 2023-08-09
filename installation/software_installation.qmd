@@ -90,7 +90,7 @@ devtools::install_github("QFCatMSU/gg-qfc")
 
 ## Test Installation
 
-[Click here to download the installation test script (Installation_Test.R)](https://cdn.jsdelivr.net/gh/QFCatMSU/FW-Bayes/installation/Installation_Test.R){target="_blank"} \
+[Click here to download the installation test script (Installation_Test.R)](https://qfcatmsu.github.io/FW-Bayes/installation/Installation_Test.R){target="_blank"}\
 Open the script in RStudio, and click ***Source***. The results should look like this:
 
 ![](images/Installation_Results.png)
