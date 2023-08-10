@@ -126,9 +126,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <section id="software-for-class" class="level2" data-number="1">
 <h2 data-number="1" class="anchored" data-anchor-id="software-for-class"><span class="header-section-number">1</span> Software for class</h2>
-<p>This document will go through the installation procedures for the software needed in the FW 891: Applied Bayesian Methods class. Please go through these procedures <strong><em>before class starts</em></strong> and contact Charlie (belinsky@msu.edu) if you have any issues.<br>
+<p>This document will go through the installation procedures for the software needed in the FW 891: Applied Bayesian Methods class. Please go through these procedures <em><strong>before class starts</strong>.</em><br>
 <br>
-The installation is not hard but there are many things that can go wrong and this author has seen them all. This is why it is important to go through the procedures, and clear out the problems, before class starts.</p>
+The installation is not hard but it involves a lot of new software that is being constantly updated, which often causes unexpected issues. Feel free to contact me, Charlie, (belinsky@msu.edu) if you have any issues – I will be happy to help you troubleshoot them.</p>
 </section>
 <section id="r-and-rstudio" class="level2" data-number="2">
 <h2 data-number="2" class="anchored" data-anchor-id="r-and-rstudio"><span class="header-section-number">2</span> R and RStudio</h2>
@@ -171,9 +171,9 @@ Answer: <em>Yes</em>.</p>
 <h2 data-number="6" class="anchored" data-anchor-id="cmdstanr"><span class="header-section-number">6</span> CmdStanR</h2>
 <p>For this class we will be using the <strong><em>cmdstanr</em></strong> package. This is not a package on CRAN, so it needs to be downloaded and compiled for the GitHub page using the following R code:</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>remotes<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">"stan-dev/cmdstanr"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>After installing <strong><em>cmdstanr</em></strong> on Windows you will need to execute the following:</p>
+<p>After installing the <strong><em>cmdstanr</em></strong> package on Windows you will need to execute the following:</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>cmdstanr<span class="sc">::</span><span class="fu">check_cmdstan_toolchain</span>(<span class="at">fix=</span><span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>For both Windows and Mac, you now need to install <strong><em>cmdstanr</em></strong> on your computer (this takes a while):</p>
+<p>For both Windows and Mac, you now need to install <strong><em>cmdstanr</em></strong> application on your computer (this takes a while):</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>cmdstanr<span class="sc">::</span><span class="fu">install_cmdstan</span>(<span class="at">overwrite=</span><span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
 <section id="qfc-package" class="level2" data-number="7">
@@ -186,6 +186,27 @@ Answer: <em>Yes</em>.</p>
 <p><a href="https://qfcatmsu.github.io/FW-Bayes/installation/Installation_Test.R" target="_blank">Click here to download the installation test script (Installation_Test.R)</a><br>
 Open the script in RStudio, and click <strong><em>Source</em></strong>. The results should look like this:</p>
 <p><img src="images/Installation_Results.png" class="img-fluid"></p>
+<p>Alternatively, you can copy and paste the following code in RStudio and click <strong><em>Source</em></strong>:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(cmdstanr)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(bayesplot)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggqfc)</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>file <span class="ot">&lt;-</span> <span class="fu">file.path</span>(<span class="fu">cmdstan_path</span>(), <span class="st">"examples"</span>, <span class="st">"bernoulli"</span>, <span class="st">"bernoulli.stan"</span>)</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>mod <span class="ot">&lt;-</span> <span class="fu">cmdstan_model</span>(file)</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="co"># names correspond to the data block in the Stan program</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>data_list <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">N =</span> <span class="dv">10</span>, <span class="at">y =</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">1</span>))</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> mod<span class="sc">$</span><span class="fu">sample</span>(</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> data_list,</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">seed =</span> <span class="dv">123</span>,</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">chains =</span> <span class="dv">4</span>,</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">parallel_chains =</span> <span class="dv">4</span>,</span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">refresh =</span> <span class="dv">500</span> <span class="co"># print update every 500 iters</span></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>plot1 <span class="ot">=</span> <span class="fu">mcmc_hist</span>(fit<span class="sc">$</span><span class="fu">draws</span>(<span class="st">"theta"</span>)) <span class="sc">+</span> <span class="fu">theme_qfc</span>()</span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(plot1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
 
 </main>

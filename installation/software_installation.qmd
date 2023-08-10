@@ -14,7 +14,7 @@ highlight-style: kate
 
 ## Software for class
 
-This document will go through the installation procedures for the software needed in the FW 891: Applied Bayesian Methods class. Please go through these procedures ***before class starts**.* \
+This document will go through the installation procedures for the software needed in the FW 891: Applied Bayesian Methods class. Please go through these procedures ***before class starts**.*\
 \
 The installation is not hard but it involves a lot of new software that is being constantly updated, which often causes unexpected issues. Feel free to contact me, Charlie, (belinsky\@msu.edu) if you have any issues -- I will be happy to help you troubleshoot them.
 
@@ -94,3 +94,28 @@ devtools::install_github("QFCatMSU/gg-qfc")
 Open the script in RStudio, and click ***Source***. The results should look like this:
 
 ![](images/Installation_Results.png)
+
+Alternatively, you can copy and paste the following code in RStudio and click ***Source***:
+
+``` r
+library(cmdstanr)
+library(bayesplot)
+library(ggqfc)
+
+file <- file.path(cmdstan_path(), "examples", "bernoulli", "bernoulli.stan")
+mod <- cmdstan_model(file)
+
+# names correspond to the data block in the Stan program
+data_list <- list(N = 10, y = c(0,1,0,0,0,0,0,0,0,1))
+
+fit <- mod$sample(
+  data = data_list,
+  seed = 123,
+  chains = 4,
+  parallel_chains = 4,
+  refresh = 500 # print update every 500 iters
+)
+
+plot1 = mcmc_hist(fit$draws("theta")) + theme_qfc()
+plot(plot1)
+```
