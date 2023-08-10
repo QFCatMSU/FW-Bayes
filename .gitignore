@@ -1,8 +1,11 @@
+# ! means add an exception to the above rule
 *.o
 *.dll
 *_files
+!software_installation_files
 .vscode
 *.html
+!software_installation.html
 *.exe
 .Rproj.user
 FW-Bayes.Rproj

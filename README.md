@@ -14,24 +14,11 @@ TODO.
 ## Software
 
 In this class we will be using the following software packages /
-libraries. Please try to install them before the first class.
+libraries: cmdStanR, tidyverse, tidybayes, and gg-qfc.
 
-CmdStanR:
+The software installation instructions for the class are here:  
+<a
+href="https://qfcatmsu.github.io/FW-Bayes/installation/software_installation.html"
+target="_blank">https://qfcatmsu.github.io/FW-Bayes/installation/software_installation.html</a>
 
-https://mc-stan.org/cmdstanr/articles/cmdstanr.html
-
-See also Stan homepage here:
-
-https://mc-stan.org/
-
-tidyverse: for data manipulation and visualization
-
-https://www.tidyverse.org/
-
-tidybayes: even more visualization
-
-http://mjskay.github.io/tidybayes/
-
-gg-qfc: themes that I like for plotting
-
-https://github.com/QFCatMSU/gg-qfc
+Please make sure you go through the installation before class starts
