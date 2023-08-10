@@ -14,9 +14,9 @@ highlight-style: kate
 
 ## Software for class
 
-This document will go through the installation procedures for the software needed in the FW 891: Applied Bayesian Methods class. Please go through these procedures ***before class starts*** and contact Charlie (belinsky\@msu.edu) if you have any issues.\
+This document will go through the installation procedures for the software needed in the FW 891: Applied Bayesian Methods class. Please go through these procedures ***before class starts**.* \
 \
-The installation is not hard but there are many things that can go wrong and this author has seen them all. This is why it is important to go through the procedures, and clear out the problems, before class starts.
+The installation is not hard but it involves a lot of new software that is being constantly updated, which often causes unexpected issues. Feel free to contact me, Charlie, (belinsky\@msu.edu) if you have any issues -- I will be happy to help you troubleshoot them.
 
 ## R and RStudio
 
