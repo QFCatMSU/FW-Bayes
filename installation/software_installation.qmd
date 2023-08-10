@@ -68,13 +68,13 @@ For this class we will be using the ***cmdstanr*** package. This is not a packag
 remotes::install_github("stan-dev/cmdstanr")
 ```
 
-After installing ***cmdstanr*** on Windows you will need to execute the following:
+After installing the ***cmdstanr*** package on Windows you will need to execute the following:
 
 ``` r
 cmdstanr::check_cmdstan_toolchain(fix=TRUE)
 ```
 
-For both Windows and Mac, you now need to install ***cmdstanr*** on your computer (this takes a while):
+For both Windows and Mac, you now need to install ***cmdstanr*** application on your computer (this takes a while):
 
 ``` r
 cmdstanr::install_cmdstan(overwrite=TRUE)
