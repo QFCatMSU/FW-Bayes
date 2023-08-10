@@ -661,9 +661,7 @@ model {
 
 -   Work together to get this model estimating
 
-## 
-
-Go to solution files
+## Go to solution files
 
 ## Summary and Recap 
 - We have covered much ground
