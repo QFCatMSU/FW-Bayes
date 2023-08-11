@@ -1,0 +1,241 @@
+---
+title: "Syllabus"
+subtitle: "FW 891: Applied Bayesian Methods"
+date: 8/11/2023
+date-format: "D MMMM YYYY"
+author: Chris Cahill
+format: 
+  html:
+    toc: true
+    number-sections: true
+editor: visual
+highlight-style: kate
+---
+
+## Course and Instructor Information
+
+### Instructor: Chris Cahill
+
+-   Office: 101-A Urban Planning Landscape and Architecture (UPLA)\
+-   Office Hours: By appointment\
+-   E-mail: [cahill11\@msu.edu](mailto:cahill11@msu.edu)
+
+### Class Times and Location:
+
+-   Monday and Wednesdays 11:10am-1pm\
+    -   First Class: Monday August 28\
+-   On campus: **102 UPLA** (Urban Planning Landscape and Architecture)\
+-   Or online: **Zoom**\
+    -   direct link: <https://msu.zoom.us/j/97453498072?pwd=VnpnRUpuTDZMMWFiSGZ6OEx3OEMxUT09>\
+    -   or: Meeting ID: **974 5349 8072** and Password: **Bayes**\
+
+### Course Description
+
+Students will be introduced to Bayesian modeling in an applied natural resource management setting. This class will focus on teaching students to code, fit, check, and compare models rather than on the extensive theory underlying Bayesian statistics. The first third of the course will introduce core concepts in Bayesian statistics and teach students to fit and check general(ized) linear models. The middle third of the course will focus on the development of hierarchical (mixed-effects) modeling including an introduction to models with temporal, spatial, and spatial-temporal random effects. The final third will explore advanced topics such as predictive process modeling, state-space modeling, and integrated population modeling. Students will simulate, fit, and check the reliability of Bayesian models, and will be expected to write their own R and Stan code to achieve this end.
+
+The class is 3 credits (2 hours lecture/discussion and 2 hours lab)
+
+### Recommended Texts & Other Readings
+
+Links or references to all materials will be provided in the course or will be available through the MSU library
+
+### Course Requirements
+
+Laptop with a broadband internet connection
+
+### Recommended Background
+
+This course requires familiarity with probability distributions, maximum likelihood estimation, and generalized linear models. We will cover these topics briefly during the first third of the course but students unfamiliar with these topics should expect to spend additional time reviewing these concepts. This course also assumes familiarity with R and will be a programming intensive course. General programming knowledge including how to code for-loops, functions, basic simulation skills, and plotting and manipulating datasets in R will also be useful.
+
+### Course Structure
+
+The course material will be available at <https://github.com/QFCatMSU/FW-Bayes>. *D2L will not be used for this course.*
+
+### Technical Assistance
+
+If you need technical assistance during the course or to report a problem you can:
+
+-   Contact Charlie at [belinsky\@msu.edu](mailto:belinsky@msu.edu) (QFC academic specialist)
+-   Visit the MSU IT Help & Support Site (<https://tech.msu.edu/support/help/>), call (517) 432-6200 or toll free (844) 678-6200, or email ithelp\@msu.edu. Note: MSU IT is available 24/7.
+-   Visit the MSU Libraries Discovery Services Site (<https://lib.msu.edu/dls/>)
+-   Resource Center for Persons with Disabilities (RCPD)
+    -   To make an appointment with a specialist, contact (517) 353-9642 or TTY: (517) 355-1293
+    -   RCPD Get Started Info: <https://www.rcpd.msu.edu/get-started>
+
+## Course Objectives and Learning Outcomes
+
+The primary learning objectives for this course are: - Develop a working knowledge of Bayesian methods and applications to resource management problems - Learn probabilistic programming language Stan to code Bayesian models - Understand the benefits and limitations of Bayesian statistical models when applied to real-world problems
+
+### Learning outcomes:
+
+By successfully completing this course, you should be able to:
+
+-   Elicit Bayesian models for analysis of data related to your discipline\
+-   Fit elicited Bayesian models and check validity of results using the Stan modeling software. This includes developing code in R to simulate fake data and fit Stan models to those data.\
+-   Correctly interpret results obtained from fitting Bayesian models and draw valid conclusions from those models under the Bayesian paradigm.
+-   Be able to clearly communicate Bayesian analyses including results, assumptions, and limitations of those analyses. Similarly, learners should be able to visualize the output from a Bayesian analysis.
+
+You will meet the objectives listed above through a combination of the following activities in this course:
+
+-   Attend class and participate in course activities\
+-   Homework assignments\
+-   Complete course project requirements
+
+## Course Outline/Schedule
+
+Important Note: Refer to the course calendar for specific meeting dates and times. Activity and assignment details will be explained in detail within each week's corresponding learning module. If you have any questions, please contact your instructor.
+
+-   Week 01 (Aug 28, 30): Introduction
+    -   Introductions, statistical inference essentials, introduction to Stan
+-   Week 02: (Sept 6): Linear models and model evaluation
+    -   No class Sept 4
+-   Week 03: (Sept 11, 13): Generalized Linear Models (GLMs)
+-   Week 04: (Sept 18, 20): Nonlinear models
+-   Week 05: (Sept 25, 27): Introduction to hierarchical models
+-   Week 06: (Oct 2, 4): Even more hierarchical models\
+-   Week 07: (Oct 9, 11): State space models (M) + review (W)
+-   Week 08: (Oct 16, 18): Temporal models
+-   Week 09: (Oct 25): Spatial models
+    -   No class 23 Oct
+-   Week 10: (Oct 30, Nov 1): Spatial models continued
+    -   Guest lecture: Sean Anderson
+    -   Reading for Sean's talk: Black Swans in Space <https://esajournals.onlinelibrary.wiley.com/doi/full/10.1002/ecy.2403>
+-   Week 11: (Nov 6, Nov 8): Spatial-temporal models\
+-   November 6: spatial-temporal lecture
+-   Week 12: (Nov 13, Nov 15): Modeling movement data
+    -   November 13: Guest lecture: Chris Holbrook
+    -   NO CLASS Nov 15
+-   Week 13: (Nov 20, Nov 22): November 8:
+    -   Guest lecture: Andrew Finley Predictive Process Models
+-   Week 14: (Nov 27, Nov 29): Special topics, review
+-   Week 15: (Dec 4, Dec 6): Final project presentations\
+    -   Schedule TBD
+
+## Course Engagement and Grading Policy
+
+### Graded Course Activities:
+
+| Points                                                                                       | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
+|--------------------|----------------------------------------------------|
+| 10 (10%)                                                                                     | Students are expected to attend class, contribute to class discussions, and work with other students during in-class exercises.                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+| 40 (40%)<br>10 points for each of four assignments                                           | We will be building models using R and Stan during labs, and there will be four homework assignments associated with or advancing the concepts we work on in those labs. Students are encouraged to work together. However, each student must submit their own homework and develop their own R and Stan code.                                                                                                                                                                                                                                                        |
+| 50 (50%)<br>5 points for proposal write up and 45 points for final write up and presentation | The aim of the project is to apply some of the techniques covered in this class to a substantial research-related task. Projects can be conducted individually or in small groups (up to 3 per group). Students are encouraged to select topics for their project which would be pertinent to their thesis topics and / or which could form the basis for a short publication. For group projects all group members must have readily identifiable tasks. The same grade for the project will be assigned to all members of the group. See further description below. |
+
+Note: Marks will be deducted (10% per working day) for late submission. All assignments should be submitted via email.
+
+### Due Dates
+
+-   Assignment one: 15 September 2023\
+-   Assignment two: 6 October 2023\
+-   Assignment three: 27 October 2023\
+-   Assignment four: 17 November 2023\
+-   **Project proposal due date: 22 September 2023**\
+-   Project presentations and write ups due 4 or 6 December
+
+### Class Project
+
+The project involves:
+
+-   Selection of a project topic and establishment of a group (A one-page report should be submitted by the end of the 4th week of the semester (i.e., emailed to Cahill by the end of 22 September).
+-   A brief meeting with Chris Cahill to discuss the proposed project. - Verbal presentation of the methods and results of the study during the final week of the semester (15-20 minutes per group).
+-   Written description of the methods and results of the study in the form of a scientific paper (Introduction, Methods, Results, Discussion). The write-up is due immediately after the verbal presentation.
+
+### Grades
+
+The table below describes the relationships between grade point, percent, and performance. The first column identifies the grade point. The second column describes the percentage associated with that grade point. The third column describes the performance represented by that grade point and percentage.
+
+| Grade Point | Percentage | Performance        |
+|-------------|------------|--------------------|
+| 4.0         | ≥90        | Excellent work     |
+| 3.5         | 85-89      | Above average      |
+| 3.0         | 80-84      | Good work          |
+| 2.5         | 75-79      | Mostly good work   |
+| 2.0         | 70-74      | Average work       |
+| 1.5         | 65-69      | Below average work |
+| 1.0         | 60-64      | Poor work          |
+| 0.0         | ≤59        | Failing work       |
+
+### Assignment Submission and Due Dates
+
+Assignments for this course will be submitted electronically through email unless otherwise instructed. Assignments must be submitted by the given deadline or special permission must be requested from instructor before the due date. Extensions will not be given beyond the next assignment except under extreme circumstances.
+
+All discussion assignments must be completed by the assignment due date and time. Late or missing discussion assignments will affect the student's grade. Participation and Engagement During all classes, the instructor expects students to be fully engaged and prepared to discuss reading assignments. Students are encouraged to ask questions of the instructor, guest speakers, and their peers.
+
+Active participation includes, but is not limited to, the following behaviors:
+
+1.  Asking and answering questions of the instructors, peers, or guest speakers
+2.  Bringing forth new ideas, information, or perspectives to academic conversations
+3.  Discussing your readings and reflections with instructors and peers
+4.  Meeting with the instructors to discuss your interests, assignments, or project
+5.  Questioning information presented and discussed
+6.  Participating in small group discussions and activities
+7.  Assuming responsibility for personal behavior and learning
+
+While working on group projects, students should be mindful of other students in their group; therefore, it is important for all participants to exercise:
+
+-   Respect for themselves, each other
+-   Openness and a positive attitude toward new ideas and other's ideas
+-   Flexibility and tolerance of ambiguity - Good communications amongst themselves.
+
+## Course and Department Policies
+
+### Diversity Equity and Inclusiveness
+
+Diversity, Equity and Inclusion are important, interdependent components of everyday life in the College of Agriculture and Natural Resources (CANR) and are critical to our pursuit of academic excellence. Our aim is to foster a culture where every member of CANR feels valued, supported and inspired to achieve individual and common goals with an uncommon will. This includes providing opportunity and access for all people across differences of race, age, color, ethnicity, gender, sexual orientation, gender identity, gender expression, religion, national origin, migratory status, disability / abilities, political affiliation, veteran status and socioeconomic background. (See the full CANR statement: <https://www.canr.msu.edu/news/canr-statement-on-diversity-equity-and-inclusion>)
+
+If you ever feel that this course (or FW department or MSU) is marginalizing you or other students, or if principles of diversity, equity and inclusion are not being supported, please tell someone. You can speak to your instructor, or a trusted mentor of yours, or Mary Tate Bremigan (Associate Chair for Academic Programs in FW) or Jim Schneider (FW Undergraduate Advisor).
+
+### Commit to Integrity: Academic Honesty
+
+Article 2.3.3 of the Academic Freedom Report states that "The student shares with the faculty the responsibility for maintaining the integrity of scholarship, grades, and professional standards." In addition, the Fisheries and Wildlife Deaprtment adheres to the policies on academic honesty as specified in General Student Regulations 1.0, Protection of Scholarship and Grades; the all-University Policy on Integrity of Scholarship and Grades; and Ordinance 17.00, Examinations. (See [Spartan Life: Student Handbook and Resource Guide](https://spartanexperiences.msu.edu/about/handbook/index.html).
+
+Therefore, unless authorized by your instructor, you are expected to complete all course assignments, including homework, lab work, quizzes, tests and exams, without assistance from any source. You are expected to develop original work for this course; therefore, you may not submit course work you completed for another course to satisfy the requirements for this course. Also, you are not authorized to use the www.allmsu.com Web site to complete any course work in this course. Students who violate MSU academic integrity rules may receive a penalty grade, including a failing grade on the assignment or in the course. Contact your instructor if you are unsure about the appropriateness of your course work. (See also the Academic Integrity webpage.)
+
+### Accommodations
+
+Inform Your Instructor of Any Accommodations Needed
+
+From the Resource Center for Persons with Disabilities (RCPD): Michigan State University is committed to providing equal opportunity for participation in all programs, services and activities. Requests for accommodations by persons with disabilities may be made by contacting the Resource Center for Persons with Disabilities at 517-884-RCPD or on the web at <http://rcpd.msu.edu>. Once your eligibility for an accommodation has been determined, you will be issued a Verified Individual Services Accommodation ("VISA") form. Please present this form to me at the start of the term and/or two weeks prior to the accommodation date (test, project, etc.). Requests received after this date may not be honored.
+
+## General College and University Policies
+
+All other general college and university policies applicable to this course are available at <https://www.canr.msu.edu/academics/courses/policies>. Please review these policies. Topics covered in these general policies include:
+
+-   Students with disabilities, Resource Center for Persons with Disabilities (RCPD) and accommodations
+-   Student rights under the family educational rights and privacy act (FERPA)
+-   Student release authorization form
+-   Religious holiday policies
+-   Grief absence policies
+-   In the unfortunate event that you experience a loss and will be missing class, please visit Grief Absence Policy: https://reg.msu.edu/roinfo/notices/griefabsence.aspx so that your instructor is notified.
+-   Students in distress policies - if you or someone you care about is struggling, please reach out and be aware of the following resources:
+-   MSU Counseling Center:
+    -   Web: <https://counseling.msu.edu>\
+    -   Email: counseling\@cc.msu.edu
+    -   Phone: 517-355-8270\
+-   MSU Olin Student Health Center
+    -   Web: <https://olin.msu.edu>
+    -   24/7 phone nurse: 517-353-5557
+-   Listening Ear Crisis Center: Lansing, MI
+    -   (517)337-1717 (24-hour Crisis Line) 
+    -   (517)337-1728 (Business Line) 
+    -   2504 E Michigan Ave., Lansing, MI 
+-   MSU student athlete policies\
+-   Course add-drop policies\
+-   Honors options\
+-   Course Management system policies\
+-   Final exam policy and attendance\
+-   Grade dispute policies\
+-   Academic honesty and integrity, plagiarism, and disciplinary procedures\
+-   Disruptive behavior\
+-   Harassment and discrimination policies\
+-   RVSM University reporting protocols
+-   Your instructor is responsible for assuring a safe learning environment for students. As a member of the university community, your instructor has the responsibility to report any instances of sexual harassment, sexual violence and/or other forms of prohibited discrimination. If you would rather share information about sexual harassment, sexual violence or discrimination to a confidential employee who does not have this reporting responsibility, you can find a list of those individuals here https://caps.msu.edu/
+-   Limits to confidentiality
+-   Social media policy
+-   Web accessibility policies
+-   MSU Code of Teaching Responsibility
+-   SIRS
+-   Commercialization of lecture notes
+-   University Learning Goals
+
+**If you ever feel that this course (or FW department or MSU) is marginalizing you or other students, or if principles of diversity, equity and inclusion are not being supported, please tell someone. You can speak to your instructor, or a trusted mentor of yours, or Mary Tate Bremigan (Associate Chair for Academic Programs in FW) or Jim Schneider (FW Undergraduate Advisor).**

@@ -3,9 +3,11 @@
 *.dll
 *_files
 !software_installation_files
+!FW891syllabus_files
 .vscode
 *.html
 !software_installation.html
+!FW891syllabus.html
 *.exe
 .Rproj.user
 FW-Bayes.Rproj
