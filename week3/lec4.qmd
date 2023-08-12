@@ -383,15 +383,26 @@ $$
 
 [see Chapter 3, Kery and Royle 2016]{.footerRight}
 
+## Thinking about distributions 
+
+![](images/count_distributions.png){fig-align="center" width="800" height="400"}
+
+## Thinking about distributions 
+
+![](images/continuous_distributions.png){fig-align="center" width="800" height="400"}
+
+## Thinking about link functions 
+
+![](images/links.png){fig-align="center" width="800" height="350"}
+
 ## Why you should care part I
 
 -   GLM concept gives you considerable creative freedom in combining the three components
     -   However, there are typically pairs of response distributions and link functions that go well together
         -   These are called *canonical* link functions
-    -   Identity link for normal responses: $\eta_{i} = \mu_{i}$
-    -   Log link for Poisson responses: $\eta_{i} = log(\mu_{i})$
-    -   Logit link for binomial or Bernoulli responses: $\eta_{i} = log(\mu_{i} / (1 - \mu_{i}))$
--   These three GLMs make up vast number of statistical methods used in ecology
+    -   Identity link for normal responses
+    -   Log link for Poisson responses
+    -   Logit link for binomial or Bernoulli responses
 
 [see Chapter 3, Kery and Royle 2016]{.footerRight}
 
@@ -417,9 +428,9 @@ C_{i} \sim \operatorname{Poisson}\left(\lambda_{i}\right) \\
 \end{array}
 $$
 
-- $C$ is count of observation $i$, $X_{i,j}$ is a design matrix, $j$ is number of columns, $\mathbf{\beta}_{j}$ is a vector of parameters 
+-   $C$ is count of observation $i$, $X_{i,j}$ is a design matrix, $j$ is number of columns, $\mathbf{\beta}_{j}$ is a vector of parameters
 
-- simulate Poisson data in R: 
+-   simulate Poisson data in R:
 
 ```{R echo = T, eval = T}
 set.seed(1)
@@ -435,10 +446,9 @@ C_{i} \sim \operatorname{Poisson}\left(\lambda_{i}\right) \\
 \end{array}
 $$
 
+-   $C$ is count of observation $i$, $X_{i,j}$ is a design matrix, $j$ is number of columns, $\mathbf{\beta}_{j}$ is a vector of parameters
 
-- $C$ is count of observation $i$, $X_{i,j}$ is a design matrix, $j$ is number of columns, $\mathbf{\beta}_{j}$ is a vector of parameters
-
-- log-probability mass of Poisson count data in R: 
+-   log-probability mass of Poisson count data in R:
 
 ```{R echo = T, eval = T}
 C_i <- c(10, 17, 18) # fake count data 
@@ -454,80 +464,75 @@ C_{i} \sim \operatorname{Poisson}\left(\lambda_{i}\right) \\
 \end{array}
 $$
 
-- Assumptions
-  - The mean and variance of the Poisson distribution are equal
-  - Almost never holds and usually requires a negative binomial or another model structure
-  - Causes of over/under dispersion are complex 
+-   Assumptions
+    -   The mean and variance of the Poisson distribution are equal
+    -   Almost never holds and usually requires a negative binomial or another model structure
+    -   Causes of over/under dispersion are complex
 
 [see Chapter 3, Kery and Royle 2016; Zuur et al. 2017]{.footerRight}
 
 ## Testing for over- or under-dispersion: Poisson GLM
 
-- mean = variance = $\lambda$
-- Another way: Bayesian p-value
-- Idea: define a test statistic and compare the posterior distribution of that statistic for the original data to the posterior distribution of that test statistic for "replicate" datasets 
-- Note we could also use graphical posterior predictive checks 
+-   mean = variance = $\lambda$
+-   Another way: Bayesian p-value
+-   Idea: define a test statistic and compare the posterior distribution of that statistic for the original data to the posterior distribution of that test statistic for "replicate" datasets
+-   Note we could also use graphical posterior predictive checks
 
 [Gelman et al. 2006; see Chapter 3, Kery and Royle 2016; Zuur et al. 2017]{.footerRight}
 
 ## Bayesian p-value
 
-- Pearson residuals:
-$$
-D\left(y_{i}, \theta\right)=\frac{\left(y_{i}-\mathrm{E}\left(y_{i}\right)\right)}{\sqrt{\operatorname{Var}\left(y_{i}\right)}} .
-$$
+-   Pearson residuals: $$
+    D\left(y_{i}, \theta\right)=\frac{\left(y_{i}-\mathrm{E}\left(y_{i}\right)\right)}{\sqrt{\operatorname{Var}\left(y_{i}\right)}} .
+    $$
 
-- Begin by calculating the sum of squared residuals (our test statistic) for the observed data:
+-   Begin by calculating the sum of squared residuals (our test statistic) for the observed data:
 
 $$
 T(\mathbf{y}, \theta)=\sum_{i} D\left(y_{i}, \theta\right)^{2}
 $$
 
-
 ## Bayesian p-value
 
-- Next, we calculate the same statistic for replicate (simulated) datasets
+-   Next, we calculate the same statistic for replicate (simulated) datasets
 
 $$
 T\left(\mathbf{y}^{\text {new }}, \theta\right)=\sum_{i} D\left(y_{i}^{\text {new }}, \theta\right)^{2}
 $$
 
-- Bayesian p-value is simply the posterior probability $\operatorname{Pr}\left(T\left(\mathbf{y}^{\text {new }}\right)>T(\mathbf{y})\right)$
-- Should be close to 0.5 for a good model, too near 0 or 1 indicates lack of fit (somewhat subjective)
+-   Bayesian p-value is simply the posterior probability $\operatorname{Pr}\left(T\left(\mathbf{y}^{\text {new }}\right)>T(\mathbf{y})\right)$
+-   Should be close to 0.5 for a good model, too near 0 or 1 indicates lack of fit (somewhat subjective)
 
 [see Chapter 3, Kery and Royle 2016; Zuur et al. 2017]{.footerRight}
 
-## The binomial GLM for bounded counts or proportions 
+## The binomial GLM for bounded counts or proportions
 
-- Often have counts bounded by an upper limit 
-  - Number of successful breeding pairs cannot be higher than all observed breeding pairs
-- Proportion of nestlings surviving
-- These types of data require the binomial GLM
+-   Often have counts bounded by an upper limit
+    -   Number of successful breeding pairs cannot be higher than all observed breeding pairs
+-   Proportion of nestlings surviving
+-   These types of data require the binomial GLM
 
 [Kery and Schaub 2012]{.footerRight}
 
-## The binomial GLM for bounded counts or proportions 
+## The binomial GLM for bounded counts or proportions
 
 ::: {style="font-size: 85%;"}
+1.  Random part of the response (statistical distribution) $$
+    C_{i} \sim \operatorname{Binomial}\left(N_{i}, p_{i}\right)
+    $$
 
-1. Random part of the response (statistical distribution)
-$$
-C_{i} \sim \operatorname{Binomial}\left(N_{i}, p_{i}\right)
-$$
+2.  Link of the random and systematic bit (logit link): $$
+    \operatorname{logit}\left(p_{i}\right)=\log \left(\frac{p_{i}}{1-p_{i}}\right)=\eta_{i}
+    $$
 
-2. Link of the random and systematic bit (logit link):
-$$
-\operatorname{logit}\left(p_{i}\right)=\log \left(\frac{p_{i}}{1-p_{i}}\right)=\eta_{i}
-$$
-
-3. Systematic part (linear predictor): 
+3.  Systematic part (linear predictor):
 
 $$
 \eta_{i}=\beta_{0}+\beta_{1}{ }^{*} X_{i}+\beta_{2}{ }^{*} X_{i}^{2}
 $$
 :::
 
-## The binomial GLM for bounded counts or proportions 
+## The binomial GLM for bounded counts or proportions
 
 ::: {style="font-size: 85%;"}
 $$
@@ -542,40 +547,38 @@ $$
 \eta_{i}=\beta_{0}+\beta_{1}{ }^{*} X_{i}+\beta_{2}{ }^{*} X_{i}^{2}
 $$
 
-- where $p_{i}$ is expected proportion on arithmetic scale and is mean response of each of the observed $N_{i}$ trials
+-   where $p_{i}$ is expected proportion on arithmetic scale and is mean response of each of the observed $N_{i}$ trials
 
-- $\eta_{i}$ is the same proportion but on the logit-link scale
+-   $\eta_{i}$ is the same proportion but on the logit-link scale
 :::
 
-## The binomial GLM for bounded counts or proportions 
+## The binomial GLM for bounded counts or proportions
 
 ::: {style="font-size: 85%;"}
-
 $$
 \operatorname{logit}\left(p_{i}\right)=\log \left(\frac{p_{i}}{1-p_{i}}\right)=\eta_{i}
 $$
 
-
-- Logit maps the probability scale (i.e., range 0 to 1) to the entire real line (i.e., -$\infty$ to $\infty$)
-- The rest of the model (linear predictor) is up to you, your data, your questions, and your imagination
+-   Logit maps the probability scale (i.e., range 0 to 1) to the entire real line (i.e., -$\infty$ to $\infty$)
+-   The rest of the model (linear predictor) is up to you, your data, your questions, and your imagination
 :::
 
 [Kery and Schaub 2012]{.footerRight}
 
-## Overdispersion and underdispersion in the binomial distribution 
+## Overdispersion and underdispersion in the binomial distribution
 
-- Note that the binomial distribution variance is equal to 
+-   Note that the binomial distribution variance is equal to
 
 $$
 N \cdot p \cdot (1-p)
 $$
 
-- Need to check the binomial for under and over dispersion similar to how we check for the Poisson 
-- [See this paper for some useful logistic regression checks](http://www.stat.columbia.edu/~gelman/research/published/dogs.pdf) 
+-   Need to check the binomial for under and over dispersion similar to how we check for the Poisson
+-   [See this paper for some useful logistic regression checks](http://www.stat.columbia.edu/~gelman/research/published/dogs.pdf)
 
 ## In-class exercise
 
-## In-class exercise 
+## In-class exercise
 
 -   Let's simulate a Poisson GLM, where we model peninsular homing clam 🥟 counts as a function of year:
 
@@ -663,27 +666,26 @@ model {
 
 ## Go to solution files
 
-## Summary and Recap 
-- We have covered much ground
-- Statistical models as response = deterministic + random
-  - ANCOVA
-- Introduced GLMs, which allow us to model data coming from distributions other than the normal
-- Examined Poisson and Binomial GLMs
-- Talked about dispersion 
-- This material lays the critical groundwork for more complicated models 
+## Summary and Recap
+
+-   We have covered much ground
+-   Statistical models as response = deterministic + random
+    -   ANCOVA
+-   Introduced GLMs, which allow us to model data coming from distributions other than the normal
+-   Examined Poisson and Binomial GLMs
+-   Talked about dispersion
+-   This material lays the foundation for more complicated models
 
 ## References
 
 ::: {style="font-size:25px"}
-
 -   Gelman et al. 2015. Stan: A probabilistic programming language for Bayesian inference and optimization
--  Gelman et al. 2006.  Bayesian Data Analysis. 
+-   Gelman et al. 2006. Bayesian Data Analysis.
 -   Gelman and Hill 2007. Data analysis using regression and multilevel models
 -   Hilbe et al. 2017. Bayesian models for Astrophysical data
 -   Kery 2010. Introduction to WinBUGS for ecologists
--   Kery and Royle 2016.  Applied hierarchical modeling in ecology
+-   Kery and Royle 2016. Applied hierarchical modeling in ecology
 -   Kery and Schaub. 2012. Bayesian Population Analysis using WinBUGS. Chapter 3
 -   McCullagh and Nelder 1989. Binary data. In Generalized linear models (pp. 98-148). London: Chapman and Hall. 511 pp
--   Zuur et al. 2017.  Beginner's Guide to spatial, temporal, and spatial-temporal ecological data analysis with R-INLA.  Highland Statistics Ltd.
-
+-   Zuur et al. 2017. Beginner's Guide to spatial, temporal, and spatial-temporal ecological data analysis with R-INLA. Highland Statistics Ltd.
 :::
