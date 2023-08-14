@@ -6,7 +6,7 @@ title-slide-attributes:
     data-background-position: "6% 95%"
 subtitle: FW 891
 author: Christopher Cahill
-date: 11 September 2023
+date: 13 September 2023
 date-format: "D MMMM YYYY"
 format: 
   revealjs:
@@ -269,7 +269,8 @@ print("log density after =", target());
 ## Debugging R code
 
 -   Ten minute warp-speed lesson on debugging in R
--   Several ways to do this, but here we'll do a demo of `browser()` and traceback
+-   Several ways to do this, but here we'll do a demo of the functions `traceback()` and
+`browser()`
 
 ## `traceback()`
 
@@ -291,8 +292,8 @@ traceback()
 
 ## `browser()`
 
--   Abstract and not well implemented (C.Belinsky, pers.comm. 2023)
--   This is what I mainly use to debug R code
+-   Abstract and not well implemented (Belinsky, pers comm 2023)
+-   This is what I (Cahill) mainly use to debug R code
 -   Interrupts the execution of an expression and allow the inspection of the environment where browser was called from
 
 ```{R echo = T, eval = T}
@@ -337,8 +338,8 @@ my_fx(0) # call the function
 
 ```
 
--   Note this works with for-loops and other horrid things
 -   Go to R to demonstrate how to use
+-   Note this works with for-loops and other horrid things
 
 ## Summary and outlook
 
@@ -346,7 +347,7 @@ my_fx(0) # call the function
     -   Discussed that some checks are about the validity of inferences while others are about efficiency
 -   Debugging Stan code via `print()` statements
 -   Debugging R code via `traceback()` and `browser()`
--   Next few weeks, move into nonlinear and mixed effects modeling (where we will likely experience some of these warnings/issues)
+-   Next few weeks, move into nonlinear and mixed effects modeling (where we will experience some of these warnings/issues)
 
 ## References
 
