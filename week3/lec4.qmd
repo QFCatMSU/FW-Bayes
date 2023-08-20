@@ -391,6 +391,11 @@ $$
 
 ![](images/continuous_distributions.png){fig-align="center" width="800" height="400"}
 
+## Justin Bois' Distribution explorer 
+
+<br> 
+[https://distribution-explorer.github.io/](https://distribution-explorer.github.io/)
+
 ## Thinking about link functions 
 
 ![](images/links.png){fig-align="center" width="800" height="350"}
