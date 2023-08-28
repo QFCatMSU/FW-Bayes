@@ -278,7 +278,8 @@ so it allows us to explicitly model the ecological processes we are interested i
 
 ## The von Bertalanffy growth model 
 
-- [The data](https://github.com/QFCatMSU/FW-Bayes/blob/main/week4/data/age_length.rds?raw=true)
+- Will a 21 inch minimum length limit work? 
+- [The walleye data](https://github.com/QFCatMSU/FW-Bayes/blob/main/week4/data/age_length.rds?raw=true)
 
 - The model:
 $$
@@ -288,7 +289,67 @@ L_{i}=L_{\infty}\left(1-e^{-K\left(a_{i}-t_{0}\right)}\right)+\varepsilon_{i} \\
 \end{array}
 $$
 
-- Groups of three or fewer, fit this model using Stan 
+- Fit this model using Stan 
+- Evaluate your model
+
+![](images/fish.png){style="width:200px; position: absolute; bottom:5.5%; right:10%;"}
+
+## Predator-prey models 
+
+![](images/wolf.png){style="width:185px; position: absolute; bottom:30.5%; left:10%;"}
+![](images/moose.png){style="width:300px; height:300px; position: absolute; bottom:30.5%; right:10%;"}
+
+## Isle Royale Wolf-Moose dynamics
+
+- During the winter of 1948-49, an adventurous band of timber
+wolves set out from Minnesota’s north shore, crossed the Lake Superior ice, and
+arrived on Isle Royale
+  - No harvest of wolves or moose on Isle Royale
+  - One of the only places wolves survived by the 1960s in the lower 48
+- Wolf-moose dynamics on Isle Royale have contributed immeasurable information on wolf ecology and predator-prey dynamics 
+
+[Wydeven et al. 2009]{.footerRight}
+
+## The Isle Royale natural experiment  
+
+![](images/isleroyale.png){style="width:185px; position: center;"}
+
+## Predator-prey models: Background 
+
+- During the 1950s Buzz Holling conducted experiments to investigate how a predator’s rate of prey capture is related to prey density
+  - This is called a *functional response*
+- Simplest functional response (Type I) relates capture rate C and prey density N via a linear relationship:
+
+$$
+C=\alpha N
+$$
+
+where $\alpha$ is a proportionality set by the rate at which predators encounter prey
+
+[Holling 1959a, b]{.footerRight}
+
+## Predator-prey models: Background 
+
+- Type I dynamics ignore an important aspect of the ecology: handling time
+- So Buzz sat down and derived a so-called Type-II predator-prey relationship (using calculus) that accounted for handling time *h*: 
+
+$$
+C=\frac{\alpha N}{1+\alpha h N}
+$$
+
+- where *h* begins when the predator finds the prey item and ends when the time the prey item is eaten
+
+[Holling 1959b]{.footerRight}
+
+## Type-II functional response
+
+- What is the handling time of a typical wolf pack kill on Isle Royale, and do our estimates make any sense? 
+- [The wolf-moose data]((https://github.com/QFCatMSU/FW-Bayes/blob/main/week4/data/moose.csv?raw=true)
+)
+
+
+
+
 
 ## References
 
@@ -312,7 +373,14 @@ Gelman et al. 2020.  Regression and other stories.  Cambridge University Press.
 
 Hilborn and Mangel 1997.  The Ecological Detective.
 
+Holling, C. S. 1959a. The components of predation as revealed by a study of small mammal predation
+of the European pine sawfly. Canadian Entomology 91:293–320
+
+Holling, C. S. 1959b. Some characteristics of simple types of predation and parasitism. Canadian Entomology 91:385–398.
+
 Link and Barber 2010.
+
+Wydeven et al. 2009. Recovery of Gray Wolves in the Great Lakes Region of the United States. Springer.
 
 
 Beverton-Holt
