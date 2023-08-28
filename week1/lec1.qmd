@@ -304,7 +304,7 @@ $$
 ## An example to start us off
 
 -   Determine the detection probability of invasive Alabama sneak turtles by releasing some into a small pond and counting them on a later occasion
--   We release n = 30 and later count y = 6 sneakers
+-   We release n = 30 and later count y = 2 sneakers
     -   successes vs. trials
 -   What's probability of detecting a turtle, i.e., $\theta$?
 
