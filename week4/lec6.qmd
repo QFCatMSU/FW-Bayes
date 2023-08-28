@@ -343,12 +343,107 @@ $$
 
 ## Type-II functional response
 
-- What is the handling time of a typical wolf pack kill on Isle Royale, and do our estimates make any sense? 
-- [The wolf-moose data]((https://github.com/QFCatMSU/FW-Bayes/blob/main/week4/data/moose.csv?raw=true)
-)
+::: {style="font-size:36px"}
 
+- What is the handling time for a wolf kill on Isle Royale? 
+- [The wolf-moose data](https://github.com/QFCatMSU/FW-Bayes/blob/main/week4/data/moose.csv?raw=true)
+- The model:
+$$
+\begin{array}{l}
+C_{i}=\frac{\alpha N_{i}}{1+\alpha h N_{i}}+\varepsilon_{i} \\
+\varepsilon_{i} \stackrel{i i d}{\sim} N\left(0, \sigma^{2}\right)
+\end{array}
+$$
 
+- where *i* represents an observed moose density $N_{i}$ and a corresponding obsrvation of kills per wolf *per month* $C_{i}$
+- In groups of < 3, fit the model and evaluate MCMC algorithm and fit
+- How hard do you want the problem to be? 
+:::
 
+## Tuna sustainability in the south Atlantic 
+
+![](images/tuna.png){style="width:185px; position: center;"}
+
+## Tuna sustainability: background
+
+- There are many models that are used to assess the sustainability of fish stocks
+- Simplest of these is the Schaefer surplus production model, which is based on the logistic population growth model 
+- Main idea behind this models is that population productivity (and hence harvest) is maximized at some intermediate population level because of density dependence in either per capita birth or death rates
+
+[Beverton and Holt 1957]{.footerRight}
+
+## The Schaefer model
+$$
+\begin{aligned}
+B_{0} & = K \\
+B_{t+1} & =B_{t}+r B_{t}\left(1-\frac{B_{t}}{K}\right)-C_{t}
+\end{aligned}
+$$
+
+- K is carrying capacity
+- r is the intrinsic population growth rate
+- $B_{t}$ and $C_{t}$ is biomass and fishery catch (in biomass units) in year t
+- Note $B_{0}$ need not be set at K
+
+[Beverton and Holt 1957; Hilborn and Mangel 1997]{.footerRight}
+
+## Schaefer model continued
+
+::: {style="font-size:25px"}
+
+- To relate the model to data we rely on the fact that 
+$$
+\hat{I}_{t}=\frac{C_{t}}{E_{t}}=q B_{t}
+$$
+
+- $\hat{I}_{t}$ is the predicted value of the index of relative abundance in year t
+- $E_{t}$ is the harvesting effort in year t
+- q is catchability coefficient, defined as the amount of biomass/catch taken with one unit of effort
+- Catch per unit effort (CPUE = $\frac{C_{t}}{E_{t}}$) can then be related to a survey index or fishery catches via a lognormal likelihood function:
+
+$$
+log(CPUE_{t}) \stackrel{i i d}{\sim} N\left(log(q) + log(B_{t}), \tau^{2}\right)
+$$
+
+- Note $B_{t}$ is calculated via the dynamic equation on the previous slide, and that $log(\frac{C_{t}}{E_{t}}) = log(q) + log(B_{t})$
+:::
+
+## Cool things about the Schaefer model
+
+::: {style="font-size:32px"}
+
+- Maximum sustainable yield (MSY) is the largest yield (or catch) that can be taken from a species' stock over an indefinite period (theoretically)
+- Easy to determine MSY with this model:
+ $$
+ MSY = r \cdot K/4
+ $$
+
+ - And can also kick out the corresponding harvesting effort that would achieve MSY:
+ $$
+ EMSY = r / (2 \cdot q)
+ $$
+
+ - Because we are Bayesian we can kick these management quantities out as derived variables
+:::
+
+[Beverton and Holt 1957; Hilborn and Mangel 1997]{.footerRight}
+
+## The problem 
+
+- Estimate MSY for a south Atlantic albacore tuna fishery
+- [The tuna data](https://github.com/QFCatMSU/FW-Bayes/blob/main/week4/data/tuna_data.csv?raw=true)
+- Relate the index of fishery CPUE to fishery catches via the Schaefer model
+- Some trickery needed to get this miserable thing going in Stan, including special care with priors 
+- Let's go through this thing together
+- See also Millar and Meyer 2000 for specific prior choices 
+
+## Recap
+
+- We have introduced nonlinear models
+- Hopefully it has been conveyed that these things are tricksy, but really critical for many important ecological and resource mgmt problems
+- Up next...
+
+![](images/smegol.png){style="height:300px; position: absolute; bottom:5.5%; right:40%;"}
 
 
 ## References
@@ -378,12 +473,19 @@ of the European pine sawfly. Canadian Entomology 91:293–320
 
 Holling, C. S. 1959b. Some characteristics of simple types of predation and parasitism. Canadian Entomology 91:385–398.
 
-Link and Barber 2010.
+:::
+
+## References
+
+::: {style="font-size:20px"}
+
+Link and Barber 2010. Bayesian inference with ecological applications. Academic Press.
+
+Millar and Meyer 2000. Nonlinear state space modeling of fisheries biomass dynamics by using Metropolis-Hastings within-Gibbs sampling.  Appl. Statist. 49:327-342.
+
+Monnahan et al. 2017. Faster estimation of Bayesian models in ecology using Hamiltonian Monte Carlo.  Methods in Ecology and Evolution.
 
 Wydeven et al. 2009. Recovery of Gray Wolves in the Great Lakes Region of the United States. Springer.
 
-
-Beverton-Holt
-Ricker 1954
-Lotka-Volterra 
 :::
+
