@@ -398,7 +398,6 @@ my_data %>%
 -   Remember: $$
     \color{darkgreen}{posterior} \propto \color{#E78021}{likelihood} \cdot \color{#3697DC}{prior}
     $$
-    1. 
 
 -   What do we currently have, what do we know?
 
