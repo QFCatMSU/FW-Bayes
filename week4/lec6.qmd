@@ -78,7 +78,7 @@ $$
 
 ## Deriving a nonlinear model: an example 
 
-- The von Bertalanffy growth model is often usedto report fish growth patterns
+- The von Bertalanffy growth model is often used to report fish growth patterns
   - Derived from a bioenergetics model: 
 $$
  \frac{\mathrm{d} W}{\mathrm{~d} t}=H W_{t}^{\frac{2}{3}}-m W_{t}

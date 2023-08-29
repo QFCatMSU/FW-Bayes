@@ -1,6 +1,6 @@
 ---
 title: "Syllabus"
-subtitle: "FW 891: Applied Bayesian Methods"
+subtitle: "FW 891: Applied Bayesian Modeling for Natural Resource Management"
 date: 8/11/2023
 date-format: "D MMMM YYYY"
 author: Chris Cahill
@@ -136,8 +136,9 @@ Note: Marks will be deducted (10% per working day) for late submission. All assi
 
 The project involves:
 
--   Selection of a project topic and establishment of a group (A one-page report should be submitted by the end of the 4th week of the semester (i.e., emailed to Cahill by the end of 22 September).
--   A brief meeting with Chris Cahill to discuss the proposed project. - Verbal presentation of the methods and results of the study during the final week of the semester (15-20 minutes per group).
+-   Selection of a project topic and establishment of a group (A one-page report should be submitted by the end of the 4th week of the semester (i.e., emailed to Cahill by the end of 22 September)).
+-   A brief meeting with Chris Cahill to discuss the proposed project. 
+-   Verbal presentation of the methods and results of the study during the final week of the semester (15-20 minutes per group).
 -   Written description of the methods and results of the study in the form of a scientific paper (Introduction, Methods, Results, Discussion). The write-up is due immediately after the verbal presentation.
 
 ### Grades
