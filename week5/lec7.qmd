@@ -1,5 +1,5 @@
 ---
-title: Bayesian mixed effects (hierarchical) models  
+title: Introduction to hierarchical (mixed-effects) models  
 title-slide-attributes:
     data-background-image: "https://qfcatmsu.github.io/Images/dark-big.png"  
     data-background-size: "40%"
@@ -19,11 +19,61 @@ highlight-style: kate
 
 ## Purpose
 
-- Introduce mixed effects models
-- Demonstrate how those models can be powerful for answering bespoke resource management questions
-- Demonstrate some tricks for fitting nonlinear models 
-- Gain familiarity with non-standard models and estimating them in Stan
+- Introduce an important extention of all previous models
+  - Will have several lectures on mixed effects models 
+- An example
+- Explain in words and maths what mixed effects models are 
+- Why these models likely deserve to be the default approach to many problems 
 
-## Nonlinear modeling is like wandering down a sketchy alley with no end in sight
 
-![](images/sketch.png){fig-align="center" width="700" height="500"}
+## An example to get things started
+
+- Revisiting the ANCOVA example, but let's change the variable names 
+  - Plot the weight of some critter as a function of length:
+
+```{R echo = T, eval = F}
+library(tidyverse)
+library(ggqfc)
+weight <- c(25, 14, 68, 79, 64, 139, 49, 119, 111) # obs
+population <- factor(c(1, 1, 1, 2, 2, 2, 3, 3, 3)) # group
+length <- c(1, 14, 22, 2, 9, 20, 2, 13, 22)        # covariate
+my_df <- data.frame(weight, population, length)
+
+my_df %>%
+  ggplot(aes(length, weight, color = population)) + 
+  geom_point(pch = 16, size = 3.5) + theme_qfc()
+
+```
+
+## An example to get things started
+
+```{R echo = F, eval = T}
+library(tidyverse)
+library(ggqfc)
+weight <- c(25, 14, 68, 79, 64, 139, 49, 119, 111) # obs
+population <- factor(c(1, 1, 1, 2, 2, 2, 3, 3, 3)) # group
+length <- c(1, 14, 22, 2, 9, 20, 2, 13, 22)        # covariate
+my_df <- data.frame(weight, population, length)
+
+my_df %>%
+  ggplot(aes(length, weight, color = population)) + 
+  geom_point(pch = 16, size = 3.5) + theme_qfc()
+
+```
+- What does this plot suggest?
+
+## An example to get things started 
+
+- linear relationship between weight and length
+  - Perhaps with a different intercept for each population? 
+  - Regression model should account for population differences
+- The simplest way to account for population differences:
+
+$$
+\begin{array}{l}
+\operatorname{weight}_{i}=\alpha_{j(i)}+\beta \cdot \text { length }_{i}+\varepsilon_{i} \\
+\varepsilon_{i} \sim \operatorname{Normal}\left(0, \sigma^{2}\right)
+\end{array}
+$$
+
+- Weight of critter *i* depends on length in a linear way, where each population *j* has a different intercept, and residuals come from a zero-mean normal distribution
