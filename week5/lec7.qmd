@@ -19,17 +19,36 @@ highlight-style: kate
 
 ## Purpose
 
-- Introduce an important extention of all previous models
-  - Will have several lectures on mixed effects models 
-- An example
-- Explain in words and maths what mixed effects models are 
-- Why these models likely deserve to be the default approach to many problems 
+-   Introduce an important extention of all previous models
+    -   Will have several lectures on mixed effects models
+-   An example
+    -   both frequentist and Bayesian 
+    -   Explain in words and algebra what mixed effects models are
+-   Pros and cons of mixed effects modeling
+-   Why these models likely deserve to be the default approach to many problems
 
+## The polyonomous model (misery)
+
+-   These models are known by many names:
+    -   Mixed effects models (fixed effects + random effects)
+    -   Multilevel models
+    -   Hierarchical models
+    -   Partial-pooling models
+-   Our example model might also be called:
+    -   Random-intercepts model
+
+![](images/confused.png){style="width:185px; position: absolute; bottom:5%; right:1%;"}
+
+[Kery and Schaub 2012; McElreath 2023]{.footerLeft}
 
 ## An example to get things started
 
-- Revisiting the ANCOVA example, but let's change the variable names 
-  - Plot the weight of some critter as a function of length:
+![[image credit](https://en.wikipedia.org/wiki/Emperor_scorpion#/media/File:Female_Emperor_Scorpion.jpg)](images/scorpion.png){style="width:185px; position: center;"}
+
+## An example to get things started
+
+-   Revisiting the ANCOVA example, but let's change the variable names
+    -   Plot the weight of emperor scorpions as a function of length
 
 ```{R echo = T, eval = F}
 library(tidyverse)
@@ -60,14 +79,15 @@ my_df %>%
   geom_point(pch = 16, size = 3.5) + theme_qfc()
 
 ```
-- What does this plot suggest?
 
-## An example to get things started 
+-   What does this plot suggest?
 
-- linear relationship between weight and length
-  - Perhaps with a different intercept for each population? 
-  - Regression model should account for population differences
-- The simplest way to account for population differences:
+## An example to get things started
+
+-   Linear relationship between weight and length
+    -   Perhaps with a different intercept for each population?
+    -   Regression model should account for population differences
+-   The simplest way to account for population differences:
 
 $$
 \begin{array}{l}
@@ -76,4 +96,473 @@ $$
 \end{array}
 $$
 
-- Weight of critter *i* depends on length in a linear way, where each population *j* has a different intercept, and residuals come from a zero-mean normal distribution
+-   Weight of scorpion *i* depends on length in a linear way, where each population *j* has a different intercept, and residuals come from a zero-mean normal distribution
+
+## Motivating random effects
+
+-   Independent intercepts for each population represents one assumption that we might make about the data
+
+::: {style="font-size:29px"}
+-   [**Assumption 1: No Pooling**]{style="color:darkgreen;"}: these are the only three populations we are interested in (no pooling; estimate each $\alpha_{j}$ separately)
+:::
+
+[see Gelman and Hill 2007; Kery and Schaub 2012]{.footerRight}
+
+## Motivating random effects
+
+-   Independent intercepts for each population represents one assumption that we might make about the data
+
+::: {style="font-size:29px"}
+-   [**Assumption 1: No Pooling**]{style="color:darkgreen;"}: these are the only three populations we are interested in (no pooling; estimate each $\alpha_{j}$ separately)
+-   [**Assumption 2: Complete Pooling**]{style="color:#E78021;"}: we think these actually represent one population (complete pooling; estimate one $\alpha$ across all three populations)
+:::
+
+[see Gelman and Hill 2007; Kery and Schaub 2012]{.footerRight}
+
+## Motivating random effects
+
+-   Independent intercepts for each population represents one assumption that we might make about the data
+
+::: {style="font-size:29px"}
+-   [**Assumption 1: No Pooling**]{style="color:darkgreen;"}: these are the only three populations we are interested in (no pooling; estimate each $\alpha_{j}$ separately)
+-   [**Assumption 2: Complete Pooling**]{style="color:#E78021;"}: we think these actually represent one population (complete pooling; estimate one $\alpha$ across all three populations)
+-   [**Assumption 3: Partial Pooling**]{style="color:#3697DC;"}: these populations merely represent a sample from a larger number of scorpion populations that we could have studied and we want our conclusions to generalize to this larger universe of statistical populations (hierarchical, partial pooling; model parameters are viewed as a sample from a population distribution)
+:::
+
+[see Gelman and Hill 2007; Kery and Schaub 2012]{.footerRight}
+
+## Translating assumption 1 to math
+
+-   [No pooling]{style="color:darkgreen;"}:
+
+::: {style="font-size:30px"}
+$$
+\begin{array}{l}
+\operatorname{weight}_{i}=\alpha_{j(i)}+\beta \cdot \text { length }_{i}+\varepsilon_{i} \\
+\varepsilon_{i} \sim \operatorname{Normal}\left(0, \sigma^{2}\right)
+\end{array}
+$$
+:::
+
+## Translating assumption 2 to math
+
+-   [Complete pooling]{style="color:#E78021;"}:
+
+::: {style="font-size:30px"}
+$$
+\begin{array}{l}
+\operatorname{weight}_{i}=\alpha+\beta \cdot \text { length }_{i}+\varepsilon_{i} \\
+\varepsilon_{i} \sim \operatorname{Normal}\left(0, \sigma^{2}\right)
+\end{array}
+$$
+
+-   This is literally just a linear regression with one intercept and one slope
+:::
+
+## Translating assumption 3 to math
+
+-   [Hierarchical, partial pooling]{style="color:#3697DC;"}:
+
+::: {style="font-size:30px"}
+$$
+\begin{array}{l}
+\operatorname{weight}_{i}=\alpha_{j(i)}+\beta \cdot \text { length }_{i}+\varepsilon_{i} \\
+\varepsilon_{i} \sim \operatorname{Normal}\left(0, \sigma^{2}\right) \\
+\alpha_{j} \sim \operatorname{Normal}\left(\mu_{\alpha}, \sigma_{\alpha}^{2}\right) . \quad \text { This line makes } \alpha_{j} \text { random! }
+\end{array}
+$$
+
+-   Third equation is the *only* difference between a model that treats $\alpha_{j}$ as a fixed effect ([assumption 1]{style="color:darkgreen;"}) and one where $\alpha_{j}$ is a random effect ([assumption 3]{style="color:#3697DC;"})
+:::
+
+[Kery and Schaub 2012]{.footerRight}
+
+## Translating assumptions 1-3 to R code (Frequentist)
+
+```{R echo = T, eval = T}
+# ass. 1 - no pooling 
+fit_no <- lm(my_df$weight ~ my_df$population - 1 + my_df$length) 
+
+# ass. 2 - complete pooling: 
+fit_complete <- lm(my_df$weight ~ 1 + my_df$length) 
+
+# ass. 3 - partial pooling: 
+library(lme4)
+fit_partial <- lmer(my_df$weight ~ 1 + my_df$length + (1|my_df$population)) 
+```
+
+<br>
+
+::: {style="font-size:30px"}
+-   Don't worry about the computational details underlying how `lmer()` is estimating the random effects
+:::
+
+## Compare the models (Frequentist)
+
+```{R echo = T, eval = T}
+AIC(fit_no)
+AIC(fit_complete)
+AIC(fit_partial)
+
+```
+
+## Plot [no pooling]{style="color:darkgreen;"} vs. [partial pooling]{style="color:#3697DC;"}
+
+```{R echo = T, eval = T}
+my_df$pred_no <- predict(fit_no, newdata = my_df)
+my_df$pred_partial <-  predict(fit_partial, newdata = my_df, level = 0)
+my_df %>%
+  ggplot(aes(length, weight, color = population)) + 
+  geom_point(pch = 16, size = 3.5) +
+  geom_line(data = my_df, aes(y = pred_no), size = 1, lty = 2) + 
+  geom_line(data = my_df, aes(y = pred_partial), size = 1) + 
+  theme_qfc()
+```
+
+## What is going on here?
+
+-   Solid lines are from mixed-effects model with partial pooling, dashed lines are from ANCOVA with no pooling
+
+```{R echo = F, eval = T}
+my_df$pred_no <- predict(fit_no, newdata = my_df)
+my_df$pred_partial <-  predict(fit_partial, newdata = my_df, level = 0)
+my_df %>%
+  ggplot(aes(length, weight, color = population)) + 
+  geom_point(pch = 16, size = 3.5) +
+  geom_line(data = my_df, aes(y = pred_no), size = 1, lty = 2) + 
+  geom_line(data = my_df, aes(y = pred_partial), size = 1) + 
+  theme_qfc()
+```
+
+## Another example of shrinkage
+
+-   county-level radon levels
+
+![[image credit](https://widdowquinn.github.io/Teaching-Stan-Hierarchical-Modelling/07-partial_pooling_intro.html)](images/comparison.png){style="width:185px; position: center;"}
+
+## Let's build the scorpion model in Stan
+
+![](images/matrix.jpg){style="height:600px; width:1000px; position: center;"}
+
+## Math for the random intercepts model
+
+-   [Hierarchical, partial pooling]{style="color:#3697DC;"}:
+
+::: {style="font-size:30px"}
+$$
+\begin{array}{l}
+\operatorname{weight}_{i}=\alpha_{j(i)}+\beta \cdot \text { length }_{i}+\varepsilon_{i} \\
+\varepsilon_{i} \sim \operatorname{Normal}\left(0, \sigma^{2}\right) \\
+\alpha_{j} \sim \operatorname{Normal}\left(\mu_{\alpha}, \sigma_{\alpha}^{2}\right) . \quad \text { This line makes } \alpha_{j} \text { random! }
+\end{array}
+$$
+
+-   Third equation is the *only* difference between a model that treats $\alpha_{j}$ as a fixed effect ([assumption 1]{style="color:darkgreen;"}) and one where $\alpha_{j}$ is a random effect ([assumption 3]{style="color:#3697DC;"})
+:::
+
+[Kery and Schaub 2012]{.footerRight}
+
+## Stan code for the random intercepts model
+
+::: {style="font-size: 85%;"}
+```{javascript eval = F, echo = T}
+data {
+  int<lower=0> n;
+  vector[n] weights; 
+  array[n] int population; 
+  vector[n] lengths; 
+}
+parameters {
+  real mu_alpha; 
+  vector[3] alpha_j;
+  real<lower=0> sd_alpha; 
+  real b1;  
+  real<lower=0> sd_obs;
+}
+// more code below
+```
+:::
+
+## Stan code for the random intercepts model
+
+::: {style="font-size: 85%;"}
+```{javascript eval = F, echo = T}
+//... see code on previous slide 
+transformed parameters {
+  vector[3] alpha_pop; 
+  alpha_pop = mu_alpha + alpha_j; // group int is global int + random effect
+}
+model {
+  vector[n] w_preds; 
+  mu_alpha ~ normal(50, 15);             // hyper prior
+  sd_alpha ~ normal(0, 100);             // hyper prior
+  alpha_j ~ normal(mu_alpha, sd_alpha);  // hyper distribution
+  b1 ~ normal(0, 10);                    // slope 
+  sd_obs ~ normal(0, 25);                // likelihood error term 
+  for(i in 1:n){
+    w_preds[i] = alpha_pop[population[i]] + b1*lengths[i];
+  }
+  weights ~ normal(w_preds, sd_obs);     // likelihood 
+}
+
+```
+:::
+
+## Compiling the Stan model
+
+```{R echo = T, eval = T}
+library(cmdstanr)
+mod <- cmdstan_model("src/random_ints.stan")
+stan_data <- list(
+  n = length(weight),
+  weights = weight,
+  population = population,
+  lengths = length 
+)
+
+inits <- function() {
+  list(
+    mu_alpha = 50,
+    sd_alpha = 30,
+    alpha_j = rep(0, 3),
+    b1 = 10,
+    sd_obs = 10
+  )
+}
+
+```
+
+## Running that hawg 🐷🐖🐽
+
+```{R echo = T, eval = T}
+fit <- mod$sample(
+  data = stan_data,
+  init = inits,
+  seed = 1, 
+  chains = 4, 
+  iter_warmup = 1000, 
+  iter_sampling = 1000, 
+  parallel_chains = 4, 
+  refresh = 0, 
+  adapt_delta = 0.9999, # look here
+  step_size = 1e-3      # look here 
+)
+
+```
+
+## Check the diagnostics (quick and dirty)
+
+::: {style="font-size: 80%;"}
+```{R echo = T, eval = T}
+fit$cmdstan_diagnose()
+```
+:::
+
+## Pluck out the posterior summaries and compare to `lmer()`
+
+```{R echo = T, eval = T}
+fit$summary("alpha_pop")                    # Bayesian 
+coef(fit_partial)$`my_df$population`[,1]    # frequentist 
+
+```
+
+-   Pretty similar estimates (small sample size)
+-   You have now fitted a Bayesian hierarchical model
+
+## Pluck out the posterior summaries and compare to `lmer()`
+
+```{R echo = T, eval = T}
+fit$summary("b1")        # Bayesian 
+fixef(fit_partial)[2]    # frequentist 
+```
+
+## Posterior for $\beta_{1}$ vs. frequentist estimate
+
+```{R echo = T, eval = T}
+library(bayesplot)
+posterior <- fit$draws(format = "df") 
+color_scheme_set("blue")
+p <- mcmc_hist(posterior, par = "b1")
+p + geom_vline(xintercept = fixef(fit_partial)[2], lwd = 2) + theme_qfc()
+```
+
+
+## Posterior for $\mu_{\alpha}$ vs. frequentist estimate
+
+```{R echo = T, eval = T}
+library(bayesplot)
+posterior <- fit$draws(format = "df") 
+color_scheme_set("blue")
+p <- mcmc_hist(posterior, par = "mu_alpha")
+p + geom_vline(xintercept = fixef(fit_partial)[1], lwd = 2) + theme_qfc()
+```
+
+## This was meant to be an 'easy' example for a reason 
+
+- Probably too few groups (usually want 5-10)
+  - Obviously we can do it, but likely means our priors are more influential
+- I had to fiddle with this a bit to get it to behave
+  - Also low sample size within groups 
+- This likely explains at least some of the discrepancy among methods 
+
+## What is a random effect (words) 
+
+- Two or more effects or parameters that "belong together" in some way
+  - e.g., originating from some common distribution 
+  - sometimes called "latent variables," may not be observable
+- Bayesians put prior probabilities on all unknown quantities, MCMC 
+- Frequentists remove random effects from the model via numerical integration 
+- Exchangeability as a key assumption 
+  - Ordering of the random effects doesn't matter 
+
+[Royle and Dorazio 2008; Kery and Schaub 2012]{.footerRight}
+
+## The distribution of random effects
+
+- Called the hyperdistribution
+- The parameters of the random effects distribution are called hyperparameters
+  - The priors of the hypperparameters are called hyperpriors
+- No rule against more than one level (i.e., we could have hyper-hyperparameters etc.) 
+- Key point is to note the hierarchy of effects 
+- Typically random effects are continuous in ecology 
+  - however see occupancy models or binomial mixture models 
+
+[Royle and Dorazio 2008; Kery and Schaub 2012]{.footerRight}
+
+
+## Benefits of hierarchical modeling
+
+-   Sounds dope, also scares a lot of people
+-   *de facto* standard for modern ecological analyses
+-   Helps you draw (statistical) universe-level inferences if you have a good experimental design
+-   Borrowing information via a hyperprior
+    -   Robin-Hooding (see Punt et al. 2011)
+-   Helps safeguard against overfitting
+
+## Some reasons we might use mixed effects models
+
+-   To adjust for repeat sampling
+-   To adjust estimates for imbalanced sampling 
+-   To study variation among groups 
+-   To partition variation among groups 
+-   Borrow information 
+
+[Royle and Dorazio 2008; Kery and Schaub 2012; McElreath 2023]{.footerRight}
+
+## Some reasons we might use mixed effects models
+
+-   Avoiding pseudoreplication 
+-   Improving scope of inference 
+-   To avoid averaging 
+-   Improve understanding
+    -  Many common classes of models can be reformulated as hierarchical models
+-  McElreath (2023) argues mixed effects methods should be the default for many modeling problems 
+
+[Royle and Dorazio 2008; Kery and Schaub 2012; McElreath 2023]{.footerRight}
+
+## Drawbacks of hierarchical modeling?
+
+![](images/hard.jpg){style="height:600px; width:1000px; position: center;"}
+
+## Why treat any parameter as fixed? 
+  
+- Treating a factor with very few levels as random results in very imprecise estimates of the hyperparameter
+    - Rarely treat factors with fewer than 5-10 levels as random (however see Gelman 2005)
+- Assumption of [exchangeability](https://en.wikipedia.org/wiki/Exchangeable_random_variables) may not hold, particularly if groups differ in some systematic way
+
+## Hierarchical modeling as a philosophical middle ground
+
+::: {style="font-size:29px"}
+
+- Berliner (1966) offered a definition of hierarchical models based on sub-models and inference from a joint probability distribution:
+
+$$
+\begin{array}{l}
+\color{darkgreen}{ [data|process, parameters] } \color{#E78021}{[process|parameters] }\color{#3697DC}{[parameters]} \\
+\end{array}
+$$
+
+- [observation model component]{style="color:darkgreen;"} 
+- [process model component]{style="color:#E78021;"} 
+- [assumptions about parameters]{style="color:#3697DC;"} 
+
+- A key point:
+
+:::
+
+[Berliner 1996; Royle and Dorazio 2008]{.footerRight}
+
+## Hierarchical modeling as a philosophical middle ground
+
+::: {style="font-size:29px"}
+
+- Berliner (1966) offered a definition of hierarchical models based on sub-models and inference from a joint probability distribution:
+
+$$
+\begin{array}{l}
+\color{darkgreen}{ [data|process, parameters] } \color{#E78021}{[process|parameters] }\color{#3697DC}{[parameters]} \\
+\end{array}
+$$
+
+- [observation model component]{style="color:darkgreen;"} 
+- [process model component]{style="color:#E78021;"} 
+- [assumptions about parameters]{style="color:#3697DC;"} 
+
+- A key point:
+
+  - Hierarchical models admit [observation error]{style="color:darkgreen;"}, conditioned on some (underlying) ecological [process of interest]{style="color:#E78021;"} and your [prior assumptions]{style="color:#3697DC;"}
+
+:::
+
+[Berliner 1996; Royle and Dorazio 2008]{.footerRight}
+
+## Hierarchical modeling as a philosophical middle ground
+
+::: {style="font-size:29px"}
+
+- Berliner (1966) offered a definition of hierarchical models based on sub-models and inference from a joint probability distribution:
+
+$$
+\begin{array}{l}
+\color{darkgreen}{ [data|process, parameters] } \color{#E78021}{[process|parameters] }\color{#3697DC}{[parameters]} \\
+\end{array}
+$$
+
+- [observation model component]{style="color:darkgreen;"} 
+- [process model component]{style="color:#E78021;"} 
+- [assumptions about parameters]{style="color:#3697DC;"} 
+
+- A key point:
+
+  - Hierarchical models admit [observation error]{style="color:darkgreen;"}, conditioned on some (underlying) ecological [process of interest]{style="color:#E78021;"} and your [prior assumptions]{style="color:#3697DC;"}
+
+- Whenever possible, prefer a hiearchical model based on an explicit ecological process 
+:::
+
+[Berliner 1996; Royle and Dorazio 2008]{.footerRight}
+
+## Summary and outlook
+
+-  Many names for the same general type of model
+-  Shrinkage as a key concept, which is related to the phrase "partial pooling"
+-  The difference between fixed effects and random effects, at least for this simple example 
+-  A powerful framework for decomposing complex problems into manageable subcomponents/models
+-  Many important extentions to this simple model 
+
+## References
+
+::: {style="font-size:25px"}
+
+-   Berliner, L. M. 1996, Hierarchical Bayesian time series models", Maximum Entropy and Bayesian Methods, 15-22.
+
+-   Gelman and Hill 2007. Data analysis using regression and multilevel models
+
+-   Royle and Dorazio 2008. Hierarchical modeling and inference in ecology. 
+
+-   Kery and Schaub. 2012. Bayesian Population Analysis using WinBUGS. Chapter 3
+
+-   McElreath 2023. Statistical Rethinking. Second Edition, Chapters 2 and 9.
+
+-   Punt et al. 2011.  Among-stock comparisons for improving stock assessments of data-poor stocks: the “Robin Hood” approach.  ICES Journal of Marine Sci.
+
+:::
