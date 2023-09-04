@@ -566,3 +566,20 @@ $$
 -   Punt et al. 2011.  Among-stock comparisons for improving stock assessments of data-poor stocks: the “Robin Hood” approach.  ICES Journal of Marine Sci.
 
 :::
+
+## Exercises (optional)
+
+::: {style="font-size:20px"}
+1.  **Prior sensitivity test and model evaluation**
+
+It is always good to think critically about model fit.  Check the sensitivity of your estimates to the priors used in the sripts, and conduct standard model evaluations.  Report your findings. 
+
+2.  **Derived parameters**
+
+A biologist wants to know whether scorpionsin populations 2 and 3 are "different".  Kick out the difference between $\alpha_{pop_{2}}$ and $\alpha_{pop_{3}}$ as a derived variable.  Calculate the $\text {Pr} (\alpha_{pop_{2}} > \alpha_{pop_{3}})$ and report this information back to your biologist friend.
+
+3.  **Hyperdistributions**
+
+The hyperdistribution contains information on the among-group variability in scorpion weight-length relationship intercept terms.  Generate a posterior predictive hyperdistribution for $alpha_{pop}$ and plot it to examine the uncertainty we might expect if we were to measure scorpions from an entirely new population (but was otherwise similar to our original three populations)
+
+:::
