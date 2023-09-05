@@ -22,7 +22,7 @@ highlight-style: kate
 -   Introduce an important extention of all previous models
     -   Will have several lectures on mixed effects models
 -   An example
-    -   both frequentist and Bayesian 
+    -   both frequentist and Bayesian
     -   Explain in words and algebra what mixed effects models are
 -   Pros and cons of mixed effects modeling
 -   Why these models likely deserve to be the default approach to many problems
@@ -37,7 +37,7 @@ highlight-style: kate
 -   Our example model might also be called:
     -   Random-intercepts model
 
-![](images/confused.png){style="width:185px; position: absolute; bottom:5%; right:1%;"}
+![](images/confused.png){style="width:185px; position: absolute; margin-top:30%; right:1%;"}
 
 [Kery and Schaub 2012; McElreath 2023]{.footerLeft}
 
@@ -386,7 +386,6 @@ p <- mcmc_hist(posterior, par = "b1")
 p + geom_vline(xintercept = fixef(fit_partial)[2], lwd = 2) + theme_qfc()
 ```
 
-
 ## Posterior for $\mu_{\alpha}$ vs. frequentist estimate
 
 ```{R echo = T, eval = T}
@@ -397,38 +396,37 @@ p <- mcmc_hist(posterior, par = "mu_alpha")
 p + geom_vline(xintercept = fixef(fit_partial)[1], lwd = 2) + theme_qfc()
 ```
 
-## This was meant to be an 'easy' example for a reason 
+## This was meant to be an 'easy' example for a reason
 
-- Probably too few groups (usually want 5-10)
-  - Obviously we can do it, but likely means our priors are more influential
-- I had to fiddle with this a bit to get it to behave
-  - Also low sample size within groups 
-- This likely explains at least some of the discrepancy among methods 
+-   Probably too few groups (usually want 5-10)
+    -   Obviously we can do it, but likely means our priors are more influential
+-   I had to fiddle with this a bit to get it to behave
+    -   Also low sample size within groups
+-   This likely explains at least some of the discrepancy among methods
 
-## What is a random effect (words) 
+## What is a random effect (words)
 
-- Two or more effects or parameters that "belong together" in some way
-  - e.g., originating from some common distribution 
-  - sometimes called "latent variables," may not be observable
-- Bayesians put prior probabilities on all unknown quantities, MCMC 
-- Frequentists remove random effects from the model via numerical integration 
-- Exchangeability as a key assumption 
-  - Ordering of the random effects doesn't matter 
+-   Two or more effects or parameters that "belong together" in some way
+    -   e.g., originating from some common distribution
+    -   sometimes called "latent variables," may not be observable
+-   Bayesians put prior probabilities on all unknown quantities, MCMC
+-   Frequentists remove random effects from the model via numerical integration
+-   Exchangeability as a key assumption
+    -   Ordering of the random effects doesn't matter
 
 [Royle and Dorazio 2008; Kery and Schaub 2012]{.footerRight}
 
 ## The distribution of random effects
 
-- Called the hyperdistribution
-- The parameters of the random effects distribution are called hyperparameters
-  - The priors of the hypperparameters are called hyperpriors
-- No rule against more than one level (i.e., we could have hyper-hyperparameters etc.) 
-- Key point is to note the hierarchy of effects 
-- Typically random effects are continuous in ecology 
-  - however see occupancy models or binomial mixture models 
+-   Called the hyperdistribution
+-   The parameters of the random effects distribution are called hyperparameters
+    -   The priors of the hypperparameters are called hyperpriors
+-   No rule against more than one level (i.e., we could have hyper-hyperparameters etc.)
+-   Key point is to note the hierarchy of effects
+-   Typically random effects are continuous in ecology
+    -   however see occupancy models or binomial mixture models
 
 [Royle and Dorazio 2008; Kery and Schaub 2012]{.footerRight}
-
 
 ## Benefits of hierarchical modeling
 
@@ -442,21 +440,21 @@ p + geom_vline(xintercept = fixef(fit_partial)[1], lwd = 2) + theme_qfc()
 ## Some reasons we might use mixed effects models
 
 -   To adjust for repeat sampling
--   To adjust estimates for imbalanced sampling 
--   To study variation among groups 
--   To partition variation among groups 
--   Borrow information 
+-   To adjust estimates for imbalanced sampling
+-   To study variation among groups
+-   To partition variation among groups
+-   Borrow information
 
 [Royle and Dorazio 2008; Kery and Schaub 2012; McElreath 2023]{.footerRight}
 
 ## Some reasons we might use mixed effects models
 
--   Avoiding pseudoreplication 
--   Improving scope of inference 
--   To avoid averaging 
+-   Avoiding pseudoreplication
+-   Improving scope of inference
+-   To avoid averaging
 -   Improve understanding
-    -  Many common classes of models can be reformulated as hierarchical models
--  McElreath (2023) argues mixed effects methods should be the default for many modeling problems 
+    -   Many common classes of models can be reformulated as hierarchical models
+-   McElreath (2023) argues mixed effects methods should be the default for many modeling problems
 
 [Royle and Dorazio 2008; Kery and Schaub 2012; McElreath 2023]{.footerRight}
 
@@ -464,17 +462,16 @@ p + geom_vline(xintercept = fixef(fit_partial)[1], lwd = 2) + theme_qfc()
 
 ![](images/hard.jpg){style="height:600px; width:1000px; position: center;"}
 
-## Why treat any parameter as fixed? 
-  
-- Treating a factor with very few levels as random results in very imprecise estimates of the hyperparameter
-    - Rarely treat factors with fewer than 5-10 levels as random (however see Gelman 2005)
-- Assumption of [exchangeability](https://en.wikipedia.org/wiki/Exchangeable_random_variables) may not hold, particularly if groups differ in some systematic way
+## Why treat any parameter as fixed?
+
+-   Treating a factor with very few levels as random results in very imprecise estimates of the hyperparameter
+    -   Rarely treat factors with fewer than 5-10 levels as random (however see Gelman 2005)
+-   Assumption of [exchangeability](https://en.wikipedia.org/wiki/Exchangeable_random_variables) may not hold, particularly if groups differ in some systematic way
 
 ## Hierarchical modeling as a philosophical middle ground
 
 ::: {style="font-size:29px"}
-
-- Berliner (1966) offered a definition of hierarchical models based on sub-models and inference from a joint probability distribution:
+-   Berliner (1966) offered a definition of hierarchical models based on sub-models and inference from a joint probability distribution:
 
 $$
 \begin{array}{l}
@@ -482,12 +479,13 @@ $$
 \end{array}
 $$
 
-- [observation model component]{style="color:darkgreen;"} 
-- [process model component]{style="color:#E78021;"} 
-- [assumptions about parameters]{style="color:#3697DC;"} 
+-   [observation model component]{style="color:darkgreen;"}
 
-- A key point:
+-   [process model component]{style="color:#E78021;"}
 
+-   [assumptions about parameters]{style="color:#3697DC;"}
+
+-   A key point:
 :::
 
 [Berliner 1996; Royle and Dorazio 2008]{.footerRight}
@@ -495,8 +493,7 @@ $$
 ## Hierarchical modeling as a philosophical middle ground
 
 ::: {style="font-size:29px"}
-
-- Berliner (1966) offered a definition of hierarchical models based on sub-models and inference from a joint probability distribution:
+-   Berliner (1966) offered a definition of hierarchical models based on sub-models and inference from a joint probability distribution:
 
 $$
 \begin{array}{l}
@@ -504,14 +501,15 @@ $$
 \end{array}
 $$
 
-- [observation model component]{style="color:darkgreen;"} 
-- [process model component]{style="color:#E78021;"} 
-- [assumptions about parameters]{style="color:#3697DC;"} 
+-   [observation model component]{style="color:darkgreen;"}
 
-- A key point:
+-   [process model component]{style="color:#E78021;"}
 
-  - Hierarchical models admit [observation error]{style="color:darkgreen;"}, conditioned on some (underlying) ecological [process of interest]{style="color:#E78021;"} and your [prior assumptions]{style="color:#3697DC;"}
+-   [assumptions about parameters]{style="color:#3697DC;"}
 
+-   A key point:
+
+    -   Hierarchical models admit [observation error]{style="color:darkgreen;"}, conditioned on some (underlying) ecological [process of interest]{style="color:#E78021;"} and your [prior assumptions]{style="color:#3697DC;"}
 :::
 
 [Berliner 1996; Royle and Dorazio 2008]{.footerRight}
@@ -519,8 +517,7 @@ $$
 ## Hierarchical modeling as a philosophical middle ground
 
 ::: {style="font-size:29px"}
-
-- Berliner (1966) offered a definition of hierarchical models based on sub-models and inference from a joint probability distribution:
+-   Berliner (1966) offered a definition of hierarchical models based on sub-models and inference from a joint probability distribution:
 
 $$
 \begin{array}{l}
@@ -528,43 +525,43 @@ $$
 \end{array}
 $$
 
-- [observation model component]{style="color:darkgreen;"} 
-- [process model component]{style="color:#E78021;"} 
-- [assumptions about parameters]{style="color:#3697DC;"} 
+-   [observation model component]{style="color:darkgreen;"}
 
-- A key point:
+-   [process model component]{style="color:#E78021;"}
 
-  - Hierarchical models admit [observation error]{style="color:darkgreen;"}, conditioned on some (underlying) ecological [process of interest]{style="color:#E78021;"} and your [prior assumptions]{style="color:#3697DC;"}
+-   [assumptions about parameters]{style="color:#3697DC;"}
 
-- Whenever possible, prefer a hiearchical model based on an explicit ecological process 
+-   A key point:
+
+    -   Hierarchical models admit [observation error]{style="color:darkgreen;"}, conditioned on some (underlying) ecological [process of interest]{style="color:#E78021;"} and your [prior assumptions]{style="color:#3697DC;"}
+
+-   Whenever possible, prefer a hiearchical model based on an explicit ecological process
 :::
 
 [Berliner 1996; Royle and Dorazio 2008]{.footerRight}
 
 ## Summary and outlook
 
--  Many names for the same general type of model
--  Shrinkage as a key concept, which is related to the phrase "partial pooling"
--  The difference between fixed effects and random effects, at least for this simple example 
--  A powerful framework for decomposing complex problems into manageable subcomponents/models
--  Many important extentions to this simple model 
+-   Many names for the same general type of model
+-   Shrinkage as a key concept, which is related to the phrase "partial pooling"
+-   The difference between fixed effects and random effects, at least for this simple example
+-   A powerful framework for decomposing complex problems into manageable subcomponents/models
+-   Many important extentions to this simple model
 
 ## References
 
 ::: {style="font-size:25px"}
-
 -   Berliner, L. M. 1996, Hierarchical Bayesian time series models", Maximum Entropy and Bayesian Methods, 15-22.
 
 -   Gelman and Hill 2007. Data analysis using regression and multilevel models
 
--   Royle and Dorazio 2008. Hierarchical modeling and inference in ecology. 
+-   Royle and Dorazio 2008. Hierarchical modeling and inference in ecology.
 
 -   Kery and Schaub. 2012. Bayesian Population Analysis using WinBUGS. Chapter 3
 
 -   McElreath 2023. Statistical Rethinking. Second Edition, Chapters 2 and 9.
 
--   Punt et al. 2011.  Among-stock comparisons for improving stock assessments of data-poor stocks: the “Robin Hood” approach.  ICES Journal of Marine Sci.
-
+-   Punt et al. 2011. Among-stock comparisons for improving stock assessments of data-poor stocks: the "Robin Hood" approach. ICES Journal of Marine Sci.
 :::
 
 ## Exercises (optional)
@@ -572,14 +569,13 @@ $$
 ::: {style="font-size:20px"}
 1.  **Prior sensitivity test and model evaluation**
 
-It is always good to think critically about model fit.  Check the sensitivity of your estimates to the priors used in the sripts, and conduct standard model evaluations.  Report your findings. 
+It is always good to think critically about model fit. Check the sensitivity of your estimates to the priors used in the sripts, and conduct standard model evaluations. Report your findings.
 
 2.  **Derived parameters**
 
-A biologist wants to know whether scorpions in populations 2 and 3 are "different" in some way.  Kick out the difference between $\alpha_{pop_{2}}$ and $\alpha_{pop_{3}}$ as a derived variable.  Calculate the $\text {Pr} (\alpha_{pop_{2}} > \alpha_{pop_{3}})$ and report this information back to your biologist friend.
+A biologist wants to know whether scorpions in populations 2 and 3 are "different" in some way. Kick out the difference between $\alpha_{pop_{2}}$ and $\alpha_{pop_{3}}$ as a derived variable. Calculate the $\text {Pr} (\alpha_{pop_{2}} > \alpha_{pop_{3}})$ and report this information back to your biologist friend.
 
 3.  **Hyperdistributions**
 
-The hyperdistribution contains information on the among-group variability in scorpion weight-length relationship intercept terms.  Generate a posterior predictive hyperdistribution for $\alpha_{pop}$ and plot it to examine the uncertainty we might expect if we were to measure scorpions from an entirely new population (but was otherwise similar to our original three populations)
-
+The hyperdistribution contains information on the among-group variability in scorpion weight-length relationship intercept terms. Generate a posterior predictive hyperdistribution for $\alpha_{pop}$ and plot it to examine the uncertainty we might expect if we were to measure scorpions from an entirely new population (but was otherwise similar to our original three populations)
 :::
