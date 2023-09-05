@@ -1,0 +1,278 @@
+---
+title: Introduction to hierarchical (mixed-effects) models part II
+title-slide-attributes:
+    data-background-image: "https://qfcatmsu.github.io/Images/dark-big.png"  
+    data-background-size: "40%"
+    data-background-position: "6% 95%"
+subtitle: FW 891
+author: Christopher Cahill
+date: 25 September 2023
+date-format: "D MMMM YYYY"
+format: 
+  revealjs:
+    css: "https://qfcatmsu.github.io/css/presStyle.css"
+    slide-number: c/t  
+    theme: simple 
+editor: visual
+highlight-style: kate
+---
+
+## Purpose
+
+-   Another look at how we specify a joint posterior for hierarchical models (maths)
+    -   Demonstrate the importance of conditional independence
+
+## A hierarchical model
+
+$$
+\begin{aligned}
+y_{i} & \stackrel{i n d}{\sim} p\left(y \mid \theta_{i}\right) \\
+\theta_{i} & \stackrel{i i d}{\sim} p(\theta \mid \phi) \\
+\phi & \sim p(\phi)
+\end{aligned}
+$$
+
+## A hierarchical model
+
+$$
+\begin{aligned}
+y_{i} & \stackrel{i n d}{\sim} p\left(y \mid \theta_{i}\right) \\
+\theta_{i} & \stackrel{i i d}{\sim} p(\theta \mid \phi) \\
+\phi & \sim p(\phi)
+\end{aligned}
+$$
+
+-   $y_{i}$ is observed data
+
+## A hierarchical model
+
+$$
+\begin{aligned}
+y_{i} & \stackrel{i n d}{\sim} p\left(y \mid \theta_{i}\right) \\
+\theta_{i} & \stackrel{i i d}{\sim} p(\theta \mid \phi) \\
+\phi & \sim p(\phi)
+\end{aligned}
+$$
+
+-   $y_{i}$ is observed data
+-   $\theta=\left(\theta_{1}, \ldots, \theta_{n}\right) \text { and } \phi$ are parameters
+
+## A hierarchical model
+
+$$
+\begin{aligned}
+y_{i} & \stackrel{i n d}{\sim} p\left(y \mid \theta_{i}\right) \\
+\theta_{i} & \stackrel{i i d}{\sim} p(\theta \mid \phi) \\
+\phi & \sim p(\phi)
+\end{aligned}
+$$
+
+-   $y_{i}$ is observed data
+-   $\theta=\left(\theta_{1}, \ldots, \theta_{n}\right) \text { and } \phi$ are parameters
+-   Only $\phi$ has a prior that is set (assumed)
+
+## Posterior distribution for hierarchical models
+
+-   The joint posterior distribution of interest in hierarchical models is $$
+    p(\theta, \phi \mid y) 
+    $$
+
+## Posterior distribution for hierarchical models
+
+-   The joint posterior distribution of interest in hierarchical models is $$
+    p(\theta, \phi \mid y) 
+    $$
+
+-   Apply Bayes rule
+
+## Posterior distribution for hierarchical models
+
+-   The joint posterior distribution of interest in hierarchical models is $$
+    p(\theta, \phi \mid y) \propto p(y \mid \theta, \phi) p(\theta, \phi)
+    $$
+
+-   Apply Bayes rule
+
+## Posterior distribution for hierarchical models
+
+-   The joint posterior distribution of interest in hierarchical models is $$
+    p(\theta, \phi \mid y) \propto p(y \mid \theta, \phi) p(\theta, \phi)=p(y \mid \theta) p(\theta \mid \phi) p(\phi)
+    $$
+
+-   Apply Bayes rule
+
+-   We can also break this joint distribution down into a conditional distribution of $\theta$ given $\phi$
+
+## Posterior distribution for hierarchical models
+
+-   The joint posterior distribution of interest in hierarchical models is $$
+    p(\theta, \phi \mid y) \propto p(y \mid \theta, \phi) p(\theta, \phi)=p(y \mid \theta) p(\theta \mid \phi) p(\phi)
+    $$
+
+-   Apply Bayes rule
+
+-   We can also break this joint distribution down into a conditional distribution of $\theta$ given $\phi$
+
+    -   Do this using conditional probability rules
+
+## Posterior distribution for hierarchical models
+
+::: {style="font-size:29px"}
+-   The joint posterior distribution of interest in hierarchical models is $$
+    p(\theta, \phi \mid y) \propto p(y \mid \theta, \phi) p(\theta, \phi)=p(y \mid \theta) p(\theta \mid \phi) p(\phi)
+    $$
+:::
+
+## Posterior distribution for hierarchical models
+
+::: {style="font-size:29px"}
+-   The joint posterior distribution of interest in hierarchical models is $$
+    p(\theta, \phi \mid y) \propto p(y \mid \theta, \phi) p(\theta, \phi)=p(y \mid \theta) p(\theta \mid \phi) p(\phi)
+    $$
+
+-   We may also care about the marginal posterior of $\theta$:
+:::
+
+## Posterior distribution for hierarchical models
+
+::: {style="font-size:29px"}
+-   The joint posterior distribution of interest in hierarchical models is $$
+    p(\theta, \phi \mid y) \propto p(y \mid \theta, \phi) p(\theta, \phi)=p(y \mid \theta) p(\theta \mid \phi) p(\phi)
+    $$
+
+-   We may also care about the marginal posterior of $\phi$: $$
+    p(\theta \mid y)=\int p(\theta, \phi \mid y) d \phi
+    $$
+:::
+
+## Posterior distribution for hierarchical models
+
+::: {style="font-size:29px"}
+-   The joint posterior distribution of interest in hierarchical models is $$
+    p(\theta, \phi \mid y) \propto p(y \mid \theta, \phi) p(\theta, \phi)=p(y \mid \theta) p(\theta \mid \phi) p(\phi)
+    $$
+
+-   We may also care about the marginal posterior of $\theta$: $$
+    p(\theta \mid y)=\int p(\theta, \phi \mid y) d \phi
+    $$
+
+-   Or instead the marginal distribution of $\phi$:
+
+$$
+p(\phi \mid y)=\int p(\theta, \phi \mid y) d \theta
+$$
+:::
+
+## Posterior distribution for hierarchical models
+
+::: {style="font-size:29px"}
+-   The joint posterior distribution of interest in hierarchical models is $$
+    p(\theta, \phi \mid y) \propto p(y \mid \theta, \phi) p(\theta, \phi)=p(y \mid \theta) p(\theta \mid \phi) p(\phi)
+    $$
+
+-   We may also care about the marginal posterior of $\theta$: $$
+    p(\theta \mid y)=\int p(\theta, \phi \mid y) d \phi
+    $$
+
+-   Or instead the marginal distribution of $\phi$:
+
+$$
+p(\phi \mid y)=\int p(\theta, \phi \mid y) d \theta
+$$
+
+-   $p(unknowns|knowns) \propto \text { assumptions you make }$
+:::
+
+## Survival of stocked quail chicks
+
+![](images/quail.jpg){fig-align="center" height="600"}
+
+## Survival of stocked quail chicks 🐥
+
+-   Juvenile quail have relatively high mortality rates
+-   Managers want to conduct an management experiment where chicks are released into 100x100m penned-enclosures to determine chick survival in their region
+    -   Released between 6 and 20 chicks in on 11 farms
+    -   Go back one month later and see how many survive
+
+## The quail data and prior information 
+
+-   [The quail data](https://github.com/QFCatMSU/FW-Bayes/blob/main/week5/data/survival_data.rds?raw=true)
+    -   Not a ton of data
+-  [The R script]()
+-  [The Stan model]()
+
+<br><br>
+
+Prior information
+
+-  Bios note that the available literature indicates survival for transplanted baby quail ranges between 0.05 and 0.45
+
+## The hierarchical fluff chicken survival model 🐥
+$$
+\begin{array}{ll}
+Y_{i} & \stackrel{i n d}{\sim} \operatorname{Bin}\left(n_{i}, \theta_{i}\right) \\
+\theta_{i} & \stackrel{i i d}{\sim} \operatorname{Be}(\alpha, \beta) \\
+\alpha, \beta & \sim p(\alpha, \beta)
+\end{array}
+$$
+
+-   $Y_{i}$ is number of chicks alive at end of month
+-   $n_{i}$ is number of chicks released at start of month
+-   $\theta_{i}$ is chick survival at farm *i*
+-   $\alpha$ and $\beta$ are the parameters of the Beta distribution
+
+## Priors for $\alpha$ and $\beta$
+
+-   The interpretation of these parameters
+    -   $\alpha$ is successes
+    -   $\beta$ is failures
+<br>
+-   A more useful parameterization in our case is
+    -   Beta expectation: $\mu=\frac{\alpha}{\alpha+\beta}$
+    -   Beta sample size: $\eta=\alpha+\beta$
+-   Easier to put priors on $\mu$, $\eta$ than $\alpha$, $\beta$ so we will take advantage of this
+
+## Go to the R code 
+
+- 
+
+## The TODO list
+
+::: {style="font-size:29px"}
+1.  Reparameterize the beta distribution to estimate on mean $\theta_{\mu}$ and sample size $\eta$.
+    -   Note $\alpha$ and $\beta$ will then be derived parameters
+2.  Develop a prior for mean survival that places approximately 95% of its probability mass in the range 0.05 to 0.45, and a prior that is somewhat diffuse for $\eta$ but which has most probability mass at low values
+3.  Develop a hierarchical model for average chick survival and farm (i.e., group) specific survival estimates given the available data
+4.  Plot the marginal distribution of $\alpha$ and $\beta$ to help put the miserable integral symbols into perspective
+5.  Do a prior sensitivity test to your informative prior from (1)
+6.  What is the probability that survival from farm two is less than average? Similarly, what is the probability that survival from farm two is less than survival from farm 6?
+7.  If we went to a new farm in the region and wanted to release chicks, what would our best guess be for chick survival at this farm?
+:::
+
+## Summary and outlook
+
+- Specifically tried to talk about hierarchical models in a different (mathier) way than what we did last time
+    - Did this to highlight how conditional independence plays a key role in our ability to build these models
+- Built a hierarchical survival model for ditch chickens 
+    - This included deriving an informative prior for $\theta_{\mu}$
+- Began to play a bit more with output from hierarchical models to generate useful quantities for management
+    - Probability of chick survival at a new farm not included in the original study
+- Next time, Poisson GLMM
+
+## References
+
+::: {style="font-size:25px"}
+-   Berliner, L. M. 1996, Hierarchical Bayesian time series models", Maximum Entropy and Bayesian Methods, 15-22.
+
+-   Gelman and Hill 2007. Data analysis using regression and multilevel models
+
+-   Royle and Dorazio 2008. Hierarchical modeling and inference in ecology.
+
+-   Kery and Schaub. 2012. Bayesian Population Analysis using WinBUGS. Chapter 3
+
+-   McElreath 2023. Statistical Rethinking. Second Edition, Chapters 2 and 9.
+
+-   Punt et al. 2011. Among-stock comparisons for improving stock assessments of data-poor stocks: the "Robin Hood" approach. ICES Journal of Marine Sci.
+
+<https://www.youtube.com/watch?v=nNQdvXfW73E>
+:::
