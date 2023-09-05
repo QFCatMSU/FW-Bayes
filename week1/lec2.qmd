@@ -13,37 +13,37 @@ format:
     css: "https://qfcatmsu.github.io/css/presStyle.css"
     slide-number: c/t  
     theme: simple 
-editor: visual
 highlight-style: kate
 ---
 
 ## Recap
 
 -   Last time we learned that in some special situations we could generate analytical posterior distributions (e.g., the beta-binomial model)
--   However, the reality is that this only works for simple models (i.e., typically < 3 parameters)
+-   However, the reality is that this only works for simple models (i.e., typically \< 3 parameters)
 -   Today we explore a broad class of computational methods and algorithms aimed at approximating posterior distributions
--   We will still use simple models today, but realize that some of these tools scale far better than others to high-dimensional space 
+-   We will still use simple models today, but realize that some of these tools scale far better than others to high-dimensional space
 
-## Outline 
+## Outline
 
--   Computing  a posterior via grid approximation  
+-   Computing a posterior via grid approximation\
 -   Markov Chain Monte Carlo
 -   Metropolis-Hastings algorithm
--   Hamiltonian Monte Carlo  
+-   Hamiltonian Monte Carlo
 
-## Grid search approximation: the basics 
+## Grid search approximation: the basics
 
--   Recall that: $$
+-   Recall that: 
+$$
     \color{darkgreen}{posterior} \propto \color{#E78021}{likelihood} \cdot \color{#3697DC}{prior}
-    $$
+$$
 
 -   For models with 1-2 parameters approximating the posterior is actually a fairly tractable problem, even when the math isn't nice
 
 -   All we do is create a "grid" of parameter values and compute the posterior
 
--   We then search across the computed posterior values to find the posterior maximum and corresponding parameter estimates 
+-   We then search across the computed posterior values to find the posterior maximum and corresponding parameter estimates
 
-## Revisiting the sneak turtles with different priors 
+## Revisiting the sneak turtles with different priors
 
 ```{R echo = T}
 library(tidyverse)
@@ -63,18 +63,18 @@ lik <- dbinom(sum(y), n, p_grid)
 lik # likelihood of having observed the data | each p_grid value
 ```
 
-- see ?dunif, ?dnorm, ?dbinom, etc.
+-   see ?dunif, ?dnorm, ?dbinom, etc.
 
 ## [Always]{style="text-decoration: underline;"} work in log-space when dealing with likelihoods and prior probabilities!
 
 Recognize that 
 $$
-    \color{darkgreen}{posterior} \propto \color{#E78021}{likelihood} \cdot \color{#3697DC}{prior}
+\color{darkgreen}{posterior} \propto \color{#E78021}{likelihood} \cdot \color{#3697DC}{prior}
 $$
 
 is the same as 
 $$
-  \color{darkgreen}{log(posterior)} \propto \color{#E78021}{log(likelihood)} + \color{#3697DC}{log(prior)}
+\color{darkgreen}{log(posterior)} \propto \color{#E78021}{log(likelihood)} + \color{#3697DC}{log(prior)}
 $$
 
 When we multiply likelihoods together they get smaller and may surpass machine precision, so we usually work in log-space
@@ -90,22 +90,22 @@ log_lik <- dbinom(sum(y), n, p_grid, TRUE)
 log_lik
 ```
 
-- We have now defined the log-likelihood across our entire grid sequence of $p$
-- Now we need to calculate the prior probabilities at each `p_grid` value
+-   We have now defined the log-likelihood across our entire grid sequence of $p$
+-   Now we need to calculate the prior probabilities at each `p_grid` value
 
-## Dealing with the prior probablities 
+## Dealing with the prior probablities
 
-- Assume $p\sim \mathrm{Uniform}(0, 1)$
-- We can calculate the log(prior probability) for each $p$ in our grid given a uniform prior via: 
+-   Assume $p\sim \mathrm{Uniform}(0, 1)$
+-   We can calculate the log(prior probability) for each $p$ in our grid given a uniform prior via:
 
 ```{R echo = T}
 log_prior <- dunif(p_grid, 0, 1, TRUE)
 log_prior
 ```
 
-- Is this correct? 
+-   Is this correct?
 
-## Visualizing the Uniform prior  
+## Visualizing the Uniform prior
 
 ```{R echo = F}
 my_df <- data.frame(log_prior, p_grid)
@@ -121,7 +121,7 @@ p
 
 ## Calculating the posterior
 
-- Now can calculate the posterior probabilities of each `p_grid` value given the likelihood and prior as follows: 
+-   Now can calculate the posterior probabilities of each `p_grid` value given the likelihood and prior as follows:
 
 ```{R echo = T}
 # unstandardized log posterior
@@ -140,7 +140,7 @@ posterior <- data.frame(
 )
 ```
 
-## Let's take a look at our posterior approximation  
+## Let's take a look at our posterior approximation
 
 ```{R echo = T}
 posterior
@@ -148,22 +148,23 @@ which.max(posterior$post_prob)
 posterior[which.max(posterior$post_prob), ] # best estimate of p
 ```
 
-## Key points: 
+## Key points:
 
 For each value of $p$ in `p_grid` we get
 
-- log-likelihood of the data | that $p$
-- log-prior probability for that $p$ | the prior(s)
-- log-posterior calculation for each $p$ (very much not a probability)
-- posterior probability for each $p$
+-   log-likelihood of the data \| that $p$
+-   log-prior probability for that $p$ \| the prior(s)
+-   log-posterior calculation for each $p$ (very much not a probability)
+-   posterior probability for each $p$
 
 ## Key points continued:
 
-- The log-likelihood refers to the joint density of all data points (i.e., the sum of the log-likelihood values for each datum) 
+-   The log-likelihood refers to the joint density of all data points (i.e., the sum of the log-likelihood values for each datum)
 
-- log-prior is the marginal distribution of the parameter(s)
+-   log-prior is the marginal distribution of the parameter(s)
 
 ## Comparing our grid approximation with the analytical MLE
+
 ```{R echo=F}
 MAP <- posterior[which.max(posterior$post_prob), ]$p # best estimate of p
 posterior %>%
@@ -345,11 +346,12 @@ posterior %>%
   theme(legend.position = c(0.85, 0.9), text = element_text(size = 20))
 ```
 
-## Exercise 
-- A new study estimated the detection probability of sneak turtles, and you want to incorporate this information as prior information into your analysis
-- Repeat the analysis above in R with a grid_size of 10000 and a $p\sim \mathrm{Normal}(0.13, 0.12)$
-- Report your best estimate of log-posterior and p given this prior
-- If you get this far, try a bunch of different normal priors and think about how it influences your findings  
+## Exercise
+
+-   A new study estimated the detection probability of sneak turtles, and you want to incorporate this information as prior information into your analysis
+-   Repeat the analysis above in R with a grid_size of 10000 and a $p\sim \mathrm{Normal}(0.13, 0.12)$
+-   Report your best estimate of log-posterior and p given this prior
+-   If you get this far, try a bunch of different normal priors and think about how it influences your findings
 
 ## Solution
 
@@ -370,107 +372,106 @@ posterior <- data.frame(
 posterior[which.max(posterior$post_prob), ]
 ```
 
-##  Why can't we just grid search everything?
+## Why can't we just grid search everything?
 
-- There are many important model types (e.g., mixed effects models) for which analytical solutions and things like grid appoximation fail miserably
-  - For models with many parameters and a dense grid, computational burden is intractable 
-  - This includes almost all models relevant to applied ecology  
+-   There are many important model types (e.g., mixed effects models) for which analytical solutions and things like grid appoximation fail miserably
+    -   For models with many parameters and a dense grid, computational burden is intractable
+    -   This includes almost all models relevant to applied ecology
 
-## The Bayesian problem 
+## The Bayesian problem
+
 $$
 P(\theta \mid y)=\frac{P(y \mid \theta) P(\theta)}{P(y)}
 $$
 
-- $P(y)$ is called the "evidence" (i.e. the evidence that the data y was generated by this model)
+-   $P(y)$ is called the "evidence" (i.e. the evidence that the data y was generated by this model)
 
-- We can compute this quantity by integrating over all possible parameter values: 
+-   We can compute this quantity by integrating over all possible parameter values:
 
 $$
 P(y)=\int_{\Theta} P(y, \theta) \mathrm{d} \theta
 $$
 
-## The Bayesian problem cont'd 
+## The Bayesian problem cont'd
 
-- This is *the* key difficulty with Bayesian statistics, and is why Bayesian statistics was not popular until computing power increased in the 1990s 
-  - Even for relatively simple models this thing can be intractable 
-- If we can't solve it, can we approximate it via [Monte Carlo](https://en.wikipedia.org/wiki/Monte_Carlo_method)?
-  - Monte Carlo = repeated random sampling 
-- Unfortunately this would require us to first solve Bayes' theorem because we don't know what the distribution $P(\theta \mid y)$ is
+-   This is *the* key difficulty with Bayesian statistics, and is why Bayesian statistics was not popular until computing power increased in the 1990s
+    -   Even for relatively simple models this thing can be intractable
+-   If we can't solve it, can we approximate it via [Monte Carlo](https://en.wikipedia.org/wiki/Monte_Carlo_method)?
+    -   Monte Carlo = repeated random sampling
+-   Unfortunately this would require us to first solve Bayes' theorem because we don't know what the distribution $P(\theta \mid y)$ is
 
 [McElreath 2023 chapter 2]{.footerRight}
 
-## The Bayesian problem cont'd 
+## The Bayesian problem cont'd
 
-- So we can't compute it using standard methods, can't sample directly from it  
-- Mathematicians realized this, and instead said:
-  - "Let's construct an [ergodic](https://en.wikipedia.org/wiki/Ergodic_theory), reversible [Markov chain](https://en.wikipedia.org/wiki/Markov_chain) that has as an equilibrium distribution which matches our posterior distribution"
--  What? 🦇💩
--  Markov chain: what happens next depends only on the state of affairs now
-- The remarkable fact is that this is relatively easy to do 
-[Gelman et al. 2003]{.footerRight}
+-   So we can't compute it using standard methods, can't sample directly from it\
+-   Mathematicians realized this, and instead said:
+    -   "Let's construct an [ergodic](https://en.wikipedia.org/wiki/Ergodic_theory), reversible [Markov chain](https://en.wikipedia.org/wiki/Markov_chain) that has as an equilibrium distribution which matches our posterior distribution"
+-   What? 🦇💩
+-   Markov chain: what happens next depends only on the state of affairs now
+-   The remarkable fact is that this is relatively easy to do [Gelman et al. 2003]{.footerRight}
 
-## Introduction to Markov Chain Monte Carlo (MCMC) 
+## Introduction to Markov Chain Monte Carlo (MCMC)
 
-- What is MCMC: a broad class of algorithms that allow us to sample from an arbitrary probability distribution 
+-   What is MCMC: a broad class of algorithms that allow us to sample from an arbitrary probability distribution
 
-- Counter-intuitive to most non-robots  
+-   Counter-intuitive to most non-robots
 
-- Rather than computing the $P(\theta \mid y)$ directly, MCMC draws samples of parameters from $P(\theta \mid y)$
+-   Rather than computing the $P(\theta \mid y)$ directly, MCMC draws samples of parameters from $P(\theta \mid y)$
 
-  - This is actually **extremely** useful
+    -   This is actually **extremely** useful
 
-- Collecting enough samples allows us to 'map out' or get a picture of $P(\theta \mid y)$
+-   Collecting enough samples allows us to 'map out' or get a picture of $P(\theta \mid y)$
 
 [see also McElreath 2023 chapter 2]{.footerRight}
 
 ## The Metropolis-Hastings algorithm
 
-- Metropolis–Hastings (MH) is a classic MCMC algorithm with the following rules: 
+-   Metropolis--Hastings (MH) is a classic MCMC algorithm with the following rules:
 
-- Let $f(x)$ be a function that is *proportional* to the desired probability density function $P(x)$ (a.k.a the "target distribution")
+-   Let $f(x)$ be a function that is *proportional* to the desired probability density function $P(x)$ (a.k.a the "target distribution")
 
-- Remember that we know:  
+-   Remember that we know:
 
 $$
     \color{darkgreen}{posterior} \propto \color{#E78021}{likelihood} \cdot \color{#3697DC}{prior}
 $$
 
-- So we just set $f(x)$ = $P(y \mid \theta) \cdot P(\theta)$ 
+-   So we just set $f(x)$ = $P(y \mid \theta) \cdot P(\theta)$
 
 ## The Metropolis-Hastings algorithm cont'd
 
-The recipe: 
+The recipe:
 
-- Choose an arbitrary starting value for a parameter $x_{t}$
-- Choose an arbitrary probability distribution $g(x \mid y)$ to *propose* the next parameter value $x$ given the previous value $y$
-     - Note $g(x \mid y)$ is usually a Gaussian distribution centered at $y$ so that points closer to $y$ are more likely to be visited next (random walk) 
+-   Choose an arbitrary starting value for a parameter $x_{t}$
+-   Choose an arbitrary probability distribution $g(x \mid y)$ to *propose* the next parameter value $x$ given the previous value $y$
+    -   Note $g(x \mid y)$ is usually a Gaussian distribution centered at $y$ so that points closer to $y$ are more likely to be visited next (random walk)
 
 [Gelman et al. 2003]{.footerRight}
 
 ## The Metropolis-Hastings algorithm cont'd
 
-- for each iteration $t$
-  
-  - generate a proposed value for $x^{\prime}$ by drawing a random number from $g\left(x^{\prime} \mid x_{t}\right)$ 
-  
-  - calculate the acceptance probability (a.k.a. acceptance ratio) $\alpha=f\left(x^{\prime}\right) / f\left(x_{t}\right)$
+-   for each iteration $t$
 
-  - accept or reject the proposed value $x^{\prime}$
-    
-    - generate a uniform random number $u \in[0,1]$
-    - if u > $\alpha$, accept the proposal and set $x_{+1}=x^{\prime}$ 
-    - if u < $\alpha$, reject the proposal and set $x_{+1}=x_{t}$ 
+    -   generate a proposed value for $x^{\prime}$ by drawing a random number from $g\left(x^{\prime} \mid x_{t}\right)$
 
+    -   calculate the acceptance probability (a.k.a. acceptance ratio) $\alpha=f\left(x^{\prime}\right) / f\left(x_{t}\right)$
+
+    -   accept or reject the proposed value $x^{\prime}$
+
+        -   generate a uniform random number $u \in[0,1]$
+        -   if u \> $\alpha$, accept the proposal and set $x_{+1}=x^{\prime}$
+        -   if u \< $\alpha$, reject the proposal and set $x_{+1}=x_{t}$
 
 [Gelman et al. 2003]{.footerRight}
 
-## Re-thinking the acceptance probability 
+## Re-thinking the acceptance probability
 
-This thing works because 
+This thing works because
 
 $\alpha=f\left(x^{\prime}\right) / f\left(x_{t}\right)$
 
-is the same as saying 
+is the same as saying
 
 $$
 \alpha=\frac{\frac{P(y \mid \theta^{\prime}) P(\theta^{\prime})}{P(y)}}{\frac{P(y \mid \theta_{t}) P(\theta_{t})}{P(y)}}
@@ -478,7 +479,7 @@ $$
 
 Note we just substituted $x^{\prime}$ and $x_{t}$ for $\theta^{\prime}$ and $\theta_{t}$
 
-- $P(y)$ cancels out via mathemagicks 
+-   $P(y)$ cancels out via mathemagicks
 
 ## Remember the sneak turtles 🐢!
 
@@ -489,7 +490,7 @@ n
 
 ## Building a Metropolis-Hastings algorithm for sneak turtles 🐢
 
-First, write three helper functions: 
+First, write three helper functions:
 
 ```{R echo = T}
 l_prior <- function(param) { # log(prior)
@@ -507,7 +508,7 @@ l_post <- function(param) { # log(posterior) = log(likelihood) + log(prior)
 
 ## Building a Metropolis-Hastings algorithm for sneak turtles 🐢
 
-Second, declare some stuff 
+Second, declare some stuff
 
 ```{R echo = T}
 n_iter <- 10000 # number of iterations to run the MCMC
@@ -517,7 +518,7 @@ chain[1] <- 0.5 # initial guess at p
 
 ## Building a Metropolis-Hastings algorithm for sneak turtles 🐢
 
-Now we run the algorithm 
+Now we run the algorithm
 
 ```{R, echo = T}
 for (i in 2:n_iter) {
@@ -539,7 +540,7 @@ for (i in 2:n_iter) {
 
 [see also Gelman et al. 2003; Robert and Casella 2010]{.footerRight}
 
-## Metropolis-Hastings results 
+## Metropolis-Hastings results
 
 ```{R echo = F}
 my_df <- data.frame(p = chain, iter = 1:n_iter)
@@ -565,7 +566,7 @@ my_df %>%
   )
 ```
 
-## Metropolis-Hastings results 
+## Metropolis-Hastings results
 
 ```{R echo = F}
 my_df %>%
@@ -582,21 +583,21 @@ my_df %>%
 
 ## Exercise
 
-Get in groups of three, play with the following: 
+Get in groups of three, play with the following:
 
-  - the proposal distribution 
-  - the initialization value
-  - chain length
-  - plot histogram of p and the chain (the fuzzy catepillar plot)
+-   the proposal distribution
+-   the initialization value
+-   chain length
+-   plot histogram of p and the chain (the fuzzy catepillar plot)
 
-Report your findings back to the group 
+Report your findings back to the group
 
-## MCMC algorithm diagnostics 
+## MCMC algorithm diagnostics
 
-- Many of the parameters we were playing with affect our approximation of the posterior!
-- Remember, this is a dead-simple example. Eventually we will use MCMC to approximate high-dimensional integrals which is much more difficult
-- Clearly takes some time to "converge" on a stable posterior distribution
-  - With MH MCMC this period between initial values and convergence to some distribution is known as the "burn-in" period, and we usually discard it  
+-   Many of the parameters we were playing with affect our approximation of the posterior!
+-   Remember, this is a dead-simple example. Eventually we will use MCMC to approximate high-dimensional integrals which is much more difficult
+-   Clearly takes some time to "converge" on a stable posterior distribution
+    -   With MH MCMC this period between initial values and convergence to some distribution is known as the "burn-in" period, and we usually discard it
 
 [Gelman et al. 2003; Kery and Schaub 2013; McElreath et al. 2023]{.footerRight}
 
@@ -885,40 +886,39 @@ my_df %>%
   )
 ```
 
-## Proposal distribution sd > 0.44
+## Proposal distribution sd \> 0.44
 
-Breaks the following lines and dies because gives p outside [0,1]
+Breaks the following lines and dies because gives p outside \[0,1\]
 
 ```{R echo = T, eval = F}
 if (p_new < 0) p_new <- abs(p_new)
 if (p_new > 1) p_new <- 2 - p_new
 ```
 
-- There are smarter ways to keep a value between [0,1]
-- Key points: 
-  - tuning the algorithm impacts its ability to sample the posterior 
-  - correlation in the Markov chain means you don't get independent samples of the parameters of interest  
+-   There are smarter ways to keep a value between \[0,1\]
+-   Key points:
+    -   tuning the algorithm impacts its ability to sample the posterior
+    -   correlation in the Markov chain means you don't get independent samples of the parameters of interest
 
-## What do we want the chains to do 
+## What do we want the chains to do
 
-- We want chains to look like fuzzy caterpillars  
+-   We want chains to look like fuzzy caterpillars
 
 ![](images/fuzzy.png){fig-align="center" width="500" height="300"}
 
-- Good indication that the MCMC is **efficiently** sampling from a maximum in the underlying distribution 
+-   Good indication that the MCMC is **efficiently** sampling from a maximum in the underlying distribution
 
 ## Fuzzy caterpillars are good indication that a chain is behaving, but...
 
-- We could be stuck in a local maximum 
-  - If we ran it longer we might find a better solution 
-  - One way to deal: run multiple, independent chains initialized from different starting locations
-- Should get overlapping fuzzy caterpillars if everything goes well 
-- Because chains are independent, we often run them in parallel 
+-   We could be stuck in a local maximum
+    -   If we ran it longer we might find a better solution
+    -   One way to deal: run multiple, independent chains initialized from different starting locations
+-   Should get overlapping fuzzy caterpillars if everything goes well
+-   Because chains are independent, we often run them in parallel
 
 [Gelman et al. 2003; Kery and Schaub 2013; McElreath et al. 2023]{.footerLeft}
 
-
-## Running multiple chains each with different initialization values 
+## Running multiple chains each with different initialization values
 
 ```{R, echo = F}
 set.seed(2)
@@ -947,7 +947,7 @@ my_df %>%
   )
 ```
 
-## Running multiple chains each with different initialization values 
+## Running multiple chains each with different initialization values
 
 ```{R, echo = F}
 my_df %>%
@@ -968,17 +968,16 @@ my_df %>%
   )
 ```
 
-## Software that can run MCMC for you 
+## Software that can run MCMC for you
 
-- BUGS/JAGS
-- NIMBLE (de Valpine et al. 2017)
-- MCMCpack
-- LaplacesDemon 
-- Stan (what we will use in this class)
-- Many others 
+-   BUGS/JAGS
+-   NIMBLE (de Valpine et al. 2017)
+-   MCMCpack
+-   LaplacesDemon
+-   Stan (what we will use in this class)
+-   Many others
 
-These tools implement many different MCMC routines 
-Ecologists can (mostly) treat these tools as black boxes
+These tools implement many different MCMC routines Ecologists can (mostly) treat these tools as black boxes
 
 [e.g., see Gelman et al. 2003; Green et al. 2020; Kery and Schaub 2013]{.footerRight}
 
@@ -987,11 +986,9 @@ Ecologists can (mostly) treat these tools as black boxes
 #### The following draws heavily from Chapter 9 in McElreath 2023
 
 ::: {style="font-size: 75%;"}
-
 *It appears to be a quite general principle that, wherever there is a randomized way of doing something, then there is a nonrandomized way that delivers better performance but requires more thought*-E.T. Jaynes
 
-- No free lunch 
-
+-   No free lunch
 :::
 
 ![](images/jaynes.png){fig-align="center" width="200" height="300"}
@@ -1000,78 +997,73 @@ Ecologists can (mostly) treat these tools as black boxes
 
 ## Hamiltonian Monte Carlo (HMC)
 
-- HMC is much more computationally demanding than MH, but its proposals are much more efficient 
-- HMC requires fewer samples to map out the posterior distribution 
+-   HMC is much more computationally demanding than MH, but its proposals are much more efficient
+-   HMC requires fewer samples to map out the posterior distribution
 
-**The bottom line**: 
-<br>
-You need less computer time in total, even though each sample requires more time than simpler algorithms 
+**The bottom line**: <br> You need less computer time in total, even though each sample requires more time than simpler algorithms
 
-- Really outshines other algorithms for models with 10s to 1000s of parameters 
+-   Really outshines other algorithms for models with 10s to 1000s of parameters
 
-- Don't need to know everything (lots of math in references)
+-   Don't need to know everything (lots of math in references)
 
 [see McElreath 2023 chapter 9]{.footerRight}
 
-## HMC: understanding some concepts 
+## HMC: understanding some concepts
 
-- Leverages tools from [Hamiltonian dynamics](https://en.wikipedia.org/wiki/Hamiltonian_mechanics) and [differential geometry](https://en.wikipedia.org/wiki/Differential_geometry) to generate better proposals 
-- Uses information on the gradient (curvature) of the log-posterior 
-- HMC creates a $\theta^{\prime}$ that is uncorrelated with $\theta_{t}$ and which has a high probability of being accepted
-  - Does this using a physics simulation and pretends parameters are tiny, frictionless particles 
-- See also Neal (2011) [MCMC using Hamiltonian Dynamics](https://arxiv.org/pdf/1206.1901.pdf%20http://arxiv.org/abs/1206.1901.pdf)
+-   Leverages tools from [Hamiltonian dynamics](https://en.wikipedia.org/wiki/Hamiltonian_mechanics) and [differential geometry](https://en.wikipedia.org/wiki/Differential_geometry) to generate better proposals
+-   Uses information on the gradient (curvature) of the log-posterior
+-   HMC creates a $\theta^{\prime}$ that is uncorrelated with $\theta_{t}$ and which has a high probability of being accepted
+    -   Does this using a physics simulation and pretends parameters are tiny, frictionless particles
+-   See also Neal (2011) [MCMC using Hamiltonian Dynamics](https://arxiv.org/pdf/1206.1901.pdf%20http://arxiv.org/abs/1206.1901.pdf)
 
-## HMC hockey puck analogy 
+## HMC hockey puck analogy
 
-- Imagine you have a standard two parameter model 
-  - This creates a posterior shaped like a bowl 
-- In this case, HMC is like a hockey puck launched in random directions around an ice rink shaped like a bowl (the posterior distribution)
+-   Imagine you have a standard two parameter model
+    -   This creates a posterior shaped like a bowl
+-   In this case, HMC is like a hockey puck launched in random directions around an ice rink shaped like a bowl (the posterior distribution)
 
-[Go to MCMC interactive gallery](<https://chi-feng.github.io/mcmc-demo/app.html>)
+[Go to MCMC interactive gallery](https://chi-feng.github.io/mcmc-demo/app.html)
 
 ## Stan does the HMC sneakery for you
 
-- In the Stan language, stochastic models are described by specifying
-stochastic or deterministic relationships between quantities such
-as parameters and data
+-   In the Stan language, stochastic models are described by specifying stochastic or deterministic relationships between quantities such as parameters and data
 
-- Stan (software) constructs the log-posterior for you if you specify prior(s) and likelihood(s)
+-   Stan (software) constructs the log-posterior for you if you specify prior(s) and likelihood(s)
 
-- Applies HMC to your problem, reports chains, log-posterior, and diagnostics  
+-   Applies HMC to your problem, reports chains, log-posterior, and diagnostics
 
-![](images/stan.png){style="width:300px; height:125px; position: absolute; bottom:5%; right: 3%;"}
+![](images/stan.png){style="width:300px; height:125px; position: absolute; margin-top:4%; right: 3%;"}
 
-## Summary and outlook 
+## Summary and outlook
 
 Posteriors are difficult to approximate:
 
-1. Analytical solutions (beta-binomial)
-2. Brute force (grid search approximations)
-3. MCMC (draw samples from the posterior)
+1.  Analytical solutions (beta-binomial)
+2.  Brute force (grid search approximations)
+3.  MCMC (draw samples from the posterior)
 
-We have laid the ground work, and now we get to play and fit Bayesian models in Stan 
+We have laid the ground work, and now we get to play and fit Bayesian models in Stan
 
-![](images/caveman.png){style="width:400px; height:400; position: absolute; bottom:3%; right: 3%;"}
+![](images/caveman.png){style="width:400px; height:400; position: absolute; margin-top: -2%; right: 3%;"}
 
 ## References
 
 ::: {style="font-size:25px"}
-  1. Gelman et al. 2003.  Bayesian Data Analysis.  Appendix C. 
+1.  Gelman et al. 2003. Bayesian Data Analysis. Appendix C.
 
-  2. Green et al. 2020. Introduction to Bayesian Methods in Ecology and Natural Resources. Appendix B.
+2.  Green et al. 2020. Introduction to Bayesian Methods in Ecology and Natural Resources. Appendix B.
 
-  3. Kery and Schaub. 2012. Bayesian Population Analysis using WinBUGS. 
+3.  Kery and Schaub. 2012. Bayesian Population Analysis using WinBUGS.
 
-  4. McElreath 2023.  Statistical Rethinking. Second Edition, Chapters 2 and 9.
-  
-  5. Neal 2011.  MCMC using Hamiltonian Dynamics.  *In*: Handbook of Markov Chain Monte Carlo. 
+4.  McElreath 2023. Statistical Rethinking. Second Edition, Chapters 2 and 9.
 
-  6. Robert and Casella 2010. Introduction to Monte Carlo methods with R. 
+5.  Neal 2011. MCMC using Hamiltonian Dynamics. *In*: Handbook of Markov Chain Monte Carlo.
+
+6.  Robert and Casella 2010. Introduction to Monte Carlo methods with R.
 
 Useful web link:
 
 [MCMC visualization app](https://chi-feng.github.io/mcmc-demo/app.html)
 
 Michael Betancourt [seminar](https://www.youtube.com/watch?v=9ykCU2-W_8Y) on using Hamiltonian Monte Carlo for Bayesian inference
-
 :::

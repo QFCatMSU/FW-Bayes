@@ -13,7 +13,6 @@ format:
     css: "https://qfcatmsu.github.io/css/presStyle.css"
     slide-number: c/t  
     theme: simple 
-editor: visual
 highlight-style: kate
 ---
 
@@ -23,9 +22,10 @@ highlight-style: kate
 -   Write code to elicit simple models and implement Bayesian inference in Stan
 -   Use the cmdstanr interface
 -   Develop familiarity with a few packages that make your life easier
--   Walk through some model diagnostics 
+-   Walk through some model diagnostics
 -   Make sure you have these programs/packages installed\
-    ![](images/Rlogo.png){style="width:185px; position: absolute; bottom:10.5%; left:0%;"} ![](images/logo_website.png){style="width:150px; position: absolute; bottom:6%; right:66%;"} ![](images/tidyverse.png){style="width:165px; position: absolute; bottom:7%; right:47%;"} ![](images/tidybayes.png){style="width:185px; position: absolute; bottom:7.5%; right:28%;"}
+    ![](images/Rlogo.png){style="width:185px; position: absolute; margin-top:1.5%; left:0%;"} ![](images/logo_website.png){style="width:150px; position: absolute; margin-top:1%; right:66%;"} ![](images/tidyverse.png){style="width:165px; position: absolute; margin-top:0.5%; right:47%;"} ![](images/tidybayes.png){style="width:185px; position: absolute; margin-top:0%; right:28%;"}
+
 
 ## Installing CmdStanR
 
@@ -79,7 +79,7 @@ fit$summary() # you should get these numbers:
 
 ## Presumably this broke someone
 
-![](images/depression.png){style="width:150px; position: absolute; bottom:6%; right:1%;"}
+![](images/depression.png){style="width:150px; position: absolute; margin-top:-5%; right:1%;z-index:-1;"}
 
 [[image credit](https://www.youtube.com/watch?v=f1R0qLh61Yw)]{.footerLeft}
 
@@ -98,48 +98,48 @@ Stan is a probablistic modeling language <https://mc-stan.org/>
 
 -   The Stan [documentation](https://mc-stan.org/users/documentation/) and [community](https://discourse.mc-stan.org/) is legendary in my opinion, albeit dense at times
 
-## Using Stan requires writing a `.stan` file 
+## Using Stan requires writing a `.stan` file
 
-- Coding in Stan is something of a cross between R, WINBUGS/JAGS, and C++
+-   Coding in Stan is something of a cross between R, WINBUGS/JAGS, and C++
 
-- It is a Turing complete programming language
+-   It is a Turing complete programming language
 
-- Stan requires you to be explicit
-  - Need to tell it whether something is a real, integer, vector, matrix, array, etc. 
-  - Lines need to end in a `;`
+-   Stan requires you to be explicit
 
-- A `.stan` file relies on program blocks to read in your data and contruct your model 
+    -   Need to tell it whether something is a real, integer, vector, matrix, array, etc.
+    -   Lines need to end in a `;`
 
-- Many built in functions you can use 
+-   A `.stan` file relies on program blocks to read in your data and contruct your model
 
-- Why must we confront misery of a new language? 
+-   Many built in functions you can use
+
+-   Why must we confront misery of a new language?
 
 ## A linear regression in Stan
 
 ::: {style="font-size: 85%;"}
-
-Let's build a linear regression model, which can be written a few ways: 
+Let's build a linear regression model, which can be written a few ways:
 
 $$
 y_{i}=\beta_{0}+\beta x_{i}+\epsilon_{i} \quad \text{where} \quad \epsilon_{i} \sim \operatorname{normal}(0, \sigma) \text {. }
 $$
 
-which is the same as 
+which is the same as
 
 $$
 y_{i}-\left(\beta_{0}+\beta X_{i}\right) \sim \operatorname{normal}(0, \sigma)
 $$
 
-and reducing further: 
+and reducing further:
 
 $$
 y_{i} \sim \operatorname{normal}\left(\beta_{0}+\beta X_{i}, \sigma\right) .
 $$
 :::
 
-## Linear regression in Stan cont'd 
+## Linear regression in Stan cont'd
 
-- Let's build a simple linear regression model in Stan
+-   Let's build a simple linear regression model in Stan
 
 ```{R echo = F}
 # create some fake linear regression data
@@ -158,9 +158,9 @@ saveRDS(data, file = "data/linreg.rds")
 
 [The data](https://github.com/QFCatMSU/FW-Bayes/blob/main/week2/data/linreg.rds?raw=true)
 
-  - What do we do when we get some data? 
+-   What do we do when we get some data?
 
-## [Always]{style="text-decoration: underline;"} plot the data 
+## [Always]{style="text-decoration: underline;"} plot the data
 
 ```{R eval = T,echo = T}
 library(tidyverse)
@@ -176,27 +176,28 @@ p <- data %>% ggplot(aes(y = y, x = x)) +
 p
 ```
 
-## [Always]{style="text-decoration: underline;"} plot the data 
+## [Always]{style="text-decoration: underline;"} plot the data
 
 ```{R eval = T,echo = T}
 p + geom_smooth(method = lm, se = F)
 lm(data$y ~ data$x) # fit y = a + bx + e, where e ~ N(0, sd)
 ```
 
-## *Thinking* through our model  
+## *Thinking* through our model
 
 $$
 \color{darkorange}{y_{i}} \sim \operatorname{normal}\left(\color{#8D44AD}{\beta_{0}}+\color{#8D44AD}{\beta X_{i}}, \color{#3697DC}{\sigma}\right).
 $$
 
-[response]{style="color:darkorange;"} = [deterministic component]{style="color:#8D44AD;"} + [random component]{style="color:#3697DC;"} 
+[response]{style="color:darkorange;"} = [deterministic component]{style="color:#8D44AD;"} + [random component]{style="color:#3697DC;"}
 
-## *Thinking* through our model  
+## *Thinking* through our model
+
 $$
 \color{darkorange}{y_{i}} \sim \operatorname{normal}\left(\color{#8D44AD}{\beta_{0}}+\color{#8D44AD}{\beta X_{i}}, \color{#3697DC}{\sigma}\right).
 $$
 
-[response]{style="color:darkorange;"} = [deterministic component]{style="color:#8D44AD;"} + [random component]{style="color:#3697DC;"} 
+[response]{style="color:darkorange;"} = [deterministic component]{style="color:#8D44AD;"} + [random component]{style="color:#3697DC;"}
 
 $\text { If } \mu_{i} \in \mathbb{R} \text { and } \sigma \in \mathbb{R}^{+} \text {, then for } y_{i} \in \mathbb{R} \text {, }$
 
@@ -204,12 +205,13 @@ $$
 \operatorname{Normal}(y_{i} \mid \mu_{i}, \sigma)=\frac{1}{\sqrt{2 \pi} \sigma} \exp \left(-\frac{1}{2}\left(\frac{y_{i}-\mu_{i}}{\sigma}\right)^{2}\right)
 $$
 
-## *Thinking* through our model  
+## *Thinking* through our model
+
 $$
 \color{darkorange}{y_{i}} \sim \operatorname{normal}\left(\color{#8D44AD}{\beta_{0}+\beta X_{i}}, \color{#3697DC}{\sigma}\right).
 $$
 
-[response]{style="color:darkorange;"} = [deterministic component]{style="color:#8D44AD;"} + [random component]{style="color:#3697DC;"} 
+[response]{style="color:darkorange;"} = [deterministic component]{style="color:#8D44AD;"} + [random component]{style="color:#3697DC;"}
 
 $\text { If } \mu_{i} \in \mathbb{R} \text { and } \sigma \in \mathbb{R}^{+} \text {, then for } y_{i} \in \mathbb{R} \text {, }$
 
@@ -219,7 +221,7 @@ $$
 
 $\text{where } \color{#8D44AD}{\mu_{i}} = \color{#8D44AD}{\beta_{0}+\beta X_{i}}$
 
-## *Thinking* through our model  
+## *Thinking* through our model
 
 $$
 y_{i} \sim \operatorname{normal}\left(\beta_{0}+\beta X_{i}, \sigma\right) .
@@ -239,13 +241,12 @@ Code to do what we are going through is in the `week2/` Github directory
 
 [`linreg.R`](https://github.com/QFCatMSU/FW-Bayes/blob/main/week2/R/linreg.r) and [`linreg.stan`](https://github.com/QFCatMSU/FW-Bayes/blob/main/week2/src/linreg.stan)
 
-![](images/logo_website.png){style="width:150px; position: absolute; bottom:6%; right:3%"}
+![](images/logo_website.png){style="width:150px; position: absolute; margin-top:-5%; right:3%"}
 
 ## Structure of a `.stan` file
 
 ::: {style="font-size: 75%;"}
-
-```stan 
+``` stan
 // this is a comment 
 // program block demonstration
 data{
@@ -270,7 +271,8 @@ generated quantities{
   // models, data, and (optionally) pseudo-random numbers. 
 }
 ```
-- Can also write custom functions (although we won't in this class)
+
+-   Can also write custom functions (although we won't in this class)
 :::
 
 ## In words, rather than code
@@ -278,22 +280,19 @@ generated quantities{
 As per the comments in the code, each of the program blocks does certain stuff
 
 ::: {style="font-size: 75%;"}
-
-- `data{ }` reads data into the .stan program
-- `transformed data{ }` runs calculations on those data (once)
-- `parameters{ }` declares the _**estimated**_ parameters in a Stan program
-- `transformed parameters{ }` takes the parameters, data, and transformed data, and calculates stuff you need for your model 
-- `model{ }` constructs a log probability function: 
-  - $log(posterior) = log(priors) + log(likelihood)$
-- `generated quantities{ }` is only executed after you have your sampled posterior
-  - useful for calculating derived quantities given your model, data, and parameters
-
+-   `data{ }` reads data into the .stan program
+-   `transformed data{ }` runs calculations on those data (once)
+-   `parameters{ }` declares the ***estimated*** parameters in a Stan program
+-   `transformed parameters{ }` takes the parameters, data, and transformed data, and calculates stuff you need for your model
+-   `model{ }` constructs a log probability function:
+    -   $log(posterior) = log(priors) + log(likelihood)$
+-   `generated quantities{ }` is only executed after you have your sampled posterior
+    -   useful for calculating derived quantities given your model, data, and parameters
 :::
 
-## Writing the `linreg.stan` file 
+## Writing the `linreg.stan` file
 
 ::: {style="font-size: 85%;"}
-
 ```{javascript eval = F, echo = T}
 data {
   int<lower=0> n; // number of observations 
@@ -317,10 +316,9 @@ model {
 ```
 :::
 
-## Writing the `linreg.stan` file 
+## Writing the `linreg.stan` file
 
 ::: {style="font-size: 85%;"}
-
 ```{javascript eval = F, echo = T}
 data {
   int<lower=0> n; // number of observations 
@@ -346,10 +344,9 @@ model {
 ```
 :::
 
-## Writing the `linreg.stan` file 
+## Writing the `linreg.stan` file
 
 ::: {style="font-size: 85%;"}
-
 ```{javascript eval = F, echo = T}
 data {
   int<lower=0> n; // number of observations 
@@ -375,32 +372,30 @@ model {
 
 ## Key points
 
-- These three likelihood configurations result in the same parameter estimates, but option (3) will give you a different log posterior (`lp__`)
-  - Vectorized option is the fastest, but sometimes these other configurations are helpful in specific applications 
-- Stan sets up the log(posterior) as the log(likelihood) + log(priors) if you specify likelihood and priors
+-   These three likelihood configurations result in the same parameter estimates, but option (3) will give you a different log posterior (`lp__`)
+    -   Vectorized option is the fastest, but sometimes these other configurations are helpful in specific applications
+-   Stan sets up the log(posterior) as the log(likelihood) + log(priors) if you specify likelihood and priors
 
-## Some notes on priors in Stan 
+## Some notes on priors in Stan
 
 ::: {style="font-size: 85%;"}
-
-- If you don't specify priors, *Stan will specify flat priors for you*
-  - Not always a good thing, and it can lead to problems 
-- In this class we are either going to use vague or uninformative priors, OR we will use informative priors that incorporate domain expertise or information from previous studies
-- When we say a prior is "weakly informative," what we mean is that if there's a large amount of data, the likelihood will dominate, and the prior will not be important
-  - Prior can often only be understood in the context of the likelihood (Gelman et al. 2017; see also [prior recommendations in Stan](https://github.com/stan-dev/stan/wiki/Prior-Choice-Recommendations))
+-   If you don't specify priors, *Stan will specify flat priors for you*
+    -   Not always a good thing, and it can lead to problems
+-   In this class we are either going to use vague or uninformative priors, OR we will use informative priors that incorporate domain expertise or information from previous studies
+-   When we say a prior is "weakly informative," what we mean is that if there's a large amount of data, the likelihood will dominate, and the prior will not be important
+    -   Prior can often only be understood in the context of the likelihood (Gelman et al. 2017; see also [prior recommendations in Stan](https://github.com/stan-dev/stan/wiki/Prior-Choice-Recommendations))
 
 [see arguments in Kery and Schaub 2012; Gelman et al. 2017; McElreath 2023]{.footerLeft}
-
 :::
 
-## Some tips for debugging `.stan` code  
+## Some tips for debugging `.stan` code
 
-- Use one chain (else prepare for impending doomies)
-- Use a low number of iterations (i.e., like 1-30)
-- wrap things in `print()` statements in Stan 
-- Simulate fake data representing your model (you'll know what truth is)
-- Build fast, fail fast
-- Plot everything 
+-   Use one chain (else prepare for impending doomies)
+-   Use a low number of iterations (i.e., like 1-30)
+-   wrap things in `print()` statements in Stan
+-   Simulate fake data representing your model (you'll know what truth is)
+-   Build fast, fail fast
+-   Plot everything
 
 ## Controlling everything from `linreg.R`
 
@@ -431,7 +426,7 @@ inits()
 inits()
 ```
 
-- Can pass this inits function to stan to initialize each of our MCMC chains at different parameter values 
+-   Can pass this inits function to stan to initialize each of our MCMC chains at different parameter values
 :::
 
 ## Running the model
@@ -449,13 +444,12 @@ fit <- mod$sample(
 )
 ```
 
-- see also `?sampling` for *many* other options 
-- 1000 iterations for warmup and sampling is not a bad place to start (however see debugging tips at the end of the lecture)
+-   see also `?sampling` for *many* other options
+-   1000 iterations for warmup and sampling is not a bad place to start (however see debugging tips at the end of the lecture)
 
 ## Running the model
 
 ::: {style="font-size: 55%;"}
-
 ```{R echo = F, eval = T}
 fit <- mod$sample(
   data = stan_data, # tagged stan_data list
@@ -471,30 +465,31 @@ fit <- mod$sample(
 :::
 
 ## Bayesian model diagnostics
-- Diagnostics for Bayesian models can be lumped into two categories: 
 
-  1. Diagnostics that evaluate the performance of your MCMC algorithm
-  2. Diagnostics that help you understand your model fit vs. observed data
+-   Diagnostics for Bayesian models can be lumped into two categories:
+
+    1.  Diagnostics that evaluate the performance of your MCMC algorithm
+    2.  Diagnostics that help you understand your model fit vs. observed data
 
 **Both types of checks are required to ensure the reliability of your inferences in a Bayesian setting**
 
-- We will start with MCMC diagnostics 
+-   We will start with MCMC diagnostics
 
 [Gelman et al. 2021; McElreath 2023]{.footerRight}
 
-## Did Stan run into any obvious issues? 
+## Did Stan run into any obvious issues?
 
 ```{R echo = T, eval = T}
 fit$diagnostic_summary() # sampler diagnostic summaries
 ```
 
 ::: {style="font-size: 75%;"}
+-   [see here](https://mc-stan.org/misc/warnings.html) for a description of runtime warnings and issues related to convergence problems
 
-- [see here](https://mc-stan.org/misc/warnings.html) for a description of runtime warnings and issues related to convergence problems 
+-   Hamiltonian based Estimated Bayesian Fraction of Missing Information (e-bfmi) quantifies how hard it is to sample level sets at each iteration
 
-- Hamiltonian based Estimated Bayesian Fraction of Missing Information (e-bfmi) quantifies how hard it is to sample level sets at each iteration
-  - if very low (i.e., < 0.3), sampler is having a difficult time sampling the target distribution ([Betancourt 2017](https://arxiv.org/abs/1701.02434))
-::: 
+    -   if very low (i.e., \< 0.3), sampler is having a difficult time sampling the target distribution ([Betancourt 2017](https://arxiv.org/abs/1701.02434))
+:::
 
 ## Examine $\widehat{R}$
 
@@ -506,7 +501,6 @@ mcmc_rhat(rhats) # should all be less than 1.05 as rule of thumb
 ```
 
 [Gelman et al. 2021; McElreath 2023; Vehtari et al. 2019]{.footerRight}
-
 
 ## Examine the number of effective samples
 
@@ -528,7 +522,7 @@ dim(posterior)
 np <- nuts_params(fit) # get the sampler parameters - useful for debugging
 ```
 
-## Let's get tidy: visualizing the chains 
+## Let's get tidy: visualizing the chains
 
 ```{R eval = T, echo = T}
 color_scheme_set("blue") # bayesplot color themes
@@ -547,7 +541,7 @@ p <- mcmc_trace(posterior, pars = "sd", np = np) +
 p
 ```
 
-## Let's get tidy: zooming in on chains 
+## Let's get tidy: zooming in on chains
 
 ```{R eval = T, echo = T}
 # zoom in on one parameter iterations 600-721 (bc why not?)
@@ -556,7 +550,7 @@ p <- mcmc_trace(posterior, pars = "sd", window = c(600, 721), np = np) +
 p
 ```
 
-## Let's get tidy: highlighting one chain 
+## Let's get tidy: highlighting one chain
 
 ```{R eval = T, echo = T}
 # highlight chain 2 vs. other chains:
@@ -565,7 +559,7 @@ p <- mcmc_trace_highlight(posterior, pars = "sd", highlight = 2) +
 p
 ```
 
-## Let's get tidy: pairs plots 
+## Let's get tidy: pairs plots
 
 ```{R eval = T, echo = T}
 # pairs plots  - good modelers almost always use this
@@ -573,7 +567,7 @@ p <- mcmc_pairs(posterior, pars = c("b0", "b1", "sd"), np = np)
 p
 ```
 
-## Let's get tidy: pairs plots 
+## Let's get tidy: pairs plots
 
 ```{R eval = T, echo = T}
 # pairs plots - good modelers almost always use this
@@ -642,15 +636,15 @@ mcmc_parcoord(posterior,
 )
 ```
 
-## Moving on to fits vs. data checks 
+## Moving on to fits vs. data checks
 
 Posterior predictive checks (PPCs)
 
-  - Generate replicate datasets based on our posterior draws
-  - A great way to find discrepancies between your fitted model and the data, critical test for Bayesian models 
-  - Always do them 
+-   Generate replicate datasets based on our posterior draws
+-   A great way to find discrepancies between your fitted model and the data, critical test for Bayesian models
+-   Always do them
 
-## Posterior predictive checks in R 
+## Posterior predictive checks in R
 
 ```{R eval = T, echo = T}
 head(posterior)
@@ -663,8 +657,7 @@ set.seed(1)
 y_rep <- rnorm(length(data$x), b0[1] + b1[1] * data$x, sd[1])
 ```
 
-
-## Posterior predictive checks in R 
+## Posterior predictive checks in R
 
 ```{R eval = T, echo = T}
 # now do it for the whole posterior
@@ -678,9 +671,9 @@ for (i in 1:nrow(posterior)) {
 dim(y_rep)
 ```
 
-## Posterior predictive checks in Stan 
+## Posterior predictive checks in Stan
 
-- Can do this in Stan directly via the `generated quantities{ }` section: 
+-   Can do this in Stan directly via the `generated quantities{ }` section:
 
 ```{javascript eval = F, echo = T}
 generated quantities {
@@ -689,9 +682,9 @@ generated quantities {
 }
 ```
 
-## Posterior predictive checks in Stan 
+## Posterior predictive checks in Stan
 
-- Recompile and re-run: 
+-   Recompile and re-run:
 
 ```{R echo = T, eval = T}
 mod <- cmdstan_model("src/linreg_ppc.stan")
@@ -707,24 +700,23 @@ fit <- mod$sample(
 )
 ```
 
-## Posterior predictive checks in Stan 
+## Posterior predictive checks in Stan
 
 ::: {style="font-size: 75%;"}
-
-- Extract the posterior and take a gander at our new `y_reps`
+-   Extract the posterior and take a gander at our new `y_reps`
 
 ```{R echo = T, eval = T}
 posterior <- fit$draws(format = "df") # extract draws x variables data frame
 head(posterior)
 ```
 
-- Stan generated or simulated replicate `y_rep` "datasets" 
-    - n_iter*n_chain = number of posterior draws 
-- Now compare the simulated data to our original (real) dataset
-
+-   Stan generated or simulated replicate `y_rep` "datasets"
+    -   n_iter\*n_chain = number of posterior draws
+-   Now compare the simulated data to our original (real) dataset
 :::
 
 ## Even more tidy: visualizing PPCs
+
 ```{R eval = T, echo = T}
 y_rep <- posterior[grepl("y_rep", names(posterior))]
 
@@ -743,7 +735,7 @@ p <- ppc_dens_overlay(y = data$y, yrep = as.matrix(y_rep[1:15, ]))
 p + theme_qfc() + theme(text = element_text(size = 20))
 ```
 
-## Visualizing PPCs another way 
+## Visualizing PPCs another way
 
 ```{R eval = T, echo = T}
 # ppcs, another way
@@ -757,7 +749,7 @@ yrep_df <- y_reps %>%
   mutate(name = rep(1:9, each = ncol(y_reps)))
 ```
 
-## Visualizing PPCs another way 
+## Visualizing PPCs another way
 
 ```{R eval = F, echo = T}
 # ppcs, another way
@@ -775,7 +767,7 @@ yrep_df %>%
   theme(text = element_text(size = 20))
 ```
 
-## Visualizing PPCs another way 
+## Visualizing PPCs another way
 
 ```{R eval = T, echo = F}
 # plot it
@@ -792,11 +784,12 @@ yrep_df %>%
   theme_qfc() + theme(text = element_text(size = 20))
 ```
 
-## Prior predictive checks 
-- Same idea as posterior predictive checks, but we ignore the likelihood
-- Simply sample replicate datasets from the prior(s)
-- Tries to get at whether our priors + model configuration are consistent with our knowledge of the system 
-- Usually would do these before posterior predictive checks, but easier to explain once you understand what posterior predictive checks are 
+## Prior predictive checks
+
+-   Same idea as posterior predictive checks, but we ignore the likelihood
+-   Simply sample replicate datasets from the prior(s)
+-   Tries to get at whether our priors + model configuration are consistent with our knowledge of the system
+-   Usually would do these before posterior predictive checks, but easier to explain once you understand what posterior predictive checks are
 
 ## Prior predictive checks
 
@@ -825,59 +818,55 @@ p <- ppc_dens_overlay(y = data$y, yrep = as.matrix(y_rep[1:35, ]))
 ```{R echo = F, eval = T}
 p + theme_qfc() + theme(text = element_text(size = 20))
 ```
-- Is this reasonable, i.e. consistent with domain expertise? 
+
+-   Is this reasonable, i.e. consistent with domain expertise?
 
 ## Data visualization as a key component of a principled Bayesian workflow
 
-- Principled Bayesian workflow is an iterative process of model building (see Betancourt 2018) 
-- Data visualization is vital to helping us understand the performance of Bayesian models (Gabry et al. 2019)
-  - *There are more checks we haven't yet done*
-- In general, need to get good at this stuff if you intend to learn or use Bayesian statistics
-- If you don't use these tools, you do so at your own risk
+-   Principled Bayesian workflow is an iterative process of model building (see Betancourt 2018)
+-   Data visualization is vital to helping us understand the performance of Bayesian models (Gabry et al. 2019)
+    -   *There are more checks we haven't yet done*
+-   In general, need to get good at this stuff if you intend to learn or use Bayesian statistics
+-   If you don't use these tools, you do so at your own risk
 
 ## Summary and outlook
 
-- A presumption...
-- We built a linear regression model in Stan, ran it with vague priors
-- Spent a substantial amount of time going through diagnostics 
-  - Split these into MCMC checks and model fit checks
-- Spent a great deal of time walking through Bayesian model visualization
-  - Touched on how visualization is a core part of a modern Bayesian workflow
-- Moving foward, Generalized Linear Models (GLMs)
+-   A presumption...
+-   We built a linear regression model in Stan, ran it with vague priors
+-   Spent a substantial amount of time going through diagnostics
+    -   Split these into MCMC checks and model fit checks
+-   Spent a great deal of time walking through Bayesian model visualization
+    -   Touched on how visualization is a core part of a modern Bayesian workflow
+-   Moving foward, Generalized Linear Models (GLMs)
 
-## References 
+## References
 
 ::: {style="font-size:25px"}
+1.  Betancourt 2017. [A conceptual introduction to Hamiltonian Monte Carlo](https://arxiv.org/abs/1701.02434)
 
-1. Betancourt 2017. [A conceptual introduction to Hamiltonian Monte Carlo](https://arxiv.org/abs/1701.02434)
+2.  Vehtari et al. 2019. [Rank-normalization, folding, and localization: An improved R-hat for assessing convergence of MCMC\*](https://arxiv.org/pdf/1903.08008.pdf)
 
-2. Vehtari et al. 2019. [Rank-normalization, folding, and localization:
-An improved R-hat for assessing convergence of MCMC*](https://arxiv.org/pdf/1903.08008.pdf)
+3.  Gabry et al. 2019. [Visualization in Bayesian workflow](https://academic.oup.com/jrsssa/article/182/2/389/7070184)
 
-3. Gabry et al. 2019. [Visualization in Bayesian workflow](https://academic.oup.com/jrsssa/article/182/2/389/7070184)
+4.  Gelman et al. 2021. Bayesian Data Analysis. Edition 3.
 
-4. Gelman et al. 2021.  Bayesian Data Analysis.  Edition 3. 
+5.  Kery and Schaub. 2012. Bayesian Population Analysis using WinBUGS.
 
-5. Kery and Schaub. 2012. Bayesian Population Analysis using WinBUGS. 
+6.  McElreath 2023. Statistical Rethinking. Second Edition.
 
-6. McElreath 2023.  Statistical Rethinking. Second Edition. 
-
-7. [Stan documentation](https://mc-stan.org/docs/stan-users-guide/index.html)
-
+7.  [Stan documentation](https://mc-stan.org/docs/stan-users-guide/index.html)
 :::
 
 ## Exercises:
 
 ::: {style="font-size:25px"}
+1.  Calculate the posterior predictive distribution one might expect for y if they went out and collected data at $x_{i} = 1.23$
 
-1. Calculate the posterior predictive distribution one might expect for y if they went out and collected data at $x_{i} = 1.23$
+2.  Plot the median fit +/- 95% credible intervals from the posterior predictive distribution of y vs. $x_{i}$. Can you think of other ways to visualize fits vs. data and the corresponding uncertainty in these fits?
 
-2. Plot the median fit +/- 95% credible intervals from the posterior predictive distribution of y vs. $x_{i}$. Can you think of other ways to visualize fits vs. data and the corresponding uncertainty in these fits?
+3.  Repeat the exercises in this presentation by first simulating your own linear regression dataset to prove to yourself that your code is returning reasonable answers.
 
-3. Repeat the exercises in this presentation by first simulating your own linear regression dataset to prove to yourself that your code is returning reasonable answers.
+4.  Assume this dataset represents the relationship between a measure of a stream contaminant (y) and a metric of industrial development (x). Through an extensive structured decision making process it was determined by industrial representatives, resource managers, subject matter experts, and Indigenous Rightsholders that if this relationship indicated that $\beta_{1}$ exceeded 0.71 with $\text(Pr > 0.35)$ streamside development should be ceased. What does your analysis suggest? What are the limitations of your analysis, including things that might influence your assessment of $\Pr(\beta_{1} > 0.71)$? Take care to seperate explanation vs. advocacy.
 
-4. Assume this dataset represents the relationship between a measure of a stream contaminant (y) and a metric of industrial development (x).  Through an extensive structured decision making process it was determined by industrial representatives, resource managers, subject matter experts, and Indigenous Rightsholders that if this relationship indicated that $\beta_{1}$ exceeded 0.71 with $\text(Pr > 0.35)$ streamside development should be ceased.  What does your analysis suggest?  What are the limitations of your analysis, including things that might influence your assessment of $\Pr(\beta_{1} > 0.71)$? Take care to seperate explanation vs. advocacy.
-
-5. Someone in the structured decision making group hates the word probability, and is pointing out that it isn't even clear what is meant by $\Pr(\beta_{1} > 0.71)$.  Can you think of a metaphor for describing this uncertainty that does not use the word probability and which is easily understandable by folks who may lack technical training?
-
+5.  Someone in the structured decision making group hates the word probability, and is pointing out that it isn't even clear what is meant by $\Pr(\beta_{1} > 0.71)$. Can you think of a metaphor for describing this uncertainty that does not use the word probability and which is easily understandable by folks who may lack technical training?
 :::

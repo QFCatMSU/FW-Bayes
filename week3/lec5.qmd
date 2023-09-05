@@ -13,7 +13,6 @@ format:
     css: "https://qfcatmsu.github.io/css/presStyle.css"
     slide-number: c/t  
     theme: simple 
-editor: visual
 highlight-style: kate
 ---
 
@@ -269,8 +268,7 @@ print("log density after =", target());
 ## Debugging R code
 
 -   Ten minute warp-speed lesson on debugging in R
--   Several ways to do this, but here we'll do a demo of the functions `traceback()` and
-`browser()`
+-   Several ways to do this, but here we'll do a demo of the functions `traceback()` and `browser()`
 
 ## `traceback()`
 
@@ -352,13 +350,11 @@ my_fx(0) # call the function
 ## References
 
 ::: {style="font-size:25px"}
-
 Betancourt, M. 2016. Diagnosing suboptimal cotangent disintegrations in Hamiltonian Monte Carlo. <https://arxiv.org/pdf/1604.00695.pdf>
 
 Gelman et al. 2003. Bayesian Data Analysis.
 
 McElreath 2023. Statistical Rethinking. Second Edition.
 
-Stan documentation. 2023. [https://mc-stan.org/docs/reference-manual/index.html](https://mc-stan.org/docs/reference-manual/index.html)
-
+Stan documentation. 2023. <https://mc-stan.org/docs/reference-manual/index.html>
 :::

@@ -13,7 +13,6 @@ format:
     css: "https://qfcatmsu.github.io/css/presStyle.css"
     slide-number: c/t  
     theme: simple 
-editor: visual
 highlight-style: kate
 ---
 
@@ -196,7 +195,9 @@ $$ - Left to right: response vector, design matrix, parameter vector, residual v
 ## ANCOVA: but wait, there's more 🥴🤔
 
 ::: {style="font-size: 60%;"}
-The same model via matrix and vector notation: $$
+The same model via matrix and vector notation: 
+
+$$
 \left(\begin{array}{l}
 25 \\
 14 \\
@@ -383,20 +384,19 @@ $$
 
 [see Chapter 3, Kery and Royle 2016]{.footerRight}
 
-## Thinking about distributions 
+## Thinking about distributions
 
 ![](images/count_distributions.png){fig-align="center" width="800" height="400"}
 
-## Thinking about distributions 
+## Thinking about distributions
 
 ![](images/continuous_distributions.png){fig-align="center" width="800" height="400"}
 
-## Justin Bois' Distribution explorer 
+## Justin Bois' Distribution explorer
 
-<br> 
-[https://distribution-explorer.github.io/](https://distribution-explorer.github.io/)
+<br> <https://distribution-explorer.github.io/>
 
-## Thinking about link functions 
+## Thinking about link functions
 
 ![](images/links.png){fig-align="center" width="800" height="350"}
 
@@ -487,9 +487,11 @@ $$
 
 ## Bayesian p-value
 
--   Pearson residuals: $$
+-   Pearson residuals: 
+
+$$
     D\left(y_{i}, \theta\right)=\frac{\left(y_{i}-\mathrm{E}\left(y_{i}\right)\right)}{\sqrt{\operatorname{Var}\left(y_{i}\right)}} .
-    $$
+$$
 
 -   Begin by calculating the sum of squared residuals (our test statistic) for the observed data:
 
@@ -522,13 +524,17 @@ $$
 ## The binomial GLM for bounded counts or proportions
 
 ::: {style="font-size: 85%;"}
-1.  Random part of the response (statistical distribution) $$
-    C_{i} \sim \operatorname{Binomial}\left(N_{i}, p_{i}\right)
-    $$
+1.  Random part of the response (statistical distribution) 
 
-2.  Link of the random and systematic bit (logit link): $$
+$$
+    C_{i} \sim \operatorname{Binomial}\left(N_{i}, p_{i}\right)
+$$
+
+2.  Link of the random and systematic bit (logit link): 
+
+$$
     \operatorname{logit}\left(p_{i}\right)=\log \left(\frac{p_{i}}{1-p_{i}}\right)=\eta_{i}
-    $$
+$$
 
 3.  Systematic part (linear predictor):
 

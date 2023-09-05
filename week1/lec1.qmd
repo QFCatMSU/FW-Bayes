@@ -13,7 +13,6 @@ format:
     css: "https://qfcatmsu.github.io/css/presStyle.css"
     slide-number: c/t  
     theme: simple 
-editor: visual
 highlight-style: kate
 ---
 
@@ -114,13 +113,13 @@ highlight-style: kate
 -   Lectures and code will be available through GitHub
     -   You do not need to know how to use GitHub, but that is where you can find code and presentations
 
-![](images/Rlogo.png){style="width:185px; position: absolute; bottom:10.5%; left:0%;"} ![](images/logo_website.png){style="width:150px; position: absolute; bottom:6%; right:66%;"} ![](images/tidyverse.png){style="width:165px; position: absolute; bottom:7%; right:47%;"} ![](images/GitHub_Logo.png){style="width:275px; position: absolute; bottom:8%; right:20%;"} ![](images/quarto.png){style="width:275px; position: absolute; bottom:23%; right:20%;"} ![](images/tidybayes.png){style="width:185px; position: absolute; bottom:5%; right:1%;"}
+![](images/Rlogo.png){style="position: absolute; margin-top: 7%; left:0%;" width="185"} ![](images/logo_website.png){style="width:150px; position: absolute; margin-top: 6%; right:66%;"} ![](images/tidyverse.png){style="width:165px; position: absolute; margin-top: 5%; right:47%;"} ![](images/GitHub_Logo.png){style="width:275px; position: absolute; margin-top: 5%; right:20%;"} ![](images/quarto.png){style="width:275px; position: absolute; margin-top: 14%; right:20%;"} ![](images/tidybayes.png){style="width:185px; position: absolute; margin-top: 5%; right:1%;"}
 
 ## Stan is not:
 
-![](images/southpark.png){style="width:400px; position: absolute; bottom:5%; right:1%;"}
+![](images/southpark.png){style="width:400px; position: absolute; margin-top:-5%; right:1%;"}
 
-![](images/eminem.png){style="width:550px; position: absolute; bottom:30%; left:1%;"}
+![](images/eminem.png){style="width:550px; position: absolute; margin-top:8%; left:1%;"}
 
 ## What is Stan, why use it?
 
@@ -132,13 +131,13 @@ highlight-style: kate
 
 -   Cannot do everything (discrete unknowns)
 
-![](images/Stanislaw_Ulam.png){style="width:225px; height = 150px; position: absolute; bottom:3%; left:1%;"}
+![](images/Stanislaw_Ulam.png){style="width:225px; height = 150px; position: absolute; margin-top:0%; left:1%;"}
 
-![](images/Castle%20Bravo.png){style="width:350px; height = 350px; position: absolute; bottom:5%; right:35%;"}
+![](images/Castle%20Bravo.png){style="width:350px; height = 350px; position: absolute; margin-top:2%; right:35%;"}
 
-![](images/Manhattan_Project.png){style="width:300px; height = 300px; position: absolute; bottom:3%; right:1%;"}
+![](images/Manhattan_Project.png){style="width:300px; height = 300px; position: absolute; margin-top:0%; right:1%;"}
 
-![](images/stan.png){style="width:250px; position: absolute; top:0%; right: 0%;"}
+![](images/stan.png){style="width:250px; position: absolute; margin-top:-34%; right: 0%;"}
 
 ## Expectations
 
@@ -218,8 +217,17 @@ $$ \operatorname{Pr}(Y=y)=p^{y}(1-p)^{1-y} $$
 
 ## Bernoulli probability mass function (pmf)
 
--   A conventional notation for this stuff is $$ f(y \mid \theta)$$
--   Intended to indicate that the probability of an observed value $y$ depends on parameter(s) $\theta$ used to specify the distribution of the random variable $Y$: $$ f(y \mid \theta)=p^{y}(1-p)^{1-y} $$
+-   A conventional notation for this stuff is 
+
+$$ 
+f(y \mid \theta)
+$$
+
+-   Intended to indicate that the probability of an observed value $y$ depends on parameter(s) $\theta$ used to specify the distribution of the random variable $Y$: 
+
+$$ 
+f(y \mid \theta)=p^{y}(1-p)^{1-y} 
+$$
 
 ## Some common statistical distributions
 
@@ -395,15 +403,17 @@ my_data %>%
 
 ## How might we do the sneak turtle analysis in a Bayesian framework?
 
--   Remember: $$
+-   Remember: 
+$$
     \color{darkgreen}{posterior} \propto \color{#E78021}{likelihood} \cdot \color{#3697DC}{prior}
-    $$
+$$
 
 -   What do we currently have, what do we know?
 
--   Assume the following prior: $$
+-   Assume the following prior: 
+$$
     \color{#3697DC}{\theta\sim \mathrm{beta}(\alpha, \beta)}
-    $$
+$$
 
 -   How to choose values for $\alpha$ and $\beta$?
 
