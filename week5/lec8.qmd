@@ -21,7 +21,7 @@ highlight-style: kate
 
 -   Another look at how we specify a joint posterior for hierarchical models (maths)
     -   Demonstrate the importance of conditional independence
--   Demonstrate a hierarchical binomial survival model for quail stocking survival 
+-   Demonstrate a hierarchical binomial survival model for quail stocking survival
 
 ## A hierarchical model
 
@@ -74,31 +74,39 @@ $$
 
 ## Posterior distribution for hierarchical models
 
--   The joint posterior distribution of interest in hierarchical models is $$
+-   The joint posterior distribution of interest in hierarchical models is 
+
+$$
     p(\theta, \phi \mid y) 
-    $$
+$$
 
 ## Posterior distribution for hierarchical models
 
--   The joint posterior distribution of interest in hierarchical models is $$
+-   The joint posterior distribution of interest in hierarchical models is 
+
+$$
     p(\theta, \phi \mid y) 
-    $$
+$$
 
 -   Apply Bayes rule
 
 ## Posterior distribution for hierarchical models
 
--   The joint posterior distribution of interest in hierarchical models is $$
+-   The joint posterior distribution of interest in hierarchical models is 
+
+$$
     p(\theta, \phi \mid y) \propto p(y \mid \theta, \phi) p(\theta, \phi)
-    $$
+$$
 
 -   Apply Bayes rule
 
 ## Posterior distribution for hierarchical models
 
--   The joint posterior distribution of interest in hierarchical models is $$
+-   The joint posterior distribution of interest in hierarchical models is 
+
+$$
     p(\theta, \phi \mid y) \propto p(y \mid \theta, \phi) p(\theta, \phi)=p(y \mid \theta) p(\theta \mid \phi) p(\phi)
-    $$
+$$
 
 -   Apply Bayes rule
 
@@ -106,9 +114,11 @@ $$
 
 ## Posterior distribution for hierarchical models
 
--   The joint posterior distribution of interest in hierarchical models is $$
+-   The joint posterior distribution of interest in hierarchical models is 
+
+$$
     p(\theta, \phi \mid y) \propto p(y \mid \theta, \phi) p(\theta, \phi)=p(y \mid \theta) p(\theta \mid \phi) p(\phi)
-    $$
+$$
 
 -   Apply Bayes rule
 
@@ -119,17 +129,21 @@ $$
 ## Posterior distribution for hierarchical models
 
 ::: {style="font-size:29px"}
--   The joint posterior distribution of interest in hierarchical models is $$
+-   The joint posterior distribution of interest in hierarchical models is 
+
+$$
     p(\theta, \phi \mid y) \propto p(y \mid \theta, \phi) p(\theta, \phi)=p(y \mid \theta) p(\theta \mid \phi) p(\phi)
-    $$
+$$
 :::
 
 ## Posterior distribution for hierarchical models
 
 ::: {style="font-size:29px"}
--   The joint posterior distribution of interest in hierarchical models is $$
+-   The joint posterior distribution of interest in hierarchical models is 
+
+$$
     p(\theta, \phi \mid y) \propto p(y \mid \theta, \phi) p(\theta, \phi)=p(y \mid \theta) p(\theta \mid \phi) p(\phi)
-    $$
+$$
 
 -   We may also care about the marginal posterior of $\theta$:
 :::
@@ -137,25 +151,33 @@ $$
 ## Posterior distribution for hierarchical models
 
 ::: {style="font-size:29px"}
--   The joint posterior distribution of interest in hierarchical models is $$
-    p(\theta, \phi \mid y) \propto p(y \mid \theta, \phi) p(\theta, \phi)=p(y \mid \theta) p(\theta \mid \phi) p(\phi)
-    $$
+-   The joint posterior distribution of interest in hierarchical models is 
 
--   We may also care about the marginal posterior of $\phi$: $$
+$$
+    p(\theta, \phi \mid y) \propto p(y \mid \theta, \phi) p(\theta, \phi)=p(y \mid \theta) p(\theta \mid \phi) p(\phi)
+$$
+
+-   We may also care about the marginal posterior of $\phi$: 
+
+$$
     p(\theta \mid y)=\int p(\theta, \phi \mid y) d \phi
-    $$
+$$
 :::
 
 ## Posterior distribution for hierarchical models
 
 ::: {style="font-size:29px"}
--   The joint posterior distribution of interest in hierarchical models is $$
-    p(\theta, \phi \mid y) \propto p(y \mid \theta, \phi) p(\theta, \phi)=p(y \mid \theta) p(\theta \mid \phi) p(\phi)
-    $$
+-   The joint posterior distribution of interest in hierarchical models is 
 
--   We may also care about the marginal posterior of $\theta$: $$
+$$
+    p(\theta, \phi \mid y) \propto p(y \mid \theta, \phi) p(\theta, \phi)=p(y \mid \theta) p(\theta \mid \phi) p(\phi)
+$$
+
+-   We may also care about the marginal posterior of $\theta$: 
+
+$$
     p(\theta \mid y)=\int p(\theta, \phi \mid y) d \phi
-    $$
+$$
 
 -   Or instead the marginal distribution of $\phi$:
 
@@ -167,13 +189,17 @@ $$
 ## Posterior distribution for hierarchical models
 
 ::: {style="font-size:29px"}
--   The joint posterior distribution of interest in hierarchical models is $$
-    p(\theta, \phi \mid y) \propto p(y \mid \theta, \phi) p(\theta, \phi)=p(y \mid \theta) p(\theta \mid \phi) p(\phi)
-    $$
+-   The joint posterior distribution of interest in hierarchical models is 
 
--   We may also care about the marginal posterior of $\theta$: $$
+$$
+    p(\theta, \phi \mid y) \propto p(y \mid \theta, \phi) p(\theta, \phi)=p(y \mid \theta) p(\theta \mid \phi) p(\phi)
+$$
+
+-   We may also care about the marginal posterior of $\theta$: 
+
+$$
     p(\theta \mid y)=\int p(\theta, \phi \mid y) d \phi
-    $$
+$$
 
 -   Or instead the marginal distribution of $\phi$:
 
@@ -195,20 +221,21 @@ $$
     -   Released between 6 and 20 chicks in on 11 farms
     -   Go back one month later and see how many survive
 
-## The quail data and prior information 
+## The quail data and prior information
 
 -   [The quail data](https://github.com/QFCatMSU/FW-Bayes/blob/main/week5/data/survival_data.rds?raw=true)
     -   Not a ton of data
--  [The R script](https://github.com/QFCatMSU/FW-Bayes/blob/main/week5/R/random_binomial.r)
--  [The Stan model](https://github.com/QFCatMSU/FW-Bayes/blob/main/week5/src/random_binomial.stan)
+-   [The R script](https://github.com/QFCatMSU/FW-Bayes/blob/main/week5/R/random_binomial.r)
+-   [The Stan model](https://github.com/QFCatMSU/FW-Bayes/blob/main/week5/src/random_binomial.stan)
 
 <br><br>
 
 Prior information
 
--  Bios note that the available literature indicates survival for transplanted baby quail ranges between 0.05 and 0.45
+-   Bios note that the available literature indicates survival for transplanted baby quail ranges between 0.05 and 0.45
 
 ## The hierarchical fluff chicken survival model 🐥
+
 $$
 \begin{array}{ll}
 Y_{i} & \stackrel{i n d}{\sim} \operatorname{Bin}\left(n_{i}, \theta_{i}\right) \\
@@ -226,14 +253,13 @@ $$
 
 -   The interpretation of these parameters
     -   $\alpha$ is successes
-    -   $\beta$ is failures
-<br>
+    -   $\beta$ is failures <br>
 -   A more useful parameterization in our case is
     -   Beta expectation: $\mu=\frac{\alpha}{\alpha+\beta}$
     -   Beta sample size: $\eta=\alpha+\beta$
 -   Easier to put priors on $\mu$, $\eta$ than $\alpha$, $\beta$ so we will take advantage of this
 
-## Go to the R and Stan code 
+## Go to the R and Stan code
 
 ![](images/quail.jpg){fig-align="center" height="600"}
 
@@ -252,13 +278,13 @@ $$
 
 ## Summary and outlook
 
-- Specifically tried to talk about hierarchical models in a different (mathier) way than what we did last time
-    - Did this to highlight how conditional independence plays a key role in our ability to build these models
-- Built a hierarchical survival model for ditch chickens 
-    - This included deriving an informative prior for $\theta_{\mu}$
-- Began to play a bit more with output from hierarchical models to generate useful quantities for management
-    - Probability of chick survival at a new farm not included in the original study
-- Next time, Poisson GLMM
+-   Specifically tried to talk about hierarchical models in a different (mathier) way than what we did last time
+    -   Did this to highlight how conditional independence plays a key role in our ability to build these models
+-   Built a hierarchical survival model for ditch chickens
+    -   This included deriving an informative prior for $\theta_{\mu}$
+-   Began to play a bit more with output from hierarchical models to generate useful quantities for management
+    -   Probability of chick survival at a new farm not included in the original study
+-   Next time, Poisson GLMM
 
 ## References
 
@@ -275,6 +301,5 @@ $$
 
 -   Punt et al. 2011. Among-stock comparisons for improving stock assessments of data-poor stocks: the "Robin Hood" approach. ICES Journal of Marine Sci.
 
-- Jarad Niemi lecture on a very similar model from which my example is based heavily <https://www.youtube.com/watch?v=nNQdvXfW73E>
-
+-   Jarad Niemi lecture on a very similar model from which my example is based heavily <https://www.youtube.com/watch?v=nNQdvXfW73E>
 :::
