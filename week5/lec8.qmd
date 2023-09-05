@@ -21,6 +21,7 @@ highlight-style: kate
 
 -   Another look at how we specify a joint posterior for hierarchical models (maths)
     -   Demonstrate the importance of conditional independence
+-   Demonstrate a hierarchical binomial survival model for quail stocking survival 
 
 ## A hierarchical model
 
@@ -198,8 +199,8 @@ $$
 
 -   [The quail data](https://github.com/QFCatMSU/FW-Bayes/blob/main/week5/data/survival_data.rds?raw=true)
     -   Not a ton of data
--  [The R script]()
--  [The Stan model]()
+-  [The R script](https://github.com/QFCatMSU/FW-Bayes/blob/main/week5/R/random_binomial.r)
+-  [The Stan model](https://github.com/QFCatMSU/FW-Bayes/blob/main/week5/src/random_binomial.stan)
 
 <br><br>
 
@@ -232,9 +233,9 @@ $$
     -   Beta sample size: $\eta=\alpha+\beta$
 -   Easier to put priors on $\mu$, $\eta$ than $\alpha$, $\beta$ so we will take advantage of this
 
-## Go to the R code 
+## Go to the R and Stan code 
 
-- 
+![](images/quail.jpg){fig-align="center" height="600"}
 
 ## The TODO list
 
@@ -274,5 +275,6 @@ $$
 
 -   Punt et al. 2011. Among-stock comparisons for improving stock assessments of data-poor stocks: the "Robin Hood" approach. ICES Journal of Marine Sci.
 
-<https://www.youtube.com/watch?v=nNQdvXfW73E>
+- Jarad Niemi lecture on a very similar model from which my example is based heavily <https://www.youtube.com/watch?v=nNQdvXfW73E>
+
 :::
