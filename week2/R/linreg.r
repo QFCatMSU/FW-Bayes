@@ -40,6 +40,9 @@ fit <- mod$sample(
 fit$diagnostic_summary()
 fit$cmdstan_diagnose()
 
+# examine summary of parameters 
+fit$summary()
+
 # extract the posterior and plot the chains:
 posterior <- fit$draws(format = "df") # extract draws x variables data frame
 str(posterior)
