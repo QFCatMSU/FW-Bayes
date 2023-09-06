@@ -8,7 +8,7 @@
 <link href="lec3_files/libs/quarto-html/light-border.css" rel="stylesheet">
 <link href="lec3_files/libs/quarto-html/quarto-html.min.css" rel="stylesheet" data-mode="light">
 <link href="lec3_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.4.322">
+  <meta name="generator" content="quarto-1.4.330">
 
   <meta name="author" content="Christopher Cahill">
   <meta name="dcterms.date" content="2023-09-06">
@@ -469,14 +469,14 @@ Chain 3 Iteration: 2000 / 2000 [100%]  (Sampling)
 Chain 4 Iteration:    1 / 2000 [  0%]  (Warmup) 
 Chain 4 Iteration: 1001 / 2000 [ 50%]  (Sampling) 
 Chain 4 Iteration: 2000 / 2000 [100%]  (Sampling) 
-Chain 1 finished in 0.1 seconds.
-Chain 2 finished in 0.1 seconds.
-Chain 3 finished in 0.1 seconds.
-Chain 4 finished in 0.1 seconds.
+Chain 1 finished in 0.0 seconds.
+Chain 2 finished in 0.0 seconds.
+Chain 3 finished in 0.0 seconds.
+Chain 4 finished in 0.0 seconds.
 
 All 4 chains finished successfully.
-Mean chain execution time: 0.1 seconds.
-Total execution time: 0.6 seconds.</code></pre>
+Mean chain execution time: 0.0 seconds.
+Total execution time: 0.3 seconds.</code></pre>
 </div>
 </div>
 <div class="cell">
@@ -723,7 +723,7 @@ y_{i} \sim \operatorname{normal}\left(\beta_{0}+\beta X_{i}, \sigma\right) .
 <span id="cb12-12"><a href="#cb12-12"></a>  <span class="co">// priors</span></span>
 <span id="cb12-13"><a href="#cb12-13"></a>  b0 <span class="op">~</span> <span class="fu">normal</span>(<span class="dv">0</span><span class="op">,</span> <span class="dv">10</span>)<span class="op">;</span>  </span>
 <span id="cb12-14"><a href="#cb12-14"></a>  b1 <span class="op">~</span> <span class="fu">normal</span>(<span class="dv">0</span><span class="op">,</span> <span class="dv">10</span>)<span class="op">;</span></span>
-<span id="cb12-15"><a href="#cb12-15"></a>  sd <span class="op">~</span> <span class="fu">normal</span>(<span class="dv">0</span><span class="op">,</span> <span class="dv">1</span>)<span class="op">;</span></span>
+<span id="cb12-15"><a href="#cb12-15"></a>  sd <span class="op">~</span> <span class="fu">normal</span>(<span class="dv">0</span><span class="op">,</span> <span class="dv">10</span>)<span class="op">;</span></span>
 <span id="cb12-16"><a href="#cb12-16"></a>  </span>
 <span id="cb12-17"><a href="#cb12-17"></a>  <span class="co">// likelihood - loopy way: </span></span>
 <span id="cb12-18"><a href="#cb12-18"></a>  <span class="cf">for</span>(i <span class="kw">in</span> <span class="dv">1</span><span class="op">:</span>nobs){</span>
@@ -879,27 +879,27 @@ $sd
 Chain 1 Iteration:    1 / 2000 [  0%]  (Warmup) 
 Chain 1 Iteration: 1000 / 2000 [ 50%]  (Warmup) 
 Chain 1 Iteration: 1001 / 2000 [ 50%]  (Sampling) 
+Chain 1 Iteration: 2000 / 2000 [100%]  (Sampling) 
 Chain 2 Iteration:    1 / 2000 [  0%]  (Warmup) 
 Chain 2 Iteration: 1000 / 2000 [ 50%]  (Warmup) 
 Chain 2 Iteration: 1001 / 2000 [ 50%]  (Sampling) 
+Chain 2 Iteration: 2000 / 2000 [100%]  (Sampling) 
 Chain 3 Iteration:    1 / 2000 [  0%]  (Warmup) 
 Chain 3 Iteration: 1000 / 2000 [ 50%]  (Warmup) 
 Chain 3 Iteration: 1001 / 2000 [ 50%]  (Sampling) 
+Chain 3 Iteration: 2000 / 2000 [100%]  (Sampling) 
 Chain 4 Iteration:    1 / 2000 [  0%]  (Warmup) 
 Chain 4 Iteration: 1000 / 2000 [ 50%]  (Warmup) 
 Chain 4 Iteration: 1001 / 2000 [ 50%]  (Sampling) 
-Chain 1 Iteration: 2000 / 2000 [100%]  (Sampling) 
-Chain 1 finished in 0.2 seconds.
-Chain 2 Iteration: 2000 / 2000 [100%]  (Sampling) 
-Chain 2 finished in 0.2 seconds.
-Chain 3 Iteration: 2000 / 2000 [100%]  (Sampling) 
-Chain 3 finished in 0.2 seconds.
 Chain 4 Iteration: 2000 / 2000 [100%]  (Sampling) 
-Chain 4 finished in 0.2 seconds.
+Chain 1 finished in 0.0 seconds.
+Chain 2 finished in 0.1 seconds.
+Chain 3 finished in 0.1 seconds.
+Chain 4 finished in 0.1 seconds.
 
 All 4 chains finished successfully.
-Mean chain execution time: 0.2 seconds.
-Total execution time: 0.6 seconds.</code></pre>
+Mean chain execution time: 0.1 seconds.
+Total execution time: 0.3 seconds.</code></pre>
 </div>
 </div>
 </div>
@@ -1179,14 +1179,14 @@ $ebfmi
 <div class="cell-output cell-output-stdout">
 <pre><code>Running MCMC with 4 parallel chains...
 
-Chain 1 finished in 0.4 seconds.
-Chain 2 finished in 0.4 seconds.
-Chain 3 finished in 0.4 seconds.
-Chain 4 finished in 0.4 seconds.
+Chain 1 finished in 0.1 seconds.
+Chain 2 finished in 0.1 seconds.
+Chain 3 finished in 0.1 seconds.
+Chain 4 finished in 0.1 seconds.
 
 All 4 chains finished successfully.
-Mean chain execution time: 0.4 seconds.
-Total execution time: 0.6 seconds.</code></pre>
+Mean chain execution time: 0.1 seconds.
+Total execution time: 0.3 seconds.</code></pre>
 </div>
 </div>
 </section>
@@ -1306,7 +1306,7 @@ Total execution time: 0.6 seconds.</code></pre>
 <div class="cell-output cell-output-stdout">
 <pre><code>Running MCMC with 1 chain...
 
-Chain 1 finished in 0.2 seconds.</code></pre>
+Chain 1 finished in 0.1 seconds.</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb56"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1"></a><span class="co"># extract the draws:</span></span>
 <span id="cb56-2"><a href="#cb56-2"></a>prior_draws <span class="ot">&lt;-</span> fit<span class="sc">$</span><span class="fu">draws</span>(<span class="at">format =</span> <span class="st">"df"</span>)</span>

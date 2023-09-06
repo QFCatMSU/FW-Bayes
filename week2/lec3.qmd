@@ -334,7 +334,7 @@ model {
   // priors
   b0 ~ normal(0, 10);  
   b1 ~ normal(0, 10);
-  sd ~ normal(0, 1);
+  sd ~ normal(0, 10);
   
   // likelihood - loopy way: 
   for(i in 1:nobs){
