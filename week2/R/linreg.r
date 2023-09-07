@@ -29,9 +29,9 @@ fit <- mod$sample(
   init = inits,
   seed = 13, # ensure simulations are reproducible
   chains = 4, # multiple chains
+  parallel_chains = 4, # run them in parallel
   iter_warmup = 1000, # how long to warm up the chains
   iter_sampling = 1000, # how many samples after warmp
-  parallel_chains = 4, # run them in parallel?
   refresh = 500 # print update every 500 iters
 )
 
@@ -45,6 +45,7 @@ fit$summary()
 
 # extract the posterior and plot the chains:
 posterior <- fit$draws(format = "df") # extract draws x variables data frame
+
 str(posterior)
 
 np <- nuts_params(fit) # get the sampler parameters

@@ -337,7 +337,7 @@ model {
   sd ~ normal(0, 10);
   
   // likelihood - loopy way: 
-  for(i in 1:nobs){
+  for(i in 1:n){
     y[i] ~ normal(b0 + b1*x[i], sd); 
   }
 }
