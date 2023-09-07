@@ -72,6 +72,11 @@ $$
 -   $\theta=\left(\theta_{1}, \ldots, \theta_{n}\right) \text { and } \phi$ are parameters
 -   Only $\phi$ has a prior that is set (assumed)
 
+## Mathematical support puppies 
+
+![](images/puppies.jpg){fig-align="center" height="600"}
+
+
 ## Posterior distribution for hierarchical models
 
 -   The joint posterior distribution of interest in hierarchical models is 
@@ -221,19 +226,6 @@ $$
     -   Released between 6 and 20 chicks in on 11 farms
     -   Go back one month later and see how many survive
 
-## The quail data and prior information
-
--   [The quail data](https://github.com/QFCatMSU/FW-Bayes/blob/main/week5/data/survival_data.rds?raw=true)
-    -   Not a ton of data
--   [The R script](https://github.com/QFCatMSU/FW-Bayes/blob/main/week5/R/random_binomial.r)
--   [The Stan model](https://github.com/QFCatMSU/FW-Bayes/blob/main/week5/src/random_binomial.stan)
-
-<br><br>
-
-Prior information
-
--   Bios note that the available literature indicates survival for transplanted baby quail ranges between 0.05 and 0.45
-
 ## The hierarchical fluff chicken survival model 🐥
 
 $$
@@ -249,6 +241,18 @@ $$
 -   $\theta_{i}$ is chick survival at farm *i*
 -   $\alpha$ and $\beta$ are the parameters of the Beta distribution
 
+## The hierarchical fluff chicken survival model 🐥
+
+$$
+\begin{array}{ll}
+Y_{i} & \stackrel{i n d}{\sim} \operatorname{Bin}\left(n_{i}, \theta_{i}\right) \\
+\theta_{i} & \stackrel{i i d}{\sim} \operatorname{Be}(\alpha, \beta) \\
+\alpha, \beta & \sim p(\alpha, \beta)
+\end{array}
+$$
+
+Also note that $\phi$ from previous slides is now $\phi = (\alpha, \beta)$ 
+
 ## Priors for $\alpha$ and $\beta$
 
 -   The interpretation of these parameters
@@ -262,6 +266,20 @@ $$
 ## Go to the R and Stan code
 
 ![](images/quail.jpg){fig-align="center" height="600"}
+
+## The quail data and prior information
+
+-   [The quail data](https://github.com/QFCatMSU/FW-Bayes/blob/main/week5/data/survival_data.rds?raw=true)
+    -   Not a ton of data
+-   [The R script](https://github.com/QFCatMSU/FW-Bayes/blob/main/week5/R/random_binomial.r)
+-   [The Stan model](https://github.com/QFCatMSU/FW-Bayes/blob/main/week5/src/random_binomial.stan)
+
+<br><br>
+
+Prior information
+
+-   Bios note that the available literature indicates survival for transplanted baby quail ranges between 0.05 and 0.45
+
 
 ## The TODO list
 
