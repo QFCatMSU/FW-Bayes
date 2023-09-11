@@ -1,0 +1,1434 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<script src="lec2_files/libs/clipboard/clipboard.min.js"></script>
+<script src="lec2_files/libs/quarto-html/tabby.min.js"></script>
+<script src="lec2_files/libs/quarto-html/popper.min.js"></script>
+<script src="lec2_files/libs/quarto-html/tippy.umd.min.js"></script>
+<link href="lec2_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="lec2_files/libs/quarto-html/light-border.css" rel="stylesheet">
+<link href="lec2_files/libs/quarto-html/quarto-html.min.css" rel="stylesheet" data-mode="light">
+<link href="lec2_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
+  <meta name="generator" content="quarto-1.4.322">
+
+  <meta name="author" content="Christopher Cahill">
+  <meta name="dcterms.date" content="2023-08-30">
+  <title>Approximating posterior distributions using simulation</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="lec2_files/libs/revealjs/dist/reset.css">
+  <link rel="stylesheet" href="lec2_files/libs/revealjs/dist/reveal.css">
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+      vertical-align: middle;
+    }
+    /* CSS for syntax highlighting */
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        background-color: #ffffff;
+        color: #a0a0a0;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #a0a0a0;  padding-left: 4px; }
+    div.sourceCode
+      { color: #1f1c1b; background-color: #ffffff; }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span { color: #1f1c1b; } /* Normal */
+    code span.al { color: #bf0303; background-color: #f7e6e6; font-weight: bold; } /* Alert */
+    code span.an { color: #ca60ca; } /* Annotation */
+    code span.at { color: #0057ae; } /* Attribute */
+    code span.bn { color: #b08000; } /* BaseN */
+    code span.bu { color: #644a9b; font-weight: bold; } /* BuiltIn */
+    code span.cf { color: #1f1c1b; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #924c9d; } /* Char */
+    code span.cn { color: #aa5500; } /* Constant */
+    code span.co { color: #898887; } /* Comment */
+    code span.cv { color: #0095ff; } /* CommentVar */
+    code span.do { color: #607880; } /* Documentation */
+    code span.dt { color: #0057ae; } /* DataType */
+    code span.dv { color: #b08000; } /* DecVal */
+    code span.er { color: #bf0303; text-decoration: underline; } /* Error */
+    code span.ex { color: #0095ff; font-weight: bold; } /* Extension */
+    code span.fl { color: #b08000; } /* Float */
+    code span.fu { color: #644a9b; } /* Function */
+    code span.im { color: #ff5500; } /* Import */
+    code span.in { color: #b08000; } /* Information */
+    code span.kw { color: #1f1c1b; font-weight: bold; } /* Keyword */
+    code span.op { color: #1f1c1b; } /* Operator */
+    code span.ot { color: #006e28; } /* Other */
+    code span.pp { color: #006e28; } /* Preprocessor */
+    code span.re { color: #0057ae; background-color: #e0e9f8; } /* RegionMarker */
+    code span.sc { color: #3daee9; } /* SpecialChar */
+    code span.ss { color: #ff5500; } /* SpecialString */
+    code span.st { color: #bf0303; } /* String */
+    code span.va { color: #0057ae; } /* Variable */
+    code span.vs { color: #bf0303; } /* VerbatimString */
+    code span.wa { color: #bf0303; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="lec2_files/libs/revealjs/dist/theme/quarto.css">
+  <link rel="stylesheet" href="https://qfcatmsu.github.io/css/presStyle.css">
+  <link href="lec2_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
+  <link href="lec2_files/libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
+  <link href="lec2_files/libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
+  <link href="lec2_files/libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
+  <style type="text/css">
+
+  .callout {
+    margin-top: 1em;
+    margin-bottom: 1em;  
+    border-radius: .25rem;
+  }
+
+  .callout.callout-style-simple { 
+    padding: 0em 0.5em;
+    border-left: solid #acacac .3rem;
+    border-right: solid 1px silver;
+    border-top: solid 1px silver;
+    border-bottom: solid 1px silver;
+    display: flex;
+  }
+
+  .callout.callout-style-default {
+    border-left: solid #acacac .3rem;
+    border-right: solid 1px silver;
+    border-top: solid 1px silver;
+    border-bottom: solid 1px silver;
+  }
+
+  .callout .callout-body-container {
+    flex-grow: 1;
+  }
+
+  .callout.callout-style-simple .callout-body {
+    font-size: 1rem;
+    font-weight: 400;
+  }
+
+  .callout.callout-style-default .callout-body {
+    font-size: 0.9rem;
+    font-weight: 400;
+  }
+
+  .callout.callout-titled.callout-style-simple .callout-body {
+    margin-top: 0.2em;
+  }
+
+  .callout:not(.callout-titled) .callout-body {
+      display: flex;
+  }
+
+  .callout:not(.no-icon).callout-titled.callout-style-simple .callout-content {
+    padding-left: 1.6em;
+  }
+
+  .callout.callout-titled .callout-header {
+    padding-top: 0.2em;
+    margin-bottom: -0.2em;
+  }
+
+  .callout.callout-titled .callout-title  p {
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+  }
+    
+  .callout.callout-titled.callout-style-simple .callout-content  p {
+    margin-top: 0;
+  }
+
+  .callout.callout-titled.callout-style-default .callout-content  p {
+    margin-top: 0.7em;
+  }
+
+  .callout.callout-style-simple div.callout-title {
+    border-bottom: none;
+    font-size: .9rem;
+    font-weight: 600;
+    opacity: 75%;
+  }
+
+  .callout.callout-style-default  div.callout-title {
+    border-bottom: none;
+    font-weight: 600;
+    opacity: 85%;
+    font-size: 0.9rem;
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+  }
+
+  .callout.callout-style-default div.callout-content {
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+  }
+
+  .callout.callout-style-simple .callout-icon::before {
+    height: 1rem;
+    width: 1rem;
+    display: inline-block;
+    content: "";
+    background-repeat: no-repeat;
+    background-size: 1rem 1rem;
+  }
+
+  .callout.callout-style-default .callout-icon::before {
+    height: 0.9rem;
+    width: 0.9rem;
+    display: inline-block;
+    content: "";
+    background-repeat: no-repeat;
+    background-size: 0.9rem 0.9rem;
+  }
+
+  .callout-title {
+    display: flex
+  }
+    
+  .callout-icon::before {
+    margin-top: 1rem;
+    padding-right: .5rem;
+  }
+
+  .callout.no-icon::before {
+    display: none !important;
+  }
+
+  .callout.callout-titled .callout-body > .callout-content > :last-child {
+    padding-bottom: 0.5rem;
+    margin-bottom: 0;
+  }
+
+  .callout.callout-titled .callout-icon::before {
+    margin-top: .5rem;
+    padding-right: .5rem;
+  }
+
+  .callout:not(.callout-titled) .callout-icon::before {
+    margin-top: 1rem;
+    padding-right: .5rem;
+  }
+
+  /* Callout Types */
+
+  div.callout-note {
+    border-left-color: #4582ec !important;
+  }
+
+  div.callout-note .callout-icon::before {
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAERlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAA6ABAAMAAAABAAEAAKACAAQAAAABAAAAIKADAAQAAAABAAAAIAAAAACshmLzAAAEU0lEQVRYCcVXTWhcVRQ+586kSUMMxkyaElstCto2SIhitS5Ek8xUKV2poatCcVHtUlFQk8mbaaziwpWgglJwVaquitBOfhQXFlqlzSJpFSpIYyXNjBNiTCck7x2/8/LeNDOZxDuEkgOXe++553zfefee+/OYLOXFk3+1LLrRdiO81yNqZ6K9cG0P3MeFaMIQjXssE8Z1JzLO9ls20MBZX7oG8w9GxB0goaPrW5aNMp1yOZIa7Wv6o2ykpLtmAPs/vrG14Z+6d4jpbSKuhdcSyq9wGMPXjonwmESXrriLzFGOdDBLB8Y6MNYBu0dRokSygMA/mrun8MGFN3behm6VVAwg4WR3i6FvYK1T7MHo9BK7ydH+1uurECoouk5MPRyVSBrBHMYwVobG2aOXM07sWrn5qgB60rc6mcwIDJtQrnrEr44kmy+UO9r0u9O5/YbkS9juQckLed3DyW2XV/qWBBB3ptvI8EUY3I9p/67OW+g967TNr3Sotn3IuVlfMLVnsBwH4fsnebJvyGm5GeIUA3jljERmrv49SizPYuq+z7c2H/jlGC+Ghhupn/hcapqmcudB9jwJ/3jvnvu6vu5lVzF1fXyZuZZ7U8nRmVzytvT+H3kilYvH09mLWrQdwFSsFEsxFVs5fK7A0g8gMZjbif4ACpKbjv7gNGaD8bUrlk8x+KRflttr22JEMRUbTUwwDQScyzPgedQHZT0xnx7ujw2jfVfExwYHwOsDTjLdJ2ebmeQIlJ7neo41s/DrsL3kl+W2lWvAga0tR3zueGr6GL78M3ifH0rGXrBC2aAR8uYcIA5gwV8zIE8onoh8u0Fca/ciF7j1uOzEnqcIm59sEXoGc0+z6+H45V1CvAvHcD7THztu669cnp+L0okAeIc6zjbM/24LgGM1gZk7jnRu1aQWoU9sfUOuhrmtaPIO3YY1KLLWZaEO5TKUbMY5zx8W9UJ6elpLwKXbsaZ4EFl7B4bMtDv0iRipKoDQT2sNQI9b1utXFdYisi+wzZ/ri/1m7QfDgEuvgUUEIJPq3DhX/5DWNqIXDOweC2wvIR90Oq3lDpdMIgD2r0dXvGdsEW5H6x6HLRJYU7C69VefO1x8Gde1ZFSJLfWS1jbCnhtOPxmpfv2LXOA2Xk2tvnwKKPFuZ/oRmwBwqRQDcKNeVQkYcOjtWVBuM/JuYw5b6isojIkYxyYAFn5K7ZBF10fea52y8QltAg6jnMqNHFBmGkQ1j+U43HMi2xMar1Nv0zGsf1s8nUsmUtPOOrbFIR8bHFDMB5zL13Gmr/kGlCkUzedTzzmzsaJXhYawnA3UmARpiYj5ooJZiUoxFRtK3X6pgNPv+IZVPcnwbOl6f+aBaO1CNvPW9n9LmCp01nuSaTRF2YxHqZ8DYQT6WsXT+RD6eUztwYLZ8rM+rcPxamv1VQzFUkzFXvkiVrySGQgJNvXHJAxiU3/NwiC03rSf05VBaPtu/Z7/B8Yn/w7eguloAAAAAElFTkSuQmCC');
+  }
+
+  div.callout-note.callout-style-default .callout-title {
+    background-color: #dae6fb
+  }
+
+  div.callout-important {
+    border-left-color: #d9534f !important;
+  }
+
+  div.callout-important .callout-icon::before {
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAERlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAA6ABAAMAAAABAAEAAKACAAQAAAABAAAAIKADAAQAAAABAAAAIAAAAACshmLzAAAEKklEQVRYCcVXTWhcVRS+575MJym48A+hSRFr00ySRQhURRfd2HYjk2SSTokuBCkU2o0LoSKKraKIBTcuFCoidGFD08nkBzdREbpQ1EDNIv8qSGMFUboImMSZd4/f9zJv8ibJMC8xJQfO3HPPPef7zrvvvnvviIkpC9nsw0UttFunbUhpFzFtarSd6WJkStVMw5xyVqYTvkwfzuf/5FgtkVoB0729j1rjXwThS7Vio+Mo6DNnvLfahoZ+i/o32lULuJ3NNiz7q6+pyAUkJaFF6JwaM2lUJlV0MlnQn5aTRbEu0SEqHUa0A4AdiGuB1kFXRfVyg5d87+Dg4DL6m2TLAub60ilj7A1Ec4odSAc8X95sHh7+ZRPCFo6Fnp7HfU/fBng/hi10CjCnWnJjsxvDNxWw0NfV6Rv5GgP3I3jGWXumdTD/3cbEOP2ZbOZp69yniG3FQ9z1jD7bnBu9Fc2tKGC2q+uAJOQHBDRiZX1x36o7fWBs7J9ownbtO+n0/qWkvW7UPIfc37WgT6ZGR++EOJyeQDSb9UB+DZ1G6DdLDzyS+b/kBCYGsYgJbSQHuThGKRcw5xdeQf8YdNHsc6ePXrlSYMBuSIAFTGAtQo+VuALo4BX83N190NWZWbynBjhOHsmNfFWLeL6v+ynsA58zDvvAC8j5PkbOcXCMg2PZFk3q8MjI7WAG/Dp9AwP7jdGBOOQkAvlFUB+irtm16I1Zw9YBcpGTGXYmk3kQIC/Cds55l+iMI3jqhjAuaoe+am2Jw5GT3Nbz3CkE12NavmzN5+erJW7046n/CH1RO/RVa8lBLozXk9uqykkGAyRXLWlLv5jyp4RFsG5vGVzpDLnIjTWgnRy2Rr+tDKvRc7Y8AyZq10jj8DqXdnIRNtFZb+t/ZRtXcDiVnzpqx8mPcDWxgARUqx0W1QB9MeUZiNrV4qP+Ehc+BpNgATsTX8ozYKL2NtFYAHc84fG7ndxUPr+AR/iQSns7uSUufAymwDOb2+NjK27lEFocm/EE2WpyIy/Hi66MWuMKJn8RvxIcj87IM5Vh9663ziW36kR0HNenXuxmfaD8JC7tfKbrhFr7LiZCrMjrzTeGx+PmkosrkNzW94ObzwocJ7A1HokLolY+AvkTiD/q1H0cN48c5EL8Crkttsa/AXQVDmutfyku0E7jShx49XqV3MFK8IryDhYVbj7Sj2P2eBxwcXoe8T8idsKKPRcnZw1b+slFTubwUwhktrfnAt7J++jwQtLZcm3sr9LQrjRzz6cfMv9aLvgmnAGvpoaGLxM4mAEaLV7iAzQ3oU0IvD5x9ix3yF2RAAuYAOO2f7PEFWCXZ4C9Pb2UsgDeVnFSpbFK7/IWu7TPTvBqzbGdCHOJQSxiEjt6IyZmxQyEJHv6xyQsYk//moVFsN2zP6fRImjfq7/n/wFDguUQFNEwugAAAABJRU5ErkJggg==');
+  }
+
+  div.callout-important.callout-style-default .callout-title {
+    background-color: #f7dddc
+  }
+
+  div.callout-warning {
+    border-left-color: #f0ad4e !important;
+  }
+
+  div.callout-warning .callout-icon::before {
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAERlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAA6ABAAMAAAABAAEAAKACAAQAAAABAAAAIKADAAQAAAABAAAAIAAAAACshmLzAAAETklEQVRYCeVWW2gcVRg+58yaTUnizqbipZeX4uWhBEniBaoUX1Ioze52t7sRq6APio9V9MEaoWlVsFasRq0gltaAPuxms8lu0gcviE/FFOstVbSIxgcv6SU7EZqmdc7v9+9mJtNks51NTUH84ed889/PP+cmxP+d5FIbMJmNbpREu4WUkiTtCicKny0l1pIKmBzovF2S+hIJHX8iEu3hZJ5lNZGqyRrGSIQpq15AzF28jgpeY6yk6GVdrfFqdrD6Iw+QlB8g0YS2g7dyQmXM/IDhBhT0UCiRf59lfqmmDvzRt6kByV/m4JjtzuaujMUM2c5Z2d6JdKrRb3K2q6mA+oYVz8JnDdKPmmNthzkAk/lN63sYPgevrguc72aZX/L9C6x09GYyxBgCX4NlvyGUHOKELlm5rXeR1kchuChJt4SSwyddZRXgvwMGvYo4QSlk3/zkHD8UHxwVJA6zjZZqP8v8kK8OWLnIZtLyCAJagYC4rTGW/9Pqj92N/c+LUaAj27movwbi19tk/whRCIE7Q9vyI6yvRpftAKVTdUjOW40X3h5OXsKCdmFcx0xlLJoSuQngnrJe7Kcjm4OMq9FlC7CMmScQANuNvjfP3PjGXDBaUQmbp296S5L4DrpbrHN1T87ZVEZVCzg1FF0Ft+dKrlLukI+/c9ENo+TvlTDbYFvuKPtQ9+l052rXrgKoWkDAFnvh0wTOmYn8R5f4k/jN/fZiCM1tQx9jQQ4ANhqG4hiL0qIFTGViG9DKB7GYzgubnpofgYRwO+DFjh0Zin2m4b/97EDkXkc+f6xYAPX0KK2I/7fUQuwzuwo/L3AkcjugPNixC8cHf0FyPjWlItmLxWw4Ou9YsQCr5fijMGoD/zpdRy95HRysyXA74MWOnscpO4j2y3HAVisw85hX5+AFBRSHt4ShfLFkIMXTqyKFc46xdzQM6XbAi702a7sy04J0+feReMFKp5q9esYLCqAZYw/k14E/xcLLsFElaornTuJB0svMuJINy8xkIYuL+xPAlWRceH6+HX7THJ0djLUom46zREu7tTkxwmf/FdOZ/sh6Q8qvEAiHpm4PJ4a/doJe0gH1t+aHRgCzOvBvJedEK5OFE5jpm4AGP2a8Dxe3gGJ/pAutug9Gp6he92CsSsWBaEcxGx0FHytmIpuqGkOpldqNYQK8cSoXvd+xLxXADw0kf6UkJNFtdo5MOgaLjiQOQHcn+A6h5NuL2s0qsC2LOM75PcF3yr5STuBSAcGG+meA14K/CI21HcS4LBT6tv0QAh8Dr5l93AhZzG5ZJ4VxAqdZUEl9z7WJ4aN+svMvwHHL21UKTd1mqvChH7/Za5xzXBBKrUcB0TQ+Ulgkfbi/H/YT5EptrGzsEK7tR1B7ln9BBwckYfMiuSqklSznIuoIIOM42MQO+QnduCoFCI0bpkzjCjddHPN/F+2Yu+sd9bKNpVwHhbS3LluK/0zgfwD0xYI5dXuzlQAAAABJRU5ErkJggg==');
+  }
+
+  div.callout-warning.callout-style-default .callout-title {
+    background-color: #fcefdc
+  }
+
+  div.callout-tip {
+    border-left-color: #02b875 !important;
+  }
+
+  div.callout-tip .callout-icon::before {
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAERlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAA6ABAAMAAAABAAEAAKACAAQAAAABAAAAIKADAAQAAAABAAAAIAAAAACshmLzAAADr0lEQVRYCe1XTWgTQRj9ZjZV8a9SPIkKgj8I1bMHsUWrqYLVg4Ue6v9BwZOxSYsIerFao7UiUryIqJcqgtpimhbBXoSCVxUFe9CTiogUrUp2Pt+3aUI2u5vdNh4dmMzOzHvvezuz8xNFM0mjnbXaNu1MvFWRXkXEyE6aYOYJpdW4IXuA4r0fo8qqSMDBU0v1HJUgVieAXxzCsdE/YJTdFcVIZQNMyhruOMJKXYFoLfIfIvVIMWdsrd+Rpd86ZmyzzjJmLStqRn0v8lzkb4rVIXvnpScOJuAn2ACC65FkPzEdEy4TPWRLJ2h7z4cArXzzaOdKlbOvKKX25Wl00jSnrwVxAg3o4dRxhO13RBSdNvH0xSARv3adTXbBdTf64IWO2vH0LT+cv4GR1DJt+DUItaQogeBX/chhbTBxEiZ6gftlDNXTrvT7co4ub5A6gp9HIcHvzTa46OS5fBeP87Qm0fQkr4FsYgVQ7Qg+ZayaDg9jhg1GkWj8RG6lkeSacrrHgDaxdoBiZPg+NXV/KifMuB6//JmYH4CntVEHy/keA6x4h4CU5oFy8GzrBS18cLJMXcljAKB6INjWsRcuZBWVaS3GDrqB7rdapVIeA+isQ57Eev9eCqzqOa81CY05VLd6SamW2wA2H3SiTbnbSxmzfp7WtKZkqy4mdyAlGx7ennghYf8voqp9cLSgKdqNfa6RdRsAAkPwRuJZNbpByn+RrJi1RXTwdi8RQF6ymDwGMAtZ6TVE+4uoKh+MYkcLsT0Hk8eAienbiGdjJHZTpmNjlbFJNKDVAp2fJlYju6IreQxQ08UJDNYdoLSl6AadO+fFuCQqVMB1NJwPm69T04Wv5WhfcWyfXQB+wXRs1pt+nCknRa0LVzSA/2B+a9+zQJadb7IyyV24YAxKp2Jqs3emZTuNnKxsah+uabKbMk7CbTgJx/zIgQYErIeTKRQ9yD9wxVof5YolPHqaWo7TD6tJlh7jQnK5z2n3+fGdggIOx2kaa2YI9QWarc5Ce1ipNWMKeSG4DysFF52KBmTNMmn5HqCFkwy34rDg05gDwgH3bBi+sgFhN/e8QvRn8kbamCOhgrZ9GJhFDgfcMHzFb6BAtjKpFhzTjwv1KCVuxHvCbsSiEz4CANnj84cwHdFXAbAOJ4LTSAawGWFn5tDhLMYz6nWeU2wJfIhmIJBefcd/A5FWQWGgrWzyORZ3Q6HuV+Jf0Bj+BTX69fm1zWgK7By1YTXchFDORywnfQ7GpzOo6S+qECrsx2ifVQAAAABJRU5ErkJggg==');
+  }
+
+  div.callout-tip.callout-style-default .callout-title {
+    background-color: #ccf1e3
+  }
+
+  div.callout-caution {
+    border-left-color: #fd7e14 !important;
+  }
+
+  div.callout-caution .callout-icon::before {
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAERlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAA6ABAAMAAAABAAEAAKACAAQAAAABAAAAIKADAAQAAAABAAAAIAAAAACshmLzAAACV0lEQVRYCdVWzWoUQRCuqp2ICBLJXgITZL1EfQDBW/bkzUMUD7klD+ATSHBEfAIfQO+iXsWDxJsHL96EHAwhgzlkg8nBg25XWb0zIb0zs9muYYWkoKeru+vn664fBqElyZNuyh167NXJ8Ut8McjbmEraKHkd7uAnAFku+VWdb3reSmRV8PKSLfZ0Gjn3a6Xlcq9YGb6tADjn+lUfTXtVmaZ1KwBIvFI11rRXlWlatwIAAv2asaa9mlB9wwygiDX26qaw1yYPzFXg2N1GgG0FMF8Oj+VIx7E/03lHx8UhvYyNZLN7BwSPgekXXLribw7w5/c8EF+DBK5idvDVYtEEwMeYefjjLAdEyQ3M9nfOkgnPTEkYU+sxMq0BxNR6jExrAI31H1rzvLEfRIdgcv1XEdj6QTQAS2wtstEALLG1yEZ3QhH6oDX7ExBSFEkFINXH98NTrme5IOaaA7kIfiu2L8A3qhH9zRbukdCqdsA98TdElyeMe5BI8Rs2xHRIsoTSSVFfCFCWGPn9XHb4cdobRIWABNf0add9jakDjQJpJ1bTXOJXnnRXHRf+dNL1ZV1MBRCXhMbaHqGI1JkKIL7+i8uffuP6wVQAzO7+qVEbF6NbS0LJureYcWXUUhH66nLR5rYmva+2tjRFtojkM2aD76HEGAD3tPtKM309FJg5j/K682ywcWJ3PASCcycH/22u+Bh7Aa0ehM2Fu4z0SAE81HF9RkB21c5bEn4Dzw+/qNOyXr3DCTQDMBOdhi4nAgiFDGCinIa2owCEChUwD8qzd03PG+qdW/4fDzjUMcE1ZpIAAAAASUVORK5CYII=');
+  }
+
+  div.callout-caution.callout-style-default .callout-title {
+    background-color: #ffe5d0
+  }
+
+  </style>
+  <style type="text/css">
+    .reveal div.sourceCode {
+      margin: 0;
+      overflow: auto;
+    }
+    .reveal div.hanging-indent {
+      margin-left: 1em;
+      text-indent: -1em;
+    }
+    .reveal .slide:not(.center) {
+      height: 100%;
+    }
+    .reveal .slide.scrollable {
+      overflow-y: auto;
+    }
+    .reveal .footnotes {
+      height: 100%;
+      overflow-y: auto;
+    }
+    .reveal .slide .absolute {
+      position: absolute;
+      display: block;
+    }
+    .reveal .footnotes ol {
+      counter-reset: ol;
+      list-style-type: none; 
+      margin-left: 0;
+    }
+    .reveal .footnotes ol li:before {
+      counter-increment: ol;
+      content: counter(ol) ". "; 
+    }
+    .reveal .footnotes ol li > p:first-child {
+      display: inline-block;
+    }
+    .reveal .slide ul,
+    .reveal .slide ol {
+      margin-bottom: 0.5em;
+    }
+    .reveal .slide ul li,
+    .reveal .slide ol li {
+      margin-top: 0.4em;
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide ul[role="tablist"] li {
+      margin-bottom: 0;
+    }
+    .reveal .slide ul li > *:first-child,
+    .reveal .slide ol li > *:first-child {
+      margin-block-start: 0;
+    }
+    .reveal .slide ul li > *:last-child,
+    .reveal .slide ol li > *:last-child {
+      margin-block-end: 0;
+    }
+    .reveal .slide .columns:nth-child(3) {
+      margin-block-start: 0.8em;
+    }
+    .reveal blockquote {
+      box-shadow: none;
+    }
+    .reveal .tippy-content>* {
+      margin-top: 0.2em;
+      margin-bottom: 0.7em;
+    }
+    .reveal .tippy-content>*:last-child {
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide > img.stretch.quarto-figure-center,
+    .reveal .slide > img.r-stretch.quarto-figure-center {
+      display: block;
+      margin-left: auto;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-left,
+    .reveal .slide > img.r-stretch.quarto-figure-left  {
+      display: block;
+      margin-left: 0;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-right,
+    .reveal .slide > img.r-stretch.quarto-figure-right  {
+      display: block;
+      margin-left: auto;
+      margin-right: 0; 
+    }
+  </style>
+</head>
+<body class="quarto-light">
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide" data-background-image="https://qfcatmsu.github.io/Images/dark-big.png" data-background-position="6% 95%" data-background-size="40%" class="quarto-title-block center">
+  <h1 class="title">Approximating posterior distributions using simulation</h1>
+  <p class="subtitle">FW 891 <br> <a href="https://qfcatmsu.github.io/FW-Bayes/week1/lec2.html" style="position:absolute;top:40%;left:35%;font-size:20px;">Click here to view presentation online</a></p>
+
+<div class="quarto-title-authors">
+<div class="quarto-title-author">
+<div class="quarto-title-author-name">
+Christopher Cahill 
+</div>
+</div>
+</div>
+
+  <p class="date">30 August 2023</p>
+</section>
+<section id="recap" class="slide level2">
+<h2>Recap</h2>
+<ul>
+<li>Last time we learned that in some special situations we could generate analytical posterior distributions (e.g., the beta-binomial model)</li>
+<li>However, the reality is that this only works for simple models (i.e., typically &lt; 3 parameters)</li>
+<li>Today we explore a broad class of computational methods and algorithms aimed at approximating posterior distributions</li>
+<li>We will still use simple models today, but realize that some of these tools scale far better than others to high-dimensional space</li>
+</ul>
+</section>
+<section id="outline" class="slide level2">
+<h2>Outline</h2>
+<ul>
+<li>Computing a posterior via grid approximation<br>
+</li>
+<li>Markov Chain Monte Carlo</li>
+<li>Metropolis-Hastings algorithm</li>
+<li>Hamiltonian Monte Carlo</li>
+</ul>
+</section>
+<section id="grid-search-approximation-the-basics" class="slide level2">
+<h2>Grid search approximation: the basics</h2>
+<ul>
+<li><p>Recall that: <span class="math display">\[
+\color{darkgreen}{posterior} \propto \color{#E78021}{likelihood} \cdot \color{#3697DC}{prior}
+\]</span></p></li>
+<li><p>For models with 1-2 parameters approximating the posterior is actually a fairly tractable problem, even when the math isn’t nice</p></li>
+<li><p>All we do is create a “grid” of parameter values and compute the posterior</p></li>
+<li><p>We then search across the computed posterior values to find the posterior maximum and corresponding parameter estimates</p></li>
+</ul>
+</section>
+<section id="revisiting-the-sneak-turtles-with-different-priors" class="slide level2">
+<h2>Revisiting the sneak turtles with different priors</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-2"><a href="#cb1-2"></a><span class="fu">library</span>(ggqfc)</span>
+<span id="cb1-3"><a href="#cb1-3"></a>y <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb1-4"><a href="#cb1-4"></a>  <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>,</span>
+<span id="cb1-5"><a href="#cb1-5"></a>  <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span></span>
+<span id="cb1-6"><a href="#cb1-6"></a>) <span class="co"># sucesses (turtle detections)</span></span>
+<span id="cb1-7"><a href="#cb1-7"></a>n <span class="ot">&lt;-</span> <span class="fu">length</span>(y) <span class="co"># trials</span></span>
+<span id="cb1-8"><a href="#cb1-8"></a></span>
+<span id="cb1-9"><a href="#cb1-9"></a><span class="co"># define a grid</span></span>
+<span id="cb1-10"><a href="#cb1-10"></a>grid_size <span class="ot">&lt;-</span> <span class="dv">10</span></span>
+<span id="cb1-11"><a href="#cb1-11"></a>p_grid <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="at">from =</span> <span class="fl">1e-3</span>, <span class="at">to =</span> <span class="fl">0.999</span>, <span class="at">length.out =</span> grid_size)</span>
+<span id="cb1-12"><a href="#cb1-12"></a></span>
+<span id="cb1-13"><a href="#cb1-13"></a><span class="co"># calculate likelihood</span></span>
+<span id="cb1-14"><a href="#cb1-14"></a>lik <span class="ot">&lt;-</span> <span class="fu">dbinom</span>(<span class="fu">sum</span>(y), n, p_grid)</span>
+<span id="cb1-15"><a href="#cb1-15"></a>lik <span class="co"># likelihood of having observed the data | each p_grid value</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] 4.229830e-04 1.964028e-01 1.859940e-02 5.603740e-04 6.085257e-06
+ [6] 1.860800e-08 8.682232e-12 1.445413e-16 7.970008e-25 4.341304e-82</code></pre>
+</div>
+</div>
+<ul>
+<li>see ?dunif, ?dnorm, ?dbinom, etc.</li>
+</ul>
+</section>
+<section id="always-work-in-log-space-when-dealing-with-likelihoods-and-prior-probabilities" class="slide level2">
+<h2><span style="text-decoration: underline;">Always</span> work in log-space when dealing with likelihoods and prior probabilities!</h2>
+<p>Recognize that <span class="math display">\[
+\color{darkgreen}{posterior} \propto \color{#E78021}{likelihood} \cdot \color{#3697DC}{prior}
+\]</span></p>
+<p>is the same as <span class="math display">\[
+\color{darkgreen}{log(posterior)} \propto \color{#E78021}{log(likelihood)} + \color{#3697DC}{log(prior)}
+\]</span></p>
+<p>When we multiply likelihoods together they get smaller and may surpass machine precision, so we usually work in log-space</p>
+</section>
+<section id="back-to-the-r-side-of-things" class="slide level2">
+<h2>Back to the R side of things…</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="co"># Note that</span></span>
+<span id="cb3-2"><a href="#cb3-2"></a><span class="fu">log</span>(lik)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1]   -7.768179   -1.627588   -3.984626   -7.486906  -12.009642  -17.799674
+ [7]  -25.469743  -36.472966  -55.488942 -187.343803</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a><span class="co"># is the same as</span></span>
+<span id="cb5-2"><a href="#cb5-2"></a>log_lik <span class="ot">&lt;-</span> <span class="fu">dbinom</span>(<span class="fu">sum</span>(y), n, p_grid, <span class="cn">TRUE</span>)</span>
+<span id="cb5-3"><a href="#cb5-3"></a>log_lik</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1]   -7.768179   -1.627588   -3.984626   -7.486906  -12.009642  -17.799674
+ [7]  -25.469743  -36.472966  -55.488942 -187.343803</code></pre>
+</div>
+</div>
+<ul>
+<li>We have now defined the log-likelihood across our entire grid sequence of <span class="math inline">\(p\)</span></li>
+<li>Now we need to calculate the prior probabilities at each <code>p_grid</code> value</li>
+</ul>
+</section>
+<section id="dealing-with-the-prior-probablities" class="slide level2">
+<h2>Dealing with the prior probablities</h2>
+<ul>
+<li>Assume <span class="math inline">\(p\sim \mathrm{Uniform}(0, 1)\)</span></li>
+<li>We can calculate the log(prior probability) for each <span class="math inline">\(p\)</span> in our grid given a uniform prior via:</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a>log_prior <span class="ot">&lt;-</span> <span class="fu">dunif</span>(p_grid, <span class="dv">0</span>, <span class="dv">1</span>, <span class="cn">TRUE</span>)</span>
+<span id="cb7-2"><a href="#cb7-2"></a>log_prior</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] 0 0 0 0 0 0 0 0 0 0</code></pre>
+</div>
+</div>
+<ul>
+<li>Is this correct?</li>
+</ul>
+</section>
+<section id="visualizing-the-uniform-prior" class="slide level2">
+<h2>Visualizing the Uniform prior</h2>
+
+<img data-src="lec2_files/figure-revealjs/unnamed-chunk-4-1.png" width="960" class="r-stretch"></section>
+<section id="calculating-the-posterior" class="slide level2">
+<h2>Calculating the posterior</h2>
+<ul>
+<li>Now can calculate the posterior probabilities of each <code>p_grid</code> value given the likelihood and prior as follows:</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a><span class="co"># unstandardized log posterior</span></span>
+<span id="cb9-2"><a href="#cb9-2"></a>log_unstd_post <span class="ot">&lt;-</span> log_lik <span class="sc">+</span> log_prior</span>
+<span id="cb9-3"><a href="#cb9-3"></a></span>
+<span id="cb9-4"><a href="#cb9-4"></a><span class="co"># exponentiate the log posterior</span></span>
+<span id="cb9-5"><a href="#cb9-5"></a>unstd_post <span class="ot">&lt;-</span> <span class="fu">exp</span>(log_unstd_post)</span>
+<span id="cb9-6"><a href="#cb9-6"></a></span>
+<span id="cb9-7"><a href="#cb9-7"></a><span class="co"># standardize it (so probabilities sum to one)</span></span>
+<span id="cb9-8"><a href="#cb9-8"></a>post_prob <span class="ot">&lt;-</span> unstd_post <span class="sc">/</span> <span class="fu">sum</span>(unstd_post)</span>
+<span id="cb9-9"><a href="#cb9-9"></a></span>
+<span id="cb9-10"><a href="#cb9-10"></a><span class="co"># Put everything together in a data frame</span></span>
+<span id="cb9-11"><a href="#cb9-11"></a>posterior <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb9-12"><a href="#cb9-12"></a>  <span class="at">p =</span> p_grid, log_lik, log_prior,</span>
+<span id="cb9-13"><a href="#cb9-13"></a>  log_unstd_post, post_prob</span>
+<span id="cb9-14"><a href="#cb9-14"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="lets-take-a-look-at-our-posterior-approximation" class="slide level2">
+<h2>Let’s take a look at our posterior approximation</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a>posterior</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>           p     log_lik log_prior log_unstd_post    post_prob
+1  0.0010000   -7.768179         0      -7.768179 1.958330e-03
+2  0.1118889   -1.627588         0      -1.627588 9.093073e-01
+3  0.2227778   -3.984626         0      -3.984626 8.611164e-02
+4  0.3336667   -7.486906         0      -7.486906 2.594424e-03
+5  0.4445556  -12.009642         0     -12.009642 2.817357e-05
+6  0.5554444  -17.799674         0     -17.799674 8.615147e-08
+7  0.6663333  -25.469743         0     -25.469743 4.019707e-11
+8  0.7772222  -36.472966         0     -36.472966 6.691985e-16
+9  0.8881111  -55.488942         0     -55.488942 3.689961e-24
+10 0.9990000 -187.343803         0    -187.343803 2.009941e-81</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1"></a><span class="fu">which.max</span>(posterior<span class="sc">$</span>post_prob)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 2</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1"></a>posterior[<span class="fu">which.max</span>(posterior<span class="sc">$</span>post_prob), ] <span class="co"># best estimate of p</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>          p   log_lik log_prior log_unstd_post post_prob
+2 0.1118889 -1.627588         0      -1.627588 0.9093073</code></pre>
+</div>
+</div>
+</section>
+<section id="key-points" class="slide level2">
+<h2>Key points:</h2>
+<p>For each value of <span class="math inline">\(p\)</span> in <code>p_grid</code> we get</p>
+<ul>
+<li>log-likelihood of the data | that <span class="math inline">\(p\)</span></li>
+<li>log-prior probability for that <span class="math inline">\(p\)</span> | the prior(s)</li>
+<li>log-posterior calculation for each <span class="math inline">\(p\)</span> (very much not a probability)</li>
+<li>posterior probability for each <span class="math inline">\(p\)</span></li>
+</ul>
+</section>
+<section id="key-points-continued" class="slide level2">
+<h2>Key points continued:</h2>
+<ul>
+<li><p>The log-likelihood refers to the joint density of all data points (i.e., the sum of the log-likelihood values for each datum)</p></li>
+<li><p>log-prior is the marginal distribution of the parameter(s)</p></li>
+</ul>
+</section>
+<section id="comparing-our-grid-approximation-with-the-analytical-mle" class="slide level2">
+<h2>Comparing our grid approximation with the analytical MLE</h2>
+
+<img data-src="lec2_files/figure-revealjs/unnamed-chunk-7-1.png" width="960" class="r-stretch"></section>
+<section id="comparing-our-grid-approximation-with-the-analytical-mle-1" class="slide level2">
+<h2>Comparing our grid approximation with the analytical MLE</h2>
+
+<img data-src="lec2_files/figure-revealjs/unnamed-chunk-8-1.png" width="960" class="r-stretch"></section>
+<section id="comparing-our-grid-approximation-with-the-analytical-mle-2" class="slide level2">
+<h2>Comparing our grid approximation with the analytical MLE</h2>
+
+<img data-src="lec2_files/figure-revealjs/unnamed-chunk-9-1.png" width="960" class="r-stretch"></section>
+<section id="comparing-our-grid-approximation-with-the-analytical-mle-3" class="slide level2">
+<h2>Comparing our grid approximation with the analytical MLE</h2>
+
+<img data-src="lec2_files/figure-revealjs/unnamed-chunk-10-1.png" width="960" class="r-stretch"></section>
+<section id="comparing-our-grid-approximation-with-the-analytical-mle-4" class="slide level2">
+<h2>Comparing our grid approximation with the analytical MLE</h2>
+
+<img data-src="lec2_files/figure-revealjs/unnamed-chunk-11-1.png" width="960" class="r-stretch"></section>
+<section id="exercise" class="slide level2">
+<h2>Exercise</h2>
+<ul>
+<li>A new study estimated the detection probability of sneak turtles, and you want to incorporate this information as prior information into your analysis</li>
+<li>Repeat the analysis above in R with a grid_size of 10000 and a <span class="math inline">\(p\sim \mathrm{Normal}(0.13, 0.12)\)</span></li>
+<li>Report your best estimate of log-posterior and p given this prior</li>
+<li>If you get this far, try a bunch of different normal priors and think about how it influences your findings</li>
+</ul>
+</section>
+<section id="solution" class="slide level2">
+<h2>Solution</h2>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>             p   log_lik log_prior log_unstd_post    post_prob
+747 0.07545825 -1.289803  1.098033     -0.1917702 0.0008715062</code></pre>
+</div>
+</div>
+</section>
+<section id="why-cant-we-just-grid-search-everything" class="slide level2">
+<h2>Why can’t we just grid search everything?</h2>
+<ul>
+<li>There are many important model types (e.g., mixed effects models) for which analytical solutions and things like grid appoximation fail miserably
+<ul>
+<li>For models with many parameters and a dense grid, computational burden is intractable</li>
+<li>This includes almost all models relevant to applied ecology</li>
+</ul></li>
+</ul>
+</section>
+<section id="the-bayesian-problem" class="slide level2">
+<h2>The Bayesian problem</h2>
+<p><span class="math display">\[
+P(\theta \mid y)=\frac{P(y \mid \theta) P(\theta)}{P(y)}
+\]</span></p>
+<ul>
+<li><p><span class="math inline">\(P(y)\)</span> is called the “evidence” (i.e.&nbsp;the evidence that the data y was generated by this model)</p></li>
+<li><p>We can compute this quantity by integrating over all possible parameter values:</p></li>
+</ul>
+<p><span class="math display">\[
+P(y)=\int_{\Theta} P(y, \theta) \mathrm{d} \theta
+\]</span></p>
+</section>
+<section id="the-bayesian-problem-contd" class="slide level2">
+<h2>The Bayesian problem cont’d</h2>
+<ul>
+<li>This is <em>the</em> key difficulty with Bayesian statistics, and is why Bayesian statistics was not popular until computing power increased in the 1990s
+<ul>
+<li>Even for relatively simple models this thing can be intractable</li>
+</ul></li>
+<li>If we can’t solve it, can we approximate it via <a href="https://en.wikipedia.org/wiki/Monte_Carlo_method">Monte Carlo</a>?
+<ul>
+<li>Monte Carlo = repeated random sampling</li>
+</ul></li>
+<li>Unfortunately this would require us to first solve Bayes’ theorem because we don’t know what the distribution <span class="math inline">\(P(\theta \mid y)\)</span> is</li>
+</ul>
+<p><span class="footerRight">McElreath 2023 chapter 2</span></p>
+</section>
+<section id="the-bayesian-problem-contd-1" class="slide level2">
+<h2>The Bayesian problem cont’d</h2>
+<ul>
+<li>So we can’t compute it using standard methods, can’t sample directly from it<br>
+</li>
+<li>Mathematicians realized this, and instead said:
+<ul>
+<li>“Let’s construct an <a href="https://en.wikipedia.org/wiki/Ergodic_theory">ergodic</a>, reversible <a href="https://en.wikipedia.org/wiki/Markov_chain">Markov chain</a> that has as an equilibrium distribution which matches our posterior distribution”</li>
+</ul></li>
+<li>What? 🦇💩</li>
+<li>Markov chain: what happens next depends only on the state of affairs now</li>
+<li>The remarkable fact is that this is relatively easy to do <span class="footerRight">Gelman et al.&nbsp;2003</span></li>
+</ul>
+</section>
+<section id="introduction-to-markov-chain-monte-carlo-mcmc" class="slide level2">
+<h2>Introduction to Markov Chain Monte Carlo (MCMC)</h2>
+<ul>
+<li><p>What is MCMC: a broad class of algorithms that allow us to sample from an arbitrary probability distribution</p></li>
+<li><p>Counter-intuitive to most non-robots</p></li>
+<li><p>Rather than computing the <span class="math inline">\(P(\theta \mid y)\)</span> directly, MCMC draws samples of parameters from <span class="math inline">\(P(\theta \mid y)\)</span></p>
+<ul>
+<li>This is actually <strong>extremely</strong> useful</li>
+</ul></li>
+<li><p>Collecting enough samples allows us to ‘map out’ or get a picture of <span class="math inline">\(P(\theta \mid y)\)</span></p></li>
+</ul>
+<p><span class="footerRight">see also McElreath 2023 chapter 2</span></p>
+</section>
+<section id="the-metropolis-hastings-algorithm" class="slide level2">
+<h2>The Metropolis-Hastings algorithm</h2>
+<ul>
+<li><p>Metropolis–Hastings (MH) is a classic MCMC algorithm with the following rules:</p></li>
+<li><p>Let <span class="math inline">\(f(x)\)</span> be a function that is <em>proportional</em> to the desired probability density function <span class="math inline">\(P(x)\)</span> (a.k.a the “target distribution”)</p></li>
+<li><p>Remember that we know:</p></li>
+</ul>
+<p><span class="math display">\[
+    \color{darkgreen}{posterior} \propto \color{#E78021}{likelihood} \cdot \color{#3697DC}{prior}
+\]</span></p>
+<ul>
+<li>So we just set <span class="math inline">\(f(x)\)</span> = <span class="math inline">\(P(y \mid \theta) \cdot P(\theta)\)</span></li>
+</ul>
+</section>
+<section id="the-metropolis-hastings-algorithm-contd" class="slide level2">
+<h2>The Metropolis-Hastings algorithm cont’d</h2>
+<p>The recipe:</p>
+<ul>
+<li>Choose an arbitrary starting value for a parameter <span class="math inline">\(x_{t}\)</span></li>
+<li>Choose an arbitrary probability distribution <span class="math inline">\(g(x \mid y)\)</span> to <em>propose</em> the next parameter value <span class="math inline">\(x\)</span> given the previous value <span class="math inline">\(y\)</span>
+<ul>
+<li>Note <span class="math inline">\(g(x \mid y)\)</span> is usually a Gaussian distribution centered at <span class="math inline">\(y\)</span> so that points closer to <span class="math inline">\(y\)</span> are more likely to be visited next (random walk)</li>
+</ul></li>
+</ul>
+<p><span class="footerRight">Gelman et al.&nbsp;2003</span></p>
+</section>
+<section id="the-metropolis-hastings-algorithm-contd-1" class="slide level2">
+<h2>The Metropolis-Hastings algorithm cont’d</h2>
+<ul>
+<li><p>for each iteration <span class="math inline">\(t\)</span></p>
+<ul>
+<li><p>generate a proposed value for <span class="math inline">\(x^{\prime}\)</span> by drawing a random number from <span class="math inline">\(g\left(x^{\prime} \mid x_{t}\right)\)</span></p></li>
+<li><p>calculate the acceptance probability (a.k.a. acceptance ratio) <span class="math inline">\(\alpha=f\left(x^{\prime}\right) / f\left(x_{t}\right)\)</span></p></li>
+<li><p>accept or reject the proposed value <span class="math inline">\(x^{\prime}\)</span></p>
+<ul>
+<li>generate a uniform random number <span class="math inline">\(u \in[0,1]\)</span></li>
+<li>if u &gt; <span class="math inline">\(\alpha\)</span>, accept the proposal and set <span class="math inline">\(x_{+1}=x^{\prime}\)</span></li>
+<li>if u &lt; <span class="math inline">\(\alpha\)</span>, reject the proposal and set <span class="math inline">\(x_{+1}=x_{t}\)</span></li>
+</ul></li>
+</ul></li>
+</ul>
+<p><span class="footerRight">Gelman et al.&nbsp;2003</span></p>
+</section>
+<section id="re-thinking-the-acceptance-probability" class="slide level2">
+<h2>Re-thinking the acceptance probability</h2>
+<p>This thing works because</p>
+<p><span class="math inline">\(\alpha=f\left(x^{\prime}\right) / f\left(x_{t}\right)\)</span></p>
+<p>is the same as saying</p>
+<p><span class="math display">\[
+\alpha=\frac{\frac{P(y \mid \theta^{\prime}) P(\theta^{\prime})}{P(y)}}{\frac{P(y \mid \theta_{t}) P(\theta_{t})}{P(y)}}
+\]</span></p>
+<p>Note we just substituted <span class="math inline">\(x^{\prime}\)</span> and <span class="math inline">\(x_{t}\)</span> for <span class="math inline">\(\theta^{\prime}\)</span> and <span class="math inline">\(\theta_{t}\)</span></p>
+<ul>
+<li><span class="math inline">\(P(y)\)</span> cancels out via mathemagicks</li>
+</ul>
+</section>
+<section id="remember-the-sneak-turtles" class="slide level2">
+<h2>Remember the sneak turtles 🐢!</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1"></a>y</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] 0 0 0 0 0 0 0 0 1 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1"></a>n</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 30</code></pre>
+</div>
+</div>
+</section>
+<section id="building-a-metropolis-hastings-algorithm-for-sneak-turtles" class="slide level2">
+<h2>Building a Metropolis-Hastings algorithm for sneak turtles 🐢</h2>
+<p>First, write three helper functions:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1"></a>l_prior <span class="ot">&lt;-</span> <span class="cf">function</span>(param) { <span class="co"># log(prior)</span></span>
+<span id="cb21-2"><a href="#cb21-2"></a>  <span class="fu">dunif</span>(param, <span class="at">min =</span> <span class="dv">0</span>, <span class="at">max =</span> <span class="dv">1</span>, <span class="at">log =</span> T) <span class="co"># uniform(0,1) prior</span></span>
+<span id="cb21-3"><a href="#cb21-3"></a>}</span>
+<span id="cb21-4"><a href="#cb21-4"></a></span>
+<span id="cb21-5"><a href="#cb21-5"></a>l_lik <span class="ot">&lt;-</span> <span class="cf">function</span>(param) { <span class="co"># log(likelihood)</span></span>
+<span id="cb21-6"><a href="#cb21-6"></a>  <span class="fu">dbinom</span>(<span class="fu">sum</span>(y), n, param, <span class="at">log =</span> T)</span>
+<span id="cb21-7"><a href="#cb21-7"></a>}</span>
+<span id="cb21-8"><a href="#cb21-8"></a></span>
+<span id="cb21-9"><a href="#cb21-9"></a>l_post <span class="ot">&lt;-</span> <span class="cf">function</span>(param) { <span class="co"># log(posterior) = log(likelihood) + log(prior)</span></span>
+<span id="cb21-10"><a href="#cb21-10"></a>  <span class="fu">l_lik</span>(param) <span class="sc">+</span> <span class="fu">l_prior</span>(param)</span>
+<span id="cb21-11"><a href="#cb21-11"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="building-a-metropolis-hastings-algorithm-for-sneak-turtles-1" class="slide level2">
+<h2>Building a Metropolis-Hastings algorithm for sneak turtles 🐢</h2>
+<p>Second, declare some stuff</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1"></a>n_iter <span class="ot">&lt;-</span> <span class="dv">10000</span> <span class="co"># number of iterations to run the MCMC</span></span>
+<span id="cb22-2"><a href="#cb22-2"></a>chain <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="cn">NA</span>, n_iter) <span class="co"># place to store values of p</span></span>
+<span id="cb22-3"><a href="#cb22-3"></a>chain[<span class="dv">1</span>] <span class="ot">&lt;-</span> <span class="fl">0.5</span> <span class="co"># initial guess at p</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="building-a-metropolis-hastings-algorithm-for-sneak-turtles-2" class="slide level2">
+<h2>Building a Metropolis-Hastings algorithm for sneak turtles 🐢</h2>
+<p>Now we run the algorithm</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">2</span><span class="sc">:</span>n_iter) {</span>
+<span id="cb23-2"><a href="#cb23-2"></a>  p_new <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="dv">1</span>, chain[i <span class="sc">-</span> <span class="dv">1</span>], <span class="fl">0.1</span>) <span class="co"># new proposed p based on previous p</span></span>
+<span id="cb23-3"><a href="#cb23-3"></a></span>
+<span id="cb23-4"><a href="#cb23-4"></a>  <span class="co"># next two lines ensure new p stays between [0,1] - ignore them</span></span>
+<span id="cb23-5"><a href="#cb23-5"></a>  <span class="cf">if</span> (p_new <span class="sc">&lt;</span> <span class="dv">0</span>) p_new <span class="ot">&lt;-</span> <span class="fu">abs</span>(p_new)</span>
+<span id="cb23-6"><a href="#cb23-6"></a>  <span class="cf">if</span> (p_new <span class="sc">&gt;</span> <span class="dv">1</span>) p_new <span class="ot">&lt;-</span> <span class="dv">2</span> <span class="sc">-</span> p_new</span>
+<span id="cb23-7"><a href="#cb23-7"></a></span>
+<span id="cb23-8"><a href="#cb23-8"></a>  a_prob <span class="ot">&lt;-</span> <span class="fu">exp</span>(<span class="fu">l_post</span>(p_new) <span class="sc">-</span> <span class="fu">l_post</span>(chain[i <span class="sc">-</span> <span class="dv">1</span>])) <span class="co"># acceptance prob</span></span>
+<span id="cb23-9"><a href="#cb23-9"></a></span>
+<span id="cb23-10"><a href="#cb23-10"></a>  <span class="cf">if</span> (<span class="fu">runif</span>(<span class="dv">1</span>) <span class="sc">&lt;</span> a_prob) {</span>
+<span id="cb23-11"><a href="#cb23-11"></a>    chain[i] <span class="ot">&lt;-</span> p_new <span class="co"># accept the proposal</span></span>
+<span id="cb23-12"><a href="#cb23-12"></a>  } <span class="cf">else</span> {</span>
+<span id="cb23-13"><a href="#cb23-13"></a>    chain[i] <span class="ot">&lt;-</span> chain[i <span class="sc">-</span> <span class="dv">1</span>] <span class="co"># reject the proposal</span></span>
+<span id="cb23-14"><a href="#cb23-14"></a>  }</span>
+<span id="cb23-15"><a href="#cb23-15"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><span class="footerRight">see also Gelman et al.&nbsp;2003; Robert and Casella 2010</span></p>
+</section>
+<section id="metropolis-hastings-results" class="slide level2">
+<h2>Metropolis-Hastings results</h2>
+
+<img data-src="lec2_files/figure-revealjs/unnamed-chunk-17-1.png" width="960" class="r-stretch"></section>
+<section id="metropolis-hastings-results-1" class="slide level2">
+<h2>Metropolis-Hastings results</h2>
+
+<img data-src="lec2_files/figure-revealjs/unnamed-chunk-18-1.png" width="960" class="r-stretch"></section>
+<section id="exercise-1" class="slide level2">
+<h2>Exercise</h2>
+<p>Get in groups of three, play with the following:</p>
+<ul>
+<li>the proposal distribution</li>
+<li>the initialization value</li>
+<li>chain length</li>
+<li>plot histogram of p and the chain (the fuzzy catepillar plot)</li>
+</ul>
+<p>Report your findings back to the group</p>
+</section>
+<section id="mcmc-algorithm-diagnostics" class="slide level2">
+<h2>MCMC algorithm diagnostics</h2>
+<ul>
+<li>Many of the parameters we were playing with affect our approximation of the posterior!</li>
+<li>Remember, this is a dead-simple example. Eventually we will use MCMC to approximate high-dimensional integrals which is much more difficult</li>
+<li>Clearly takes some time to “converge” on a stable posterior distribution
+<ul>
+<li>With MH MCMC this period between initial values and convergence to some distribution is known as the “burn-in” period, and we usually discard it</li>
+</ul></li>
+</ul>
+<p><span class="footerRight">Gelman et al.&nbsp;2003; Kery and Schaub 2013; McElreath et al.&nbsp;2023</span></p>
+</section>
+<section id="proposal-distribution-sd-0.001" class="slide level2">
+<h2>Proposal distribution sd = 0.001</h2>
+
+<img data-src="lec2_files/figure-revealjs/unnamed-chunk-19-1.png" width="960" class="r-stretch"></section>
+<section id="proposal-distribution-sd-0.002" class="slide level2">
+<h2>Proposal distribution sd = 0.002</h2>
+
+<img data-src="lec2_files/figure-revealjs/unnamed-chunk-20-1.png" width="960" class="r-stretch"></section>
+<section id="proposal-distribution-sd-0.005" class="slide level2">
+<h2>Proposal distribution sd = 0.005</h2>
+
+<img data-src="lec2_files/figure-revealjs/unnamed-chunk-21-1.png" width="960" class="r-stretch"></section>
+<section id="proposal-distribution-sd-0.01" class="slide level2">
+<h2>Proposal distribution sd = 0.01</h2>
+
+<img data-src="lec2_files/figure-revealjs/unnamed-chunk-22-1.png" width="960" class="r-stretch"></section>
+<section id="proposal-distribution-sd-0.1" class="slide level2">
+<h2>Proposal distribution sd = 0.1</h2>
+
+<img data-src="lec2_files/figure-revealjs/unnamed-chunk-23-1.png" width="960" class="r-stretch"></section>
+<section id="proposal-distribution-sd-0.2" class="slide level2">
+<h2>Proposal distribution sd = 0.2</h2>
+
+<img data-src="lec2_files/figure-revealjs/unnamed-chunk-24-1.png" width="960" class="r-stretch"></section>
+<section id="proposal-distribution-sd-0.4" class="slide level2">
+<h2>Proposal distribution sd = 0.4</h2>
+
+<img data-src="lec2_files/figure-revealjs/unnamed-chunk-25-1.png" width="960" class="r-stretch"></section>
+<section id="proposal-distribution-sd-0.42" class="slide level2">
+<h2>Proposal distribution sd = 0.42</h2>
+
+<img data-src="lec2_files/figure-revealjs/unnamed-chunk-26-1.png" width="960" class="r-stretch"></section>
+<section id="proposal-distribution-sd-0.44" class="slide level2">
+<h2>Proposal distribution sd = 0.44</h2>
+
+<img data-src="lec2_files/figure-revealjs/unnamed-chunk-27-1.png" width="960" class="r-stretch"></section>
+<section id="proposal-distribution-sd-0.44-1" class="slide level2">
+<h2>Proposal distribution sd &gt; 0.44</h2>
+<p>Breaks the following lines and dies because gives p outside [0,1]</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1"></a><span class="cf">if</span> (p_new <span class="sc">&lt;</span> <span class="dv">0</span>) p_new <span class="ot">&lt;-</span> <span class="fu">abs</span>(p_new)</span>
+<span id="cb24-2"><a href="#cb24-2"></a><span class="cf">if</span> (p_new <span class="sc">&gt;</span> <span class="dv">1</span>) p_new <span class="ot">&lt;-</span> <span class="dv">2</span> <span class="sc">-</span> p_new</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<ul>
+<li>There are smarter ways to keep a value between [0,1]</li>
+<li>Key points:
+<ul>
+<li>tuning the algorithm impacts its ability to sample the posterior</li>
+<li>correlation in the Markov chain means you don’t get independent samples of the parameters of interest</li>
+</ul></li>
+</ul>
+</section>
+<section id="what-do-we-want-the-chains-to-do" class="slide level2">
+<h2>What do we want the chains to do</h2>
+<ul>
+<li>We want chains to look like fuzzy caterpillars</li>
+</ul>
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="images/fuzzy.png" width="500" height="300"></p>
+</figure>
+</div>
+<ul>
+<li>Good indication that the MCMC is <strong>efficiently</strong> sampling from a maximum in the underlying distribution</li>
+</ul>
+</section>
+<section id="fuzzy-caterpillars-are-good-indication-that-a-chain-is-behaving-but" class="slide level2">
+<h2>Fuzzy caterpillars are good indication that a chain is behaving, but…</h2>
+<ul>
+<li>We could be stuck in a local maximum
+<ul>
+<li>If we ran it longer we might find a better solution</li>
+<li>One way to deal: run multiple, independent chains initialized from different starting locations</li>
+</ul></li>
+<li>Should get overlapping fuzzy caterpillars if everything goes well</li>
+<li>Because chains are independent, we often run them in parallel</li>
+</ul>
+<p><span class="footerLeft">Gelman et al.&nbsp;2003; Kery and Schaub 2013; McElreath et al.&nbsp;2023</span></p>
+</section>
+<section id="running-multiple-chains-each-with-different-initialization-values" class="slide level2">
+<h2>Running multiple chains each with different initialization values</h2>
+
+<img data-src="lec2_files/figure-revealjs/unnamed-chunk-29-1.png" width="960" class="r-stretch"></section>
+<section id="running-multiple-chains-each-with-different-initialization-values-1" class="slide level2">
+<h2>Running multiple chains each with different initialization values</h2>
+
+<img data-src="lec2_files/figure-revealjs/unnamed-chunk-30-1.png" width="960" class="r-stretch"></section>
+<section id="software-that-can-run-mcmc-for-you" class="slide level2">
+<h2>Software that can run MCMC for you</h2>
+<ul>
+<li>BUGS/JAGS</li>
+<li>NIMBLE (de Valpine et al.&nbsp;2017)</li>
+<li>MCMCpack</li>
+<li>LaplacesDemon</li>
+<li>Stan (what we will use in this class)</li>
+<li>Many others</li>
+</ul>
+<p>These tools implement many different MCMC routines Ecologists can (mostly) treat these tools as black boxes</p>
+<p><span class="footerRight">e.g., see Gelman et al.&nbsp;2003; Green et al.&nbsp;2020; Kery and Schaub 2013</span></p>
+</section>
+<section id="hamiltonian-monte-carlo-hmc" class="slide level2">
+<h2>Hamiltonian Monte Carlo (HMC)</h2>
+<h4 id="the-following-draws-heavily-from-chapter-9-in-mcelreath-2023">The following draws heavily from Chapter 9 in McElreath 2023</h4>
+<div style="font-size: 75%;">
+<p><em>It appears to be a quite general principle that, wherever there is a randomized way of doing something, then there is a nonrandomized way that delivers better performance but requires more thought</em>-E.T. Jaynes</p>
+<ul>
+<li>No free lunch</li>
+</ul>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="images/jaynes.png" width="200" height="300"></p>
+</figure>
+</div>
+<p><a href="https://en.wikipedia.org/wiki/Edwin_Thompson_Jaynes" class="footerRight">Wikipedia</a></p>
+</section>
+<section id="hamiltonian-monte-carlo-hmc-1" class="slide level2">
+<h2>Hamiltonian Monte Carlo (HMC)</h2>
+<ul>
+<li>HMC is much more computationally demanding than MH, but its proposals are much more efficient</li>
+<li>HMC requires fewer samples to map out the posterior distribution</li>
+</ul>
+<p><strong>The bottom line</strong>: <br> You need less computer time in total, even though each sample requires more time than simpler algorithms</p>
+<ul>
+<li><p>Really outshines other algorithms for models with 10s to 1000s of parameters</p></li>
+<li><p>Don’t need to know everything (lots of math in references)</p></li>
+</ul>
+<p><span class="footerRight">see McElreath 2023 chapter 9</span></p>
+</section>
+<section id="hmc-understanding-some-concepts" class="slide level2">
+<h2>HMC: understanding some concepts</h2>
+<ul>
+<li>Leverages tools from <a href="https://en.wikipedia.org/wiki/Hamiltonian_mechanics">Hamiltonian dynamics</a> and <a href="https://en.wikipedia.org/wiki/Differential_geometry">differential geometry</a> to generate better proposals</li>
+<li>Uses information on the gradient (curvature) of the log-posterior</li>
+<li>HMC creates a <span class="math inline">\(\theta^{\prime}\)</span> that is uncorrelated with <span class="math inline">\(\theta_{t}\)</span> and which has a high probability of being accepted
+<ul>
+<li>Does this using a physics simulation and pretends parameters are tiny, frictionless particles</li>
+</ul></li>
+<li>See also Neal (2011) <a href="https://arxiv.org/pdf/1206.1901.pdf%20http://arxiv.org/abs/1206.1901.pdf">MCMC using Hamiltonian Dynamics</a></li>
+</ul>
+</section>
+<section id="hmc-hockey-puck-analogy" class="slide level2">
+<h2>HMC hockey puck analogy</h2>
+<ul>
+<li>Imagine you have a standard two parameter model
+<ul>
+<li>This creates a posterior shaped like a bowl</li>
+</ul></li>
+<li>In this case, HMC is like a hockey puck launched in random directions around an ice rink shaped like a bowl (the posterior distribution)</li>
+</ul>
+<p><a href="https://chi-feng.github.io/mcmc-demo/app.html">Go to MCMC interactive gallery</a></p>
+</section>
+<section id="stan-does-the-hmc-sneakery-for-you" class="slide level2">
+<h2>Stan does the HMC sneakery for you</h2>
+<ul>
+<li><p>In the Stan language, stochastic models are described by specifying stochastic or deterministic relationships between quantities such as parameters and data</p></li>
+<li><p>Stan (software) constructs the log-posterior for you if you specify prior(s) and likelihood(s)</p></li>
+<li><p>Applies HMC to your problem, reports chains, log-posterior, and diagnostics</p></li>
+</ul>
+<p><img data-src="images/stan.png" style="width:300px; height:125px; position: absolute; margin-top:4%; right: 3%;"></p>
+</section>
+<section id="summary-and-outlook" class="slide level2">
+<h2>Summary and outlook</h2>
+<p>Posteriors are difficult to approximate:</p>
+<ol type="1">
+<li>Analytical solutions (beta-binomial)</li>
+<li>Brute force (grid search approximations)</li>
+<li>MCMC (draw samples from the posterior)</li>
+</ol>
+<p>We have laid the ground work, and now we get to play and fit Bayesian models in Stan</p>
+<p><img data-src="images/caveman.png" style="width:400px; height:400; position: absolute; margin-top: -2%; right: 3%;"></p>
+</section>
+<section id="references" class="slide level2">
+<h2>References</h2>
+<div style="font-size:25px">
+<ol type="1">
+<li><p>Gelman et al.&nbsp;2003. Bayesian Data Analysis. Appendix C.</p></li>
+<li><p>Green et al.&nbsp;2020. Introduction to Bayesian Methods in Ecology and Natural Resources. Appendix B.</p></li>
+<li><p>Kery and Schaub. 2012. Bayesian Population Analysis using WinBUGS.</p></li>
+<li><p>McElreath 2023. Statistical Rethinking. Second Edition, Chapters 2 and 9.</p></li>
+<li><p>Neal 2011. MCMC using Hamiltonian Dynamics. <em>In</em>: Handbook of Markov Chain Monte Carlo.</p></li>
+<li><p>Robert and Casella 2010. Introduction to Monte Carlo methods with R.</p></li>
+</ol>
+<p>Useful web link:</p>
+<p><a href="https://chi-feng.github.io/mcmc-demo/app.html">MCMC visualization app</a></p>
+<p>Michael Betancourt <a href="https://www.youtube.com/watch?v=9ykCU2-W_8Y">seminar</a> on using Hamiltonian Monte Carlo for Bayesian inference</p>
+</div>
+<div class="footer footer-default">
+
+</div>
+</section>
+    </div>
+  </div>
+
+  <script>window.backupDefine = window.define; window.define = undefined;</script>
+  <script src="lec2_files/libs/revealjs/dist/reveal.js"></script>
+  <!-- reveal.js plugins -->
+  <script src="lec2_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
+  <script src="lec2_files/libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
+  <script src="lec2_files/libs/revealjs/plugin/reveal-menu/menu.js"></script>
+  <script src="lec2_files/libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
+  <script src="lec2_files/libs/revealjs/plugin/quarto-support/support.js"></script>
+  
+
+  <script src="lec2_files/libs/revealjs/plugin/notes/notes.js"></script>
+  <script src="lec2_files/libs/revealjs/plugin/search/search.js"></script>
+  <script src="lec2_files/libs/revealjs/plugin/zoom/zoom.js"></script>
+  <script src="lec2_files/libs/revealjs/plugin/math/math.js"></script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+'controlsAuto': true,
+'previewLinksAuto': false,
+'pdfSeparateFragments': false,
+'autoAnimateEasing': "ease",
+'autoAnimateDuration': 1,
+'autoAnimateUnmatched': true,
+'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.togglePdfExport(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"}],"openButton":true},
+'smaller': false,
+ 
+        // Display controls in the bottom right corner
+        controls: false,
+
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: false,
+
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'edges',
+
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+
+        // Display a presentation progress bar
+        progress: true,
+
+        // Display the page number of the current slide
+        slideNumber: 'c/t',
+
+        // 'all', 'print', or 'speaker'
+        showSlideNumber: 'all',
+
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: true,
+
+        // Start with 1 for the hash rather than 0
+        hashOneBasedIndex: false,
+
+        // Flags if we should monitor the hash and change slides accordingly
+        respondToHashChanges: true,
+
+        // Push each slide change to the browser history
+        history: true,
+
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+
+        // Enable the slide overview mode
+        overview: true,
+
+        // Disables the default reveal.js slide layout (scaling and centering)
+        // so that you can use custom CSS layout
+        disableLayout: false,
+
+        // Vertical centering of slides
+        center: false,
+
+        // Enables touch navigation on devices with touch input
+        touch: true,
+
+        // Loop the presentation
+        loop: false,
+
+        // Change the presentation direction to be RTL
+        rtl: false,
+
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'linear',
+
+        // Randomizes the order of slides each time the presentation loads
+        shuffle: false,
+
+        // Turns fragments on and off globally
+        fragments: true,
+
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: false,
+
+        // Flags if the presentation is running in an embedded mode,
+        // i.e. contained within a limited portion of the screen
+        embedded: false,
+
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+
+        // Flags if it should be possible to pause the presentation (blackout)
+        pause: true,
+
+        // Flags if speaker notes should be visible to all viewers
+        showNotes: false,
+
+        // Global override for autoplaying embedded media (null/true/false)
+        autoPlayMedia: null,
+
+        // Global override for preloading lazy-loaded iframes (null/true/false)
+        preloadIframes: null,
+
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+
+        // Enable slide navigation via mouse wheel
+        mouseWheel: false,
+
+        // The display mode that will be used to show slides
+        display: 'block',
+
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+
+        // Opens links in an iframe preview overlay
+        previewLinks: false,
+
+        // Transition style (none/fade/slide/convex/concave/zoom)
+        transition: 'none',
+
+        // Transition speed (default/fast/slow)
+        transitionSpeed: 'default',
+
+        // Transition style for full page slide backgrounds
+        // (none/fade/slide/convex/concave/zoom)
+        backgroundTransition: 'none',
+
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1050,
+
+        height: 700,
+
+        // Factor of the display size that should remain empty around the content
+        margin: 0.1,
+
+        math: {
+          mathjax: 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js',
+          config: 'TeX-AMS_HTML-full',
+          tex2jax: {
+            inlineMath: [['\\(','\\)']],
+            displayMath: [['\\[','\\]']],
+            balanceBraces: true,
+            processEscapes: false,
+            processRefs: true,
+            processEnvironments: true,
+            preview: 'TeX',
+            skipTags: ['script','noscript','style','textarea','pre','code'],
+            ignoreClass: 'tex2jax_ignore',
+            processClass: 'tex2jax_process'
+          },
+        },
+
+        // reveal.js plugins
+        plugins: [QuartoLineHighlight, PdfExport, RevealMenu, QuartoSupport,
+
+          RevealMath,
+          RevealNotes,
+          RevealSearch,
+          RevealZoom
+        ]
+      });
+    </script>
+    
+    <script>
+      // htmlwidgets need to know to resize themselves when slides are shown/hidden.
+      // Fire the "slideenter" event (handled by htmlwidgets.js) when the current
+      // slide changes (different for each slide format).
+      (function () {
+        // dispatch for htmlwidgets
+        function fireSlideEnter() {
+          const event = window.document.createEvent("Event");
+          event.initEvent("slideenter", true, true);
+          window.document.dispatchEvent(event);
+        }
+
+        function fireSlideChanged(previousSlide, currentSlide) {
+          fireSlideEnter();
+
+          // dispatch for shiny
+          if (window.jQuery) {
+            if (previousSlide) {
+              window.jQuery(previousSlide).trigger("hidden");
+            }
+            if (currentSlide) {
+              window.jQuery(currentSlide).trigger("shown");
+            }
+          }
+        }
+
+        // hookup for slidy
+        if (window.w3c_slidy) {
+          window.w3c_slidy.add_observer(function (slide_num) {
+            // slide_num starts at position 1
+            fireSlideChanged(null, w3c_slidy.slides[slide_num - 1]);
+          });
+        }
+
+      })();
+    </script>
+
+    <script id="quarto-html-after-body" type="application/javascript">
+    window.document.addEventListener("DOMContentLoaded", function (event) {
+      const toggleBodyColorMode = (bsSheetEl) => {
+        const mode = bsSheetEl.getAttribute("data-mode");
+        const bodyEl = window.document.querySelector("body");
+        if (mode === "dark") {
+          bodyEl.classList.add("quarto-dark");
+          bodyEl.classList.remove("quarto-light");
+        } else {
+          bodyEl.classList.add("quarto-light");
+          bodyEl.classList.remove("quarto-dark");
+        }
+      }
+      const toggleBodyColorPrimary = () => {
+        const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+        if (bsSheetEl) {
+          toggleBodyColorMode(bsSheetEl);
+        }
+      }
+      toggleBodyColorPrimary();  
+      const tabsets =  window.document.querySelectorAll(".panel-tabset-tabby")
+      tabsets.forEach(function(tabset) {
+        const tabby = new Tabby('#' + tabset.id);
+      });
+      const isCodeAnnotation = (el) => {
+        for (const clz of el.classList) {
+          if (clz.startsWith('code-annotation-')) {                     
+            return true;
+          }
+        }
+        return false;
+      }
+      const clipboard = new window.ClipboardJS('.code-copy-button', {
+        text: function(trigger) {
+          const codeEl = trigger.previousElementSibling.cloneNode(true);
+          for (const childEl of codeEl.children) {
+            if (isCodeAnnotation(childEl)) {
+              childEl.remove();
+            }
+          }
+          return codeEl.innerText;
+        }
+      });
+      clipboard.on('success', function(e) {
+        // button target
+        const button = e.trigger;
+        // don't keep focus
+        button.blur();
+        // flash "checked"
+        button.classList.add('code-copy-button-checked');
+        var currentTitle = button.getAttribute("title");
+        button.setAttribute("title", "Copied!");
+        let tooltip;
+        if (window.bootstrap) {
+          button.setAttribute("data-bs-toggle", "tooltip");
+          button.setAttribute("data-bs-placement", "left");
+          button.setAttribute("data-bs-title", "Copied!");
+          tooltip = new bootstrap.Tooltip(button, 
+            { trigger: "manual", 
+              customClass: "code-copy-button-tooltip",
+              offset: [0, -8]});
+          tooltip.show();    
+        }
+        setTimeout(function() {
+          if (tooltip) {
+            tooltip.hide();
+            button.removeAttribute("data-bs-title");
+            button.removeAttribute("data-bs-toggle");
+            button.removeAttribute("data-bs-placement");
+          }
+          button.setAttribute("title", currentTitle);
+          button.classList.remove('code-copy-button-checked');
+        }, 1000);
+        // clear code selection
+        e.clearSelection();
+      });
+      function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+        const config = {
+          allowHTML: true,
+          maxWidth: 500,
+          delay: 100,
+          arrow: false,
+          appendTo: function(el) {
+              return el.closest('section.slide') || el.parentElement;
+          },
+          interactive: true,
+          interactiveBorder: 10,
+          theme: 'light-border',
+          placement: 'bottom-start',
+        };
+        if (contentFn) {
+          config.content = contentFn;
+        }
+        if (onTriggerFn) {
+          config.onTrigger = onTriggerFn;
+        }
+        if (onUntriggerFn) {
+          config.onUntrigger = onUntriggerFn;
+        }
+          config['offset'] = [0,0];
+          config['maxWidth'] = 700;
+        window.tippy(el, config); 
+      }
+      const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+      for (var i=0; i<noterefs.length; i++) {
+        const ref = noterefs[i];
+        tippyHover(ref, function() {
+          // use id or data attribute instead here
+          let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+          try { href = new URL(href).hash; } catch {}
+          const id = href.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          return note.innerHTML;
+        });
+      }
+      const findCites = (el) => {
+        const parentEl = el.parentElement;
+        if (parentEl) {
+          const cites = parentEl.dataset.cites;
+          if (cites) {
+            return {
+              el,
+              cites: cites.split(' ')
+            };
+          } else {
+            return findCites(el.parentElement)
+          }
+        } else {
+          return undefined;
+        }
+      };
+      var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+      for (var i=0; i<bibliorefs.length; i++) {
+        const ref = bibliorefs[i];
+        const citeInfo = findCites(ref);
+        if (citeInfo) {
+          tippyHover(citeInfo.el, function() {
+            var popup = window.document.createElement('div');
+            citeInfo.cites.forEach(function(cite) {
+              var citeDiv = window.document.createElement('div');
+              citeDiv.classList.add('hanging-indent');
+              citeDiv.classList.add('csl-entry');
+              var biblioDiv = window.document.getElementById('ref-' + cite);
+              if (biblioDiv) {
+                citeDiv.innerHTML = biblioDiv.innerHTML;
+              }
+              popup.appendChild(citeDiv);
+            });
+            return popup.innerHTML;
+          });
+        }
+      }
+    });
+    </script>
+    
+
+</body></html>

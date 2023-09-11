@@ -8,7 +8,7 @@
 <link href="lec3_files/libs/quarto-html/light-border.css" rel="stylesheet">
 <link href="lec3_files/libs/quarto-html/quarto-html.min.css" rel="stylesheet" data-mode="light">
 <link href="lec3_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.4.330">
+  <meta name="generator" content="quarto-1.4.322">
 
   <meta name="author" content="Christopher Cahill">
   <meta name="dcterms.date" content="2023-09-06">
@@ -396,7 +396,7 @@
 
 <section id="title-slide" data-background-image="https://qfcatmsu.github.io/Images/dark-big.png" data-background-position="6% 95%" data-background-size="40%" class="quarto-title-block center">
   <h1 class="title">An introduction to Stan for applied Bayesian inference</h1>
-  <p class="subtitle">FW 891</p>
+  <p class="subtitle">FW 891 <br> <a href="https://qfcatmsu.github.io/FW-Bayes/week2/lec3.html" style="position:absolute;top:40%;left:35%;font-size:20px;">Click here to view presentation online</a></p>
 
 <div class="quarto-title-authors">
 <div class="quarto-title-author">
@@ -469,14 +469,14 @@ Chain 3 Iteration: 2000 / 2000 [100%]  (Sampling)
 Chain 4 Iteration:    1 / 2000 [  0%]  (Warmup) 
 Chain 4 Iteration: 1001 / 2000 [ 50%]  (Sampling) 
 Chain 4 Iteration: 2000 / 2000 [100%]  (Sampling) 
-Chain 1 finished in 0.0 seconds.
-Chain 2 finished in 0.0 seconds.
-Chain 3 finished in 0.0 seconds.
-Chain 4 finished in 0.0 seconds.
+Chain 1 finished in 0.1 seconds.
+Chain 2 finished in 0.1 seconds.
+Chain 3 finished in 0.1 seconds.
+Chain 4 finished in 0.1 seconds.
 
 All 4 chains finished successfully.
-Mean chain execution time: 0.0 seconds.
-Total execution time: 0.3 seconds.</code></pre>
+Mean chain execution time: 0.1 seconds.
+Total execution time: 0.6 seconds.</code></pre>
 </div>
 </div>
 <div class="cell">
@@ -879,27 +879,27 @@ $sd
 Chain 1 Iteration:    1 / 2000 [  0%]  (Warmup) 
 Chain 1 Iteration: 1000 / 2000 [ 50%]  (Warmup) 
 Chain 1 Iteration: 1001 / 2000 [ 50%]  (Sampling) 
-Chain 1 Iteration: 2000 / 2000 [100%]  (Sampling) 
 Chain 2 Iteration:    1 / 2000 [  0%]  (Warmup) 
 Chain 2 Iteration: 1000 / 2000 [ 50%]  (Warmup) 
 Chain 2 Iteration: 1001 / 2000 [ 50%]  (Sampling) 
-Chain 2 Iteration: 2000 / 2000 [100%]  (Sampling) 
 Chain 3 Iteration:    1 / 2000 [  0%]  (Warmup) 
 Chain 3 Iteration: 1000 / 2000 [ 50%]  (Warmup) 
 Chain 3 Iteration: 1001 / 2000 [ 50%]  (Sampling) 
-Chain 3 Iteration: 2000 / 2000 [100%]  (Sampling) 
 Chain 4 Iteration:    1 / 2000 [  0%]  (Warmup) 
+Chain 1 Iteration: 2000 / 2000 [100%]  (Sampling) 
+Chain 1 finished in 0.2 seconds.
+Chain 2 Iteration: 2000 / 2000 [100%]  (Sampling) 
+Chain 2 finished in 0.2 seconds.
+Chain 3 Iteration: 2000 / 2000 [100%]  (Sampling) 
+Chain 3 finished in 0.2 seconds.
 Chain 4 Iteration: 1000 / 2000 [ 50%]  (Warmup) 
 Chain 4 Iteration: 1001 / 2000 [ 50%]  (Sampling) 
 Chain 4 Iteration: 2000 / 2000 [100%]  (Sampling) 
-Chain 1 finished in 0.1 seconds.
-Chain 2 finished in 0.1 seconds.
-Chain 3 finished in 0.1 seconds.
-Chain 4 finished in 0.1 seconds.
+Chain 4 finished in 0.2 seconds.
 
 All 4 chains finished successfully.
-Mean chain execution time: 0.1 seconds.
-Total execution time: 0.3 seconds.</code></pre>
+Mean chain execution time: 0.2 seconds.
+Total execution time: 0.5 seconds.</code></pre>
 </div>
 </div>
 </div>
@@ -1179,14 +1179,14 @@ $ebfmi
 <div class="cell-output cell-output-stdout">
 <pre><code>Running MCMC with 4 parallel chains...
 
-Chain 1 finished in 0.1 seconds.
-Chain 2 finished in 0.1 seconds.
-Chain 3 finished in 0.1 seconds.
-Chain 4 finished in 0.1 seconds.
+Chain 1 finished in 0.3 seconds.
+Chain 2 finished in 0.4 seconds.
+Chain 3 finished in 0.4 seconds.
+Chain 4 finished in 0.4 seconds.
 
 All 4 chains finished successfully.
-Mean chain execution time: 0.1 seconds.
-Total execution time: 0.3 seconds.</code></pre>
+Mean chain execution time: 0.4 seconds.
+Total execution time: 0.6 seconds.</code></pre>
 </div>
 </div>
 </section>
@@ -1306,7 +1306,7 @@ Total execution time: 0.3 seconds.</code></pre>
 <div class="cell-output cell-output-stdout">
 <pre><code>Running MCMC with 1 chain...
 
-Chain 1 finished in 0.1 seconds.</code></pre>
+Chain 1 finished in 0.2 seconds.</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb56"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1"></a><span class="co"># extract the draws:</span></span>
 <span id="cb56-2"><a href="#cb56-2"></a>prior_draws <span class="ot">&lt;-</span> fit<span class="sc">$</span><span class="fu">draws</span>(<span class="at">format =</span> <span class="st">"df"</span>)</span>
