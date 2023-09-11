@@ -1,0 +1,28 @@
+---
+title: Even more hierarchical models
+title-slide-attributes:
+    data-background-image: "https://qfcatmsu.github.io/Images/dark-big.png"  
+    data-background-size: "40%"
+    data-background-position: "6% 95%"
+subtitle: FW 891
+author: Christopher Cahill
+date: 2 October 2023
+date-format: "D MMMM YYYY"
+format: 
+  revealjs:
+    css: "https://qfcatmsu.github.io/css/presStyle.css"
+    slide-number: c/t  
+    theme: simple 
+editor: visual
+highlight-style: kate
+---
+
+## Purpose
+
+-   Introduce an important extention of hiearchical models where we model covariate effects as random
+-   Poisson Genearlized Linear Mixed Model
+- 
+
+Another look at how we specify a joint posterior for hierarchical models (maths)
+    -   Demonstrate the importance of conditional independence
+-   Demonstrate a hierarchical binomial survival model for quail stocking survival

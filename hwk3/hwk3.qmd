@@ -1,0 +1,32 @@
+---
+title: Hierarchical stock-recruitment modeling
+subtitle: 10 total points
+author: Christopher Cahill
+date: 27 October 2023
+date-format: "D MMMM YYYY"
+format: 
+  pdf: default
+---
+
+## NOTE: date above is the due date
+
+### Background
+ 
+ The relationship between stock or spawning stock biomass and recruitment is perhaps the most important relationship in fisheries science.  In age or stage-structured fisheries population models this relationship describes the maximum expected recruitment rate and the degree of density dependence in recruitment, and thus can be used to calculate both the maximum sustainable yield (MSY) and the maximum sustainable exploitation *rate* thought to achieve MSY ($F_{MSY}$). 
+
+ Rockfishes (*Sebastes* spp.) are a important species complex off the coast of western North America (Fig. 1).  Rockfish are infrequently caught, difficult to tell apart, and commercially valuable.  Rockfish are are also delectable in omlettes when served with a tasty beer on a rainy morning in Seattle.  In this assignment, your goal is to estimate stock-recruitment relationships for these species by sharing information about stock-recruit $\alpha$ across the species complex using a hierarchical model. In essence, we are trying to steal from the information rich stocks to give to the information poor stocks.  The results from your analysis will be used to set informative priors for stock-recruitment $\alpha$ for future Rockfish stock assessments off the west coast of North America.  The reason you are interested in among-species variation in $\alpha$ is because this parameter is directly correlated with $F_{MSY}$, and thus estimating $\alpha$ should provide insights into the resilience of different species to exploitation.  
+
+The Ricker stock-recruitment model can be parameterized as:  
+$$
+R_{t}=\frac{\alpha}{sbro} \cdot SSB_{t} \cdot e^{-\beta \cdot SSB_{t}}
+$$
+
+- where 
+  - $R_{t}$ is recruitment in year t
+  - $SSB_{t}$ is spawning stock biomass in year t
+  - $sbro$ is spawner biomass per recruit in the unfished condition (no exploitation)
+  - $\alpha$ , $\beta$ are the parameters of the stock-recruitment relationship 
+
+Your task is to develop a hierarchical model for Rockfish stock-recruitment, where 
+
+You should use a student_t distribution for the likelihood, where you estimate the degrees of freedom parameter ($\nu$). 

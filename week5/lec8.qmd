@@ -6,7 +6,7 @@ title-slide-attributes:
     data-background-position: "6% 95%"
 subtitle: FW 891
 author: Christopher Cahill
-date: 25 September 2023
+date: 27 September 2023
 date-format: "D MMMM YYYY"
 format: 
   revealjs:

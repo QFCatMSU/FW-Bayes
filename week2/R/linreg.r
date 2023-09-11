@@ -4,6 +4,7 @@
 library(tidyverse)
 library(cmdstanr)
 library(bayesplot)
+library(posterior)
 library(ggqfc)
 
 data <- readRDS("week2/data/linreg.rds")
@@ -140,6 +141,27 @@ yrep_df %>%
   scale_y_continuous(breaks = NULL) +
   theme(strip.background = element_blank()) +
   ggtitle("Can you spot the real data?")
+
+pp_dist <-
+  summarise_draws(fit, ~ quantile(.x, probs = c(0.025, 0.5, 0.975))) %>%
+  filter(grepl("y_rep", variable))
+
+data$lower <- pp_dist$`2.5%`
+data$med <- pp_dist$`50%`
+data$upper <- pp_dist$`97.5%`
+
+p <- data %>%
+  ggplot(aes(x = x, y = y)) +
+  geom_ribbon(aes(ymin = lower, ymax = upper),
+    alpha = 0.5, fill = "#1d57d4"
+  ) +
+  geom_line(aes(x = x, y = med),
+    linetype = 1, lwd = 0.75,
+    color = "black"
+  ) +
+  geom_point(size = 0.75) + 
+  theme_qfc()
+p
 
 #-----------------------------------------------------------
 # prior predictive checks
