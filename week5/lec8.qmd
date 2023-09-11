@@ -4,7 +4,7 @@ title-slide-attributes:
     data-background-image: "https://qfcatmsu.github.io/Images/dark-big.png"  
     data-background-size: "40%"
     data-background-position: "6% 95%"
-subtitle: FW 891
+subtitle: FW 891 <br> [Click here to view presentation online](https://qfcatmsu.github.io/FW-Bayes/week5/lec8.html){style="position:absolute;top:40%;left:35%;font-size:20px;"}
 author: Christopher Cahill
 date: 27 September 2023
 date-format: "D MMMM YYYY"
@@ -72,14 +72,13 @@ $$
 -   $\theta=\left(\theta_{1}, \ldots, \theta_{n}\right) \text { and } \phi$ are parameters
 -   Only $\phi$ has a prior that is set (assumed)
 
-## Mathematical support puppies 
+## Mathematical support puppies
 
 ![](images/puppies.jpg){fig-align="center" height="600"}
 
-
 ## Posterior distribution for hierarchical models
 
--   The joint posterior distribution of interest in hierarchical models is 
+-   The joint posterior distribution of interest in hierarchical models is
 
 $$
     p(\theta, \phi \mid y) 
@@ -87,7 +86,7 @@ $$
 
 ## Posterior distribution for hierarchical models
 
--   The joint posterior distribution of interest in hierarchical models is 
+-   The joint posterior distribution of interest in hierarchical models is
 
 $$
     p(\theta, \phi \mid y) 
@@ -97,7 +96,7 @@ $$
 
 ## Posterior distribution for hierarchical models
 
--   The joint posterior distribution of interest in hierarchical models is 
+-   The joint posterior distribution of interest in hierarchical models is
 
 $$
     p(\theta, \phi \mid y) \propto p(y \mid \theta, \phi) p(\theta, \phi)
@@ -107,7 +106,7 @@ $$
 
 ## Posterior distribution for hierarchical models
 
--   The joint posterior distribution of interest in hierarchical models is 
+-   The joint posterior distribution of interest in hierarchical models is
 
 $$
     p(\theta, \phi \mid y) \propto p(y \mid \theta, \phi) p(\theta, \phi)=p(y \mid \theta) p(\theta \mid \phi) p(\phi)
@@ -119,7 +118,7 @@ $$
 
 ## Posterior distribution for hierarchical models
 
--   The joint posterior distribution of interest in hierarchical models is 
+-   The joint posterior distribution of interest in hierarchical models is
 
 $$
     p(\theta, \phi \mid y) \propto p(y \mid \theta, \phi) p(\theta, \phi)=p(y \mid \theta) p(\theta \mid \phi) p(\phi)
@@ -134,7 +133,7 @@ $$
 ## Posterior distribution for hierarchical models
 
 ::: {style="font-size:29px"}
--   The joint posterior distribution of interest in hierarchical models is 
+-   The joint posterior distribution of interest in hierarchical models is
 
 $$
     p(\theta, \phi \mid y) \propto p(y \mid \theta, \phi) p(\theta, \phi)=p(y \mid \theta) p(\theta \mid \phi) p(\phi)
@@ -144,7 +143,7 @@ $$
 ## Posterior distribution for hierarchical models
 
 ::: {style="font-size:29px"}
--   The joint posterior distribution of interest in hierarchical models is 
+-   The joint posterior distribution of interest in hierarchical models is
 
 $$
     p(\theta, \phi \mid y) \propto p(y \mid \theta, \phi) p(\theta, \phi)=p(y \mid \theta) p(\theta \mid \phi) p(\phi)
@@ -156,13 +155,13 @@ $$
 ## Posterior distribution for hierarchical models
 
 ::: {style="font-size:29px"}
--   The joint posterior distribution of interest in hierarchical models is 
+-   The joint posterior distribution of interest in hierarchical models is
 
 $$
     p(\theta, \phi \mid y) \propto p(y \mid \theta, \phi) p(\theta, \phi)=p(y \mid \theta) p(\theta \mid \phi) p(\phi)
 $$
 
--   We may also care about the marginal posterior of $\phi$: 
+-   We may also care about the marginal posterior of $\phi$:
 
 $$
     p(\theta \mid y)=\int p(\theta, \phi \mid y) d \phi
@@ -172,13 +171,13 @@ $$
 ## Posterior distribution for hierarchical models
 
 ::: {style="font-size:29px"}
--   The joint posterior distribution of interest in hierarchical models is 
+-   The joint posterior distribution of interest in hierarchical models is
 
 $$
     p(\theta, \phi \mid y) \propto p(y \mid \theta, \phi) p(\theta, \phi)=p(y \mid \theta) p(\theta \mid \phi) p(\phi)
 $$
 
--   We may also care about the marginal posterior of $\theta$: 
+-   We may also care about the marginal posterior of $\theta$:
 
 $$
     p(\theta \mid y)=\int p(\theta, \phi \mid y) d \phi
@@ -194,13 +193,13 @@ $$
 ## Posterior distribution for hierarchical models
 
 ::: {style="font-size:29px"}
--   The joint posterior distribution of interest in hierarchical models is 
+-   The joint posterior distribution of interest in hierarchical models is
 
 $$
     p(\theta, \phi \mid y) \propto p(y \mid \theta, \phi) p(\theta, \phi)=p(y \mid \theta) p(\theta \mid \phi) p(\phi)
 $$
 
--   We may also care about the marginal posterior of $\theta$: 
+-   We may also care about the marginal posterior of $\theta$:
 
 $$
     p(\theta \mid y)=\int p(\theta, \phi \mid y) d \phi
@@ -251,7 +250,7 @@ Y_{i} & \stackrel{i n d}{\sim} \operatorname{Bin}\left(n_{i}, \theta_{i}\right) 
 \end{array}
 $$
 
-Also note that $\phi$ from previous slides is now $\phi = (\alpha, \beta)$ 
+Also note that $\phi$ from previous slides is now $\phi = (\alpha, \beta)$
 
 ## Priors for $\alpha$ and $\beta$
 
@@ -279,7 +278,6 @@ Also note that $\phi$ from previous slides is now $\phi = (\alpha, \beta)$
 Prior information
 
 -   Bios note that the available literature indicates survival for transplanted baby quail ranges between 0.05 and 0.45
-
 
 ## The TODO list
 

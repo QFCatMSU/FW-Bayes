@@ -4,7 +4,7 @@ title-slide-attributes:
     data-background-image: "https://qfcatmsu.github.io/Images/dark-big.png"  
     data-background-size: "40%"
     data-background-position: "6% 95%"
-subtitle: FW 891
+subtitle: FW 891 <br> [Click here to view presentation online](https://qfcatmsu.github.io/FW-Bayes/week4/lec6.html){style="position:absolute;top:40%;left:35%;font-size:20px;"}
 author: Christopher Cahill
 date: 18 September 2023
 date-format: "D MMMM YYYY"

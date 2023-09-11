@@ -4,7 +4,7 @@ title-slide-attributes:
     data-background-image: "https://qfcatmsu.github.io/Images/dark-big.png"  
     data-background-size: "40%"
     data-background-position: "6% 95%"
-subtitle: FW 891
+subtitle: FW 891 <br> [Click here to view presentation online](https://qfcatmsu.github.io/FW-Bayes/week6/lec9.html){style="position:absolute;top:40%;left:35%;font-size:20px;"}
 author: Christopher Cahill
 date: 2 October 2023
 date-format: "D MMMM YYYY"
@@ -21,8 +21,6 @@ highlight-style: kate
 
 -   Introduce an important extention of hiearchical models where we model covariate effects as random
 -   Poisson Genearlized Linear Mixed Model
-- 
+-   
 
-Another look at how we specify a joint posterior for hierarchical models (maths)
-    -   Demonstrate the importance of conditional independence
--   Demonstrate a hierarchical binomial survival model for quail stocking survival
+Another look at how we specify a joint posterior for hierarchical models (maths) - Demonstrate the importance of conditional independence - Demonstrate a hierarchical binomial survival model for quail stocking survival
