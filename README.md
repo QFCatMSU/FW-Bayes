@@ -9,6 +9,11 @@ exercises and lessons. Also, see homework folders.
 Syllabus:
 <https://qfcatmsu.github.io/FW-Bayes/syllabus/FW891syllabus.html>
 
+Lesson 3 (9/6/2023):
+<https://qfcatmsu.github.io/FW-Bayes/week2/lec3.html>  
+Lesson 4 (9/11/2023):
+<https://qfcatmsu.github.io/FW-Bayes/week3/lec4.html>
+
 ## Lecture recordings
 
 Lectures/labs (assuming I don’t forget) will be posted here after
