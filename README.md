@@ -20,7 +20,7 @@ Lesson 4 (9/11/2023):
 Lesson 5 (9/13/2023):
 <https://qfcatmsu.github.io/FW-Bayes/week3/lec5.html>  
 Lesson 6 (9/18/2023):
-<https://qfcatmsu.github.io/FW-Bayes/week4/lec6.html>  
+<https://qfcatmsu.github.io/FW-Bayes/week4/lec6.html>
 
 ## Lecture recordings
 
