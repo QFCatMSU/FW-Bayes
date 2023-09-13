@@ -480,7 +480,7 @@ $$
 
 -   mean = variance = $\lambda$
 -   Another way: Bayesian p-value
--   Idea: define a test statistic and compare that statistic calculated for the original data to the posterior distribution of that test statistic for "replicate" datasets
+-   Idea: define a test statistic and compare the posterior distribution of that statistic for the original data to the posterior distribution of that test statistic for "replicate" datasets
 -   Note we could also use graphical posterior predictive checks
 
 [Gelman et al. 2006; see Chapter 3, Kery and Royle 2016; Zuur et al. 2017]{.footerRight}
