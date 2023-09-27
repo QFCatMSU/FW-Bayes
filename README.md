@@ -41,3 +41,11 @@ href="https://qfcatmsu.github.io/FW-Bayes/installation/software_installation.htm
 target="_blank">https://qfcatmsu.github.io/FW-Bayes/installation/software_installation.html</a>
 
 Please make sure you go through the installation before class starts
+
+## Class links
+
+Identifiability:/
+<a
+href="https://qfcatmsu.github.io/FW-Bayes/installation/software_installation.html"
+target="_blank">https://betanalpha.github.io/assets/case_studies/identifiability.html</a>
+
