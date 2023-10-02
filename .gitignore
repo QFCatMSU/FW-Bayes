@@ -4,14 +4,15 @@
 *_files
 !software_installation_files
 !FW891syllabus_files
-!lec[1-6]_files
+!lec[1-8]_files
 .vscode
 *.html
 !software_installation.html
 !FW891syllabus.html
-!lec[1-6].html
+!lec[1-8].html
 *.exe
 .Rproj.user
 FW-Bayes.Rproj
 .Rhistory
 _test_*
+*_bruna*
