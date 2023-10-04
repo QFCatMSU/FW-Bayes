@@ -19,3 +19,8 @@ model {
   sigma ~ normal(0, 10)T[0.001,]; 
   C ~ normal(C_pred, sigma); 
 }
+generated quantities{
+  real h_time_days = h*30.437; // handling time in days 
+  real pack_size = (h_time_days - 20.4)/ (-1.75); 
+}
+

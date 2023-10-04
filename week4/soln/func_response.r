@@ -24,7 +24,7 @@ inits <- function() {
   )
 }
 
-mod <- cmdstan_model("week4/soln_files/func_response.stan")
+mod <- cmdstan_model("week4/soln/func_response.stan")
 
 fit <- mod$sample(
   data = stan_data,
@@ -33,8 +33,10 @@ fit <- mod$sample(
   chains = 4,
   parallel_chains = 4,
   iter_warmup = 1000,
-  iter_sampling = 1000
+  iter_sampling = 1000, 
+  step_size = 0.01
 )
 fit$cmdstan_diagnose()
 posterior <- fit$draws(format = "df") # extract draws x variables data frame
 mcmc_pairs(posterior, pars = c("a", "h", "sigma"))
+
