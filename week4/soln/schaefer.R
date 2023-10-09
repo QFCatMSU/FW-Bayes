@@ -17,7 +17,7 @@ data %>%
   ggplot(aes(x = year, y = Catches)) + 
   geom_point() + geom_line()
 
-mp <- seq(1e-12, 1e-3, length.out = 100)
+tmp <- seq(1e-12, 1e-3, length.out = 100)
 B <- 1 / (2 - tmp / .001)
 plot(B ~ tmp)
 

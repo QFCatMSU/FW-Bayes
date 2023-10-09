@@ -20,7 +20,8 @@ highlight-style: kate
 ## Purpose
 
 -   Introduce an important extention of hiearchical models where we model covariate effects as random
--   Poisson Genearlized Linear Mixed Model
--   
+-   Random intercepts and slopes 
 
-Another look at how we specify a joint posterior for hierarchical models (maths) - Demonstrate the importance of conditional independence - Demonstrate a hierarchical binomial survival model for quail stocking survival
+## A decent numerical computing rule
+
+"As soon as you start trusting the machine, the machine will betray your trust"--Richard McElreath
