@@ -320,7 +320,7 @@ $$
     -   This included deriving an informative prior for $\theta_{\mu}$
 -   Began to play a bit more with output from hierarchical models to generate useful quantities for management
     -   Probability of chick survival at a new farm not included in the original study
--   Next time, Poisson GLMM
+-   Next time, dealing with divergent transitions and varying effects 
 
 ## References
 
