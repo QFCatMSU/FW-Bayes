@@ -161,7 +161,7 @@ $$
     p(\theta, \phi \mid y) \propto p(y \mid \theta, \phi) p(\theta, \phi)=p(y \mid \theta) p(\theta \mid \phi) p(\phi)
 $$
 
--   We may also care about the marginal posterior of $\phi$:
+-   We may also care about the marginal posterior of $\theta$:
 
 $$
     p(\theta \mid y)=\int p(\theta, \phi \mid y) d \phi
@@ -291,6 +291,26 @@ Prior information
 6.  What is the probability that survival from farm two is less than average? Similarly, what is the probability that survival from farm two is less than survival from farm 6?
 7.  If we went to a new farm in the region and wanted to release chicks, what would our best guess be for chick survival at this farm?
 :::
+
+## Extensions
+
+- The basic structure of a hierarchical model is 
+$$
+y \sim p(y \mid \theta) \quad \theta \sim p(\theta \mid \phi) \quad \phi \sim p(\phi)
+$$
+
+- We can extend this to more than one level 
+
+$$
+y \sim p(y \mid \theta) \quad \theta \sim p(\theta \mid \phi) \quad \phi \sim p(\phi \mid \psi) \quad \psi \sim p(\psi)
+$$
+
+- Remember conditional independence structure
+
+$$
+p(\theta, \phi, \psi \mid y) \propto p(y \mid \theta) p(\theta \mid \phi) p(\phi \mid \psi) p(\psi)
+$$
+
 
 ## Summary and outlook
 

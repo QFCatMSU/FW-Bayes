@@ -36,6 +36,7 @@ curve(dexp(x, rate = e), from = 0, to = 100, col = "blue")
 
 # simulate some prior draws
 n <- 1e5
+
 prior_draws <- data.frame(
   mu = rbeta(n, a, b),
   eta = rexp(n, e)

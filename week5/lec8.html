@@ -8,10 +8,10 @@
 <link href="lec8_files/libs/quarto-html/light-border.css" rel="stylesheet">
 <link href="lec8_files/libs/quarto-html/quarto-html.min.css" rel="stylesheet" data-mode="light">
 <link href="lec8_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.4.322">
+  <meta name="generator" content="quarto-1.4.330">
 
   <meta name="author" content="Christopher Cahill">
-  <meta name="dcterms.date" content="2023-09-25">
+  <meta name="dcterms.date" content="2023-09-27">
   <title>Introduction to hierarchical (mixed-effects) models part II</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -329,7 +329,7 @@
 
 <section id="title-slide" data-background-image="https://qfcatmsu.github.io/Images/dark-big.png" data-background-position="6% 95%" data-background-size="40%" class="quarto-title-block center">
   <h1 class="title">Introduction to hierarchical (mixed-effects) models part II</h1>
-  <p class="subtitle">FW 891</p>
+  <p class="subtitle">FW 891 <br> <a href="https://qfcatmsu.github.io/FW-Bayes/week5/lec8.html" style="position:absolute;top:40%;left:35%;font-size:20px;">Click here to view presentation online</a></p>
 
 <div class="quarto-title-authors">
 <div class="quarto-title-author">
@@ -339,7 +339,7 @@ Christopher Cahill
 </div>
 </div>
 
-  <p class="date">25 September 2023</p>
+  <p class="date">27 September 2023</p>
 </section>
 <section id="purpose" class="slide level2">
 <h2>Purpose</h2>
@@ -402,6 +402,14 @@ y_{i} &amp; \stackrel{i n d}{\sim} p\left(y \mid \theta_{i}\right) \\
 <li><span class="math inline">\(\theta=\left(\theta_{1}, \ldots, \theta_{n}\right) \text { and } \phi\)</span> are parameters</li>
 <li>Only <span class="math inline">\(\phi\)</span> has a prior that is set (assumed)</li>
 </ul>
+</section>
+<section id="mathematical-support-puppies" class="slide level2">
+<h2>Mathematical support puppies</h2>
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="images/puppies.jpg" height="600"></p>
+</figure>
+</div>
 </section>
 <section id="posterior-distribution-for-hierarchical-models" class="slide level2">
 <h2>Posterior distribution for hierarchical models</h2>
@@ -500,7 +508,7 @@ y_{i} &amp; \stackrel{i n d}{\sim} p\left(y \mid \theta_{i}\right) \\
     p(\theta, \phi \mid y) \propto p(y \mid \theta, \phi) p(\theta, \phi)=p(y \mid \theta) p(\theta \mid \phi) p(\phi)
 \]</span></p>
 <ul>
-<li>We may also care about the marginal posterior of <span class="math inline">\(\phi\)</span>:</li>
+<li>We may also care about the marginal posterior of <span class="math inline">\(\theta\)</span>:</li>
 </ul>
 <p><span class="math display">\[
     p(\theta \mid y)=\int p(\theta, \phi \mid y) d \phi
@@ -575,22 +583,6 @@ p(\phi \mid y)=\int p(\theta, \phi \mid y) d \theta
 </ul></li>
 </ul>
 </section>
-<section id="the-quail-data-and-prior-information" class="slide level2">
-<h2>The quail data and prior information</h2>
-<ul>
-<li><a href="https://github.com/QFCatMSU/FW-Bayes/blob/main/week5/data/survival_data.rds?raw=true">The quail data</a>
-<ul>
-<li>Not a ton of data</li>
-</ul></li>
-<li><a href="https://github.com/QFCatMSU/FW-Bayes/blob/main/week5/R/random_binomial.r">The R script</a></li>
-<li><a href="https://github.com/QFCatMSU/FW-Bayes/blob/main/week5/src/random_binomial.stan">The Stan model</a></li>
-</ul>
-<p><br><br></p>
-<p>Prior information</p>
-<ul>
-<li>Bios note that the available literature indicates survival for transplanted baby quail ranges between 0.05 and 0.45</li>
-</ul>
-</section>
 <section id="the-hierarchical-fluff-chicken-survival-model" class="slide level2">
 <h2>The hierarchical fluff chicken survival model 🐥</h2>
 <p><span class="math display">\[
@@ -606,6 +598,17 @@ Y_{i} &amp; \stackrel{i n d}{\sim} \operatorname{Bin}\left(n_{i}, \theta_{i}\rig
 <li><span class="math inline">\(\theta_{i}\)</span> is chick survival at farm <em>i</em></li>
 <li><span class="math inline">\(\alpha\)</span> and <span class="math inline">\(\beta\)</span> are the parameters of the Beta distribution</li>
 </ul>
+</section>
+<section id="the-hierarchical-fluff-chicken-survival-model-1" class="slide level2">
+<h2>The hierarchical fluff chicken survival model 🐥</h2>
+<p><span class="math display">\[
+\begin{array}{ll}
+Y_{i} &amp; \stackrel{i n d}{\sim} \operatorname{Bin}\left(n_{i}, \theta_{i}\right) \\
+\theta_{i} &amp; \stackrel{i i d}{\sim} \operatorname{Be}(\alpha, \beta) \\
+\alpha, \beta &amp; \sim p(\alpha, \beta)
+\end{array}
+\]</span></p>
+<p>Also note that <span class="math inline">\(\phi\)</span> from previous slides is now <span class="math inline">\(\phi = (\alpha, \beta)\)</span></p>
 </section>
 <section id="priors-for-alpha-and-beta" class="slide level2">
 <h2>Priors for <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(\beta\)</span></h2>
@@ -631,6 +634,22 @@ Y_{i} &amp; \stackrel{i n d}{\sim} \operatorname{Bin}\left(n_{i}, \theta_{i}\rig
 </figure>
 </div>
 </section>
+<section id="the-quail-data-and-prior-information" class="slide level2">
+<h2>The quail data and prior information</h2>
+<ul>
+<li><a href="https://github.com/QFCatMSU/FW-Bayes/blob/main/week5/data/survival_data.rds?raw=true">The quail data</a>
+<ul>
+<li>Not a ton of data</li>
+</ul></li>
+<li><a href="https://github.com/QFCatMSU/FW-Bayes/blob/main/week5/R/random_binomial.r">The R script</a></li>
+<li><a href="https://github.com/QFCatMSU/FW-Bayes/blob/main/week5/src/random_binomial.stan">The Stan model</a></li>
+</ul>
+<p><br><br></p>
+<p>Prior information</p>
+<ul>
+<li>Bios note that the available literature indicates survival for transplanted baby quail ranges between 0.05 and 0.45</li>
+</ul>
+</section>
 <section id="the-todo-list" class="slide level2">
 <h2>The TODO list</h2>
 <div style="font-size:29px">
@@ -647,6 +666,24 @@ Y_{i} &amp; \stackrel{i n d}{\sim} \operatorname{Bin}\left(n_{i}, \theta_{i}\rig
 <li>If we went to a new farm in the region and wanted to release chicks, what would our best guess be for chick survival at this farm?</li>
 </ol>
 </div>
+</section>
+<section id="extensions" class="slide level2">
+<h2>Extensions</h2>
+<ul>
+<li><p>The basic structure of a hierarchical model is <span class="math display">\[
+y \sim p(y \mid \theta) \quad \theta \sim p(\theta \mid \phi) \quad \phi \sim p(\phi)
+\]</span></p></li>
+<li><p>We can extend this to more than one level</p></li>
+</ul>
+<p><span class="math display">\[
+y \sim p(y \mid \theta) \quad \theta \sim p(\theta \mid \phi) \quad \phi \sim p(\phi \mid \psi) \quad \psi \sim p(\psi)
+\]</span></p>
+<ul>
+<li>Remember conditional independence structure</li>
+</ul>
+<p><span class="math display">\[
+p(\theta, \phi, \psi \mid y) \propto p(y \mid \theta) p(\theta \mid \phi) p(\phi \mid \psi) p(\psi)
+\]</span></p>
 </section>
 <section id="summary-and-outlook" class="slide level2">
 <h2>Summary and outlook</h2>
