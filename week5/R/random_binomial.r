@@ -7,8 +7,8 @@ library(bayesplot)
 # a = successes
 # b = failures
 #-------------------------------------------------------------------------
-a <- 10 # successes
-b <- 10 # failures
+a <- 3 # successes
+b <- 7 # failures
 curve(dbeta(x, a, b))
 
 #-------------------------------------------------------------------------
@@ -31,6 +31,7 @@ curve(dbeta(x, a, b))
 # also, we want a prior that is somewhat diffuse for eta (sample size)
 # but places most mass on low numbers, so we'll use the
 # exponential distribution:
+
 e <- 1 / 20
 curve(dexp(x, rate = e), from = 0, to = 100, col = "blue")
 

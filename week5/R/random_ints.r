@@ -19,7 +19,7 @@ fit_partial <- lmer(my_df$weight ~ 1 + my_df$length + (1|my_df$population))
 summary(fit_partial)
 
 # now in Bayesian:
-mod <- cmdstan_model("week5/src/random_ints.stan")
+mod <- cmdstan_model("week5/src/bruna.stan")
 mod
 
 stan_data <- list(
