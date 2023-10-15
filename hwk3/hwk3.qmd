@@ -20,7 +20,7 @@ format:
 
 The Ricker stock-recruitment model can be parameterized as:  
 $$
-R_{t}=\frac{\alpha}{sbro} \cdot SSB_{t} \cdot e^{-\beta \cdot SSB_{t}}
+R_{t}=\frac{\hat{\tilde{\alpha}}}{sbro} \cdot SSB_{t} \cdot e^{-\beta \cdot SSB_{t}} 
 $$
 
 where 
@@ -28,7 +28,8 @@ where
   - $R_{t}$ is recruitment in year t
   - $SSB_{t}$ is spawning stock biomass in year t
   - $sbro$ is spawner biomass per recruit in the unfished condition (no exploitation)
-  - $\alpha$ , $\beta$ are the parameters of the stock-recruitment relationship 
+  - $\hat{\tilde{\alpha}}$, $\beta$ are the Goodyear compensation ratio and density dependent parameters of the stock-recruitment relationship, respectively 
+  - Also note that the typical stock-recruit $\alpha = \frac{\hat{\tilde{\alpha}}}{sbro}$, and standardizing this term by the expected lifetime reproductive output is necessary in order to share information among stocks (i.e., you cannot hierarchicalize the original stock-recruitment $\alpha$ parameter without this $sbro$ standardization)
 
 Your task is to develop a (linear) Bayesian hierarchical stock-recruitment model for 11 West Coast Rockfish species using Stan (see 'rockfish.csv' in the data folder).  Treat $ln(\alpha)$ as a normally distributed random effect and $\beta$ as fixed effects. Assume that noise about the stock recruitment relationship is lognormal, and that this noise is similar among species.  Evaluate your model.  
 
