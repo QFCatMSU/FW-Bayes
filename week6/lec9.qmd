@@ -310,3 +310,109 @@ Key point: NCP shifts correlation from the latent parameters to data
 
 [Betancourt and Girolami 2013]{.footerRight}
 
+## Centered vs. non-centered model DAG 
+
+![](images/DAG2.png){fig-align="center" width="800" height="500"}
+
+[Betancourt and Girolami 2013]{.footerRight}
+
+## When does NCP help? 
+
+![](images/timing.png){fig-align="center" width="450" height="500"}
+
+[Betancourt and Girolami 2013]{.footerRight}
+
+## Example
+
+![](images/ghosts.jpg){fig-align="center" width="900" height="500"}
+
+## Example 
+
+- consider the one-way normal model with 800 latent $\theta_{i}$
+- constant measurement error $\sigma_{i} = \sigma = 10$
+- latent parameters are $\mu = 8, \tau = 3$
+- $\theta_{i}$ and $y_{i}$ sampled randomly 
+
+<br>
+
+[Betancourt and Girolami 2013]{.footerRight}
+
+## Example 
+
+- consider the one-way normal model with 800 latent $\theta_{i}$
+- constant measurement error $\sigma_{i} = \sigma = 10$
+- latent parameters are $\mu = 8, \tau = 3$
+- $\theta_{i}$ and $y_{i}$ sampled randomly 
+
+<br>
+
+Add weakly informative priors to this generative likelihood
+
+$$
+\begin{array}{l}
+\pi(\mu)=N\left(0,5^{2}\right) \\
+\pi(\tau)=\text { Half-Cauchy }(0,2.5) .
+\end{array}
+$$
+
+[Betancourt and Girolami 2013]{.footerRight}
+
+## Example, centered vs. noncentered 
+
+::: {style="font-size: 85%;"}
+
+The centered parameterization of this model can be written as
+
+$$
+\begin{aligned}
+y_{i} & \sim N\left(\theta_{i}, \sigma_{i}^{2}\right) \\
+\theta_{i} & \sim N\left(\mu, \tau^{2}\right), \text { for } i=1, \ldots, 800
+\end{aligned}
+$$
+
+and it should have inferior performance relative to the noncentered model: 
+
+$$
+\begin{aligned}
+y_{i} & \sim N\left(\tau \vartheta_{i}+\mu, \sigma_{i}^{2}\right) \\
+\vartheta_{i} & \sim N(0,1), \text { for } i=1, \ldots, 800
+\end{aligned}
+$$
+
+:::
+
+[Betancourt and Girolami 2013]{.footerRight}
+
+## Implementing that in code 
+
+::: {style="font-size: 85%;"}
+
+```{javascript echo = T, eval = F}
+transformed data {
+  real mu;
+  real<lower=0> tau;
+  real alpha;
+  int N;
+  mu = 8;
+  tau = 3;
+  alpha = 10;
+  N = 800;
+}
+generated quantities {
+  real mu_print;
+  real tau_print;
+  vector[N] theta;
+  vector[N] sigma;
+  vector[N] y;
+  mu_print = mu;
+  tau_print = tau;
+  for (i in 1:N) {
+    theta[i] = normal_rng(mu, tau);
+    sigma[i] = alpha;
+    y[i] = normal_rng(theta[i], sigma[i]);
+  }
+}
+```
+:::
+
+## Calling that from R 

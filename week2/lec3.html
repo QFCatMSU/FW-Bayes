@@ -8,7 +8,7 @@
 <link href="lec3_files/libs/quarto-html/light-border.css" rel="stylesheet">
 <link href="lec3_files/libs/quarto-html/quarto-html.min.css" rel="stylesheet" data-mode="light">
 <link href="lec3_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.4.322">
+  <meta name="generator" content="quarto-1.4.330">
 
   <meta name="author" content="Christopher Cahill">
   <meta name="dcterms.date" content="2023-09-06">
@@ -469,14 +469,14 @@ Chain 3 Iteration: 2000 / 2000 [100%]  (Sampling)
 Chain 4 Iteration:    1 / 2000 [  0%]  (Warmup) 
 Chain 4 Iteration: 1001 / 2000 [ 50%]  (Sampling) 
 Chain 4 Iteration: 2000 / 2000 [100%]  (Sampling) 
-Chain 1 finished in 0.1 seconds.
-Chain 2 finished in 0.1 seconds.
-Chain 3 finished in 0.1 seconds.
-Chain 4 finished in 0.1 seconds.
+Chain 1 finished in 0.0 seconds.
+Chain 2 finished in 0.0 seconds.
+Chain 3 finished in 0.0 seconds.
+Chain 4 finished in 0.0 seconds.
 
 All 4 chains finished successfully.
-Mean chain execution time: 0.1 seconds.
-Total execution time: 0.6 seconds.</code></pre>
+Mean chain execution time: 0.0 seconds.
+Total execution time: 0.5 seconds.</code></pre>
 </div>
 </div>
 <div class="cell">
@@ -825,24 +825,24 @@ y_{i} \sim \operatorname{normal}\left(\beta_{0}+\beta X_{i}, \sigma\right) .
 <span id="cb15-2"><a href="#cb15-2"></a><span class="fu">inits</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>$b0
-[1] -0.04361975
+[1] 0.02810175
 
 $b1
-[1] 0.5690925
+[1] -0.977701
 
 $sd
-[1] 0.9183216</code></pre>
+[1] 1.440309</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1"></a><span class="fu">inits</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>$b0
-[1] 0.04810181
+[1] 0.04937492
 
 $b1
-[1] -0.4342321
+[1] -0.2851885
 
 $sd
-[1] 1.347882</code></pre>
+[1] 1.247635</code></pre>
 </div>
 </div>
 <ul>
@@ -882,23 +882,23 @@ Chain 1 Iteration: 1001 / 2000 [ 50%]  (Sampling)
 Chain 2 Iteration:    1 / 2000 [  0%]  (Warmup) 
 Chain 2 Iteration: 1000 / 2000 [ 50%]  (Warmup) 
 Chain 2 Iteration: 1001 / 2000 [ 50%]  (Sampling) 
+Chain 2 Iteration: 2000 / 2000 [100%]  (Sampling) 
 Chain 3 Iteration:    1 / 2000 [  0%]  (Warmup) 
 Chain 3 Iteration: 1000 / 2000 [ 50%]  (Warmup) 
 Chain 3 Iteration: 1001 / 2000 [ 50%]  (Sampling) 
 Chain 4 Iteration:    1 / 2000 [  0%]  (Warmup) 
-Chain 1 Iteration: 2000 / 2000 [100%]  (Sampling) 
-Chain 1 finished in 0.2 seconds.
-Chain 2 Iteration: 2000 / 2000 [100%]  (Sampling) 
-Chain 2 finished in 0.2 seconds.
-Chain 3 Iteration: 2000 / 2000 [100%]  (Sampling) 
-Chain 3 finished in 0.2 seconds.
 Chain 4 Iteration: 1000 / 2000 [ 50%]  (Warmup) 
 Chain 4 Iteration: 1001 / 2000 [ 50%]  (Sampling) 
+Chain 1 Iteration: 2000 / 2000 [100%]  (Sampling) 
+Chain 1 finished in 0.1 seconds.
+Chain 2 finished in 0.1 seconds.
+Chain 3 Iteration: 2000 / 2000 [100%]  (Sampling) 
+Chain 3 finished in 0.1 seconds.
 Chain 4 Iteration: 2000 / 2000 [100%]  (Sampling) 
-Chain 4 finished in 0.2 seconds.
+Chain 4 finished in 0.1 seconds.
 
 All 4 chains finished successfully.
-Mean chain execution time: 0.2 seconds.
+Mean chain execution time: 0.1 seconds.
 Total execution time: 0.5 seconds.</code></pre>
 </div>
 </div>
@@ -931,7 +931,7 @@ $num_max_treedepth
 [1] 0 0 0 0
 
 $ebfmi
-[1] 1.115859 1.040690 1.054994 1.177122</code></pre>
+[1] 0.9477332 1.0931448 1.0900239 1.0794640</code></pre>
 </div>
 </div>
 <div style="font-size: 75%;">
@@ -973,12 +973,12 @@ $ebfmi
 <div class="cell-output cell-output-stdout">
 <pre><code># A draws_df: 6 iterations, 1 chains, and 4 variables
   lp__  b0   b1   sd
-1  -37 2.3 0.69 0.90
-2  -37 2.1 0.71 0.97
-3  -38 2.0 0.73 0.95
-4  -38 2.0 0.74 0.98
-5  -37 2.4 0.68 0.92
-6  -37 2.4 0.69 0.99
+1  -40 2.3 0.68 1.16
+2  -40 2.1 0.73 0.81
+3  -39 1.9 0.74 1.02
+4  -37 2.3 0.70 0.89
+5  -37 2.2 0.70 0.96
+6  -38 2.4 0.68 1.05
 # ... hidden reserved variables {'.chain', '.iteration', '.draw'}</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb27"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1"></a><span class="fu">dim</span>(posterior)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -1113,12 +1113,12 @@ $ebfmi
 <div class="cell-output cell-output-stdout">
 <pre><code># A draws_df: 6 iterations, 1 chains, and 4 variables
   lp__  b0   b1   sd
-1  -37 2.3 0.69 0.90
-2  -37 2.1 0.71 0.97
-3  -38 2.0 0.73 0.95
-4  -38 2.0 0.74 0.98
-5  -37 2.4 0.68 0.92
-6  -37 2.4 0.69 0.99
+1  -40 2.3 0.68 1.16
+2  -40 2.1 0.73 0.81
+3  -39 1.9 0.74 1.02
+4  -37 2.3 0.70 0.89
+5  -37 2.2 0.70 0.96
+6  -38 2.4 0.68 1.05
 # ... hidden reserved variables {'.chain', '.iteration', '.draw'}</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb42"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1"></a>b0 <span class="ot">&lt;-</span> posterior<span class="sc">$</span>b0</span>
@@ -1179,14 +1179,14 @@ $ebfmi
 <div class="cell-output cell-output-stdout">
 <pre><code>Running MCMC with 4 parallel chains...
 
-Chain 1 finished in 0.3 seconds.
-Chain 2 finished in 0.4 seconds.
-Chain 3 finished in 0.4 seconds.
-Chain 4 finished in 0.4 seconds.
+Chain 1 finished in 0.2 seconds.
+Chain 2 finished in 0.2 seconds.
+Chain 3 finished in 0.2 seconds.
+Chain 4 finished in 0.2 seconds.
 
 All 4 chains finished successfully.
-Mean chain execution time: 0.4 seconds.
-Total execution time: 0.6 seconds.</code></pre>
+Mean chain execution time: 0.2 seconds.
+Total execution time: 0.4 seconds.</code></pre>
 </div>
 </div>
 </section>
