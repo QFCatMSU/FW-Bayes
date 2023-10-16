@@ -28,16 +28,16 @@ where
   - $R_{t}$ is recruitment in year t
   - $SSB_{t}$ is spawning stock biomass in year t
   - $sbro$ is spawner biomass per recruit in the unfished condition (no exploitation)
-  - $\hat{\tilde{\alpha}}$, $\beta$ are the Goodyear compensation ratio and density dependent parameters of the stock-recruitment relationship, respectively 
+  - $\hat{\tilde{\alpha}}$, $\beta$ represent the Goodyear compensation ratio and the density dependent parameter of the stock-recruitment relationship, respectively 
   - Also note that the typical stock-recruit $\alpha = \frac{\hat{\tilde{\alpha}}}{sbro}$, and standardizing this term by the expected lifetime reproductive output is necessary in order to share information among stocks (i.e., you cannot hierarchicalize the original stock-recruitment $\alpha$ parameter without this $sbro$ standardization)
 
-Your task is to develop a (linear) Bayesian hierarchical stock-recruitment model for 11 West Coast Rockfish species using Stan (see 'rockfish.csv' in the data folder).  Treat $ln(\alpha)$ as a normally distributed random effect and $\beta$ as fixed effects. Assume that noise about the stock recruitment relationship is lognormal, and that this noise is similar among species.  Evaluate your model.  
+Your task is to develop a (linear) Bayesian hierarchical stock-recruitment model for 11 West Coast Rockfish species using Stan (see 'rockfish.csv' in the data folder).  Treat $ln(\hat{\tilde{\alpha}})$ as a normally distributed random effect and $\beta$ as fixed effects. Assume that noise about the stock recruitment relationship is lognormal, and that this noise is similar among species.  Evaluate your model.  
 
-Beyond the details given above, you have some freedom in terms of how you specify your model.  Choose reasonable priors for $\beta$, your hyperpriors for $ln(\alpha)$, and the likelihood error term.
+Beyond the details given above, you have some freedom in terms of how you specify your model.  Choose reasonable priors for $\beta$, your hyperpriors for $ln(\hat{\tilde{\alpha}})$, and the likelihood error term.
 
 1. What is your interpretation of your model's fit and its ability to inform management or future stock assessments?
 2. Which species or stock is has the most(least) resilience to harvest? 
-3. Which species or stock has the most uncertainty about $ln(\alpha)$ ? 
+3. Which species or stock has the most uncertainty about $ln(\hat{\tilde{\alpha}})$ ? 
 4. How might you try to improve your model in the future? 
 
 ## References:
