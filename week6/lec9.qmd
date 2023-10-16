@@ -119,7 +119,7 @@ y_{i} & \sim {N}\left(\theta_{i}, \sigma_{i}^{2}\right) \\
 \end{aligned}
 $$
 
--   In terms of the previous equations, $\mathcal{D}=\left(y_{i} \sigma_{i}\right), \phi=(\mu, \tau), \text { and } \theta=\left(\theta_{i}\right)$
+-   In terms of the previous equations, $\mathcal{D}=\left(y_{i}, \sigma_{i}\right), \phi=(\mu, \tau), \text { and } \theta=\left(\theta_{i}\right)$
 -   Call any elements of $\phi$ *global* parameters
 
 [Betancourt and Girolami 2013]{.footerRight}
@@ -148,7 +148,7 @@ y_{i} & \sim {N}\left(\theta_{i}, \sigma_{i}^{2}\right) \\
 \end{aligned}
 $$
 
--   In terms of the previous equations, $\mathcal{D}=\left(y_{i} \sigma_{i}\right), \phi=(\mu, \tau), \text { and } \theta=\left(\theta_{i}\right)$
+-   In terms of the previous equations, $\mathcal{D}=\left(y_{i}, \sigma_{i}\right), \phi=(\mu, \tau), \text { and } \theta=\left(\theta_{i}\right)$
 -   Call any elements of $\phi$ *global* parameters
 -   Call any elements of $\theta$ *local* parameters
 -   However, recognize this nomencalture breaks down in situations with more levels
