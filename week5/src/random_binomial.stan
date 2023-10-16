@@ -18,8 +18,8 @@ transformed parameters {
   beta  = eta * (1 - theta_mu);
 }
 model {
-  theta_mu ~ beta(a, b);        // prior 
-  eta ~ exponential(e);         // prior 
+  theta_mu ~ beta(a, b);        // hyper-prior 
+  eta ~ exponential(e);         // hyper-prior 
   // implicit joint distributions:
   theta_g ~ beta(alpha, beta);  // hyper distribution for survival pr
   y ~ binomial(n, theta_g);     // likelihood 

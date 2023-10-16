@@ -8,9 +8,8 @@ library(bayesplot)
 # b = failures
 #-------------------------------------------------------------------------
 a <- 3 # successes
-b <- 7 # failures
+b <- 11 # failures
 curve(dbeta(x, a, b))
-
 #-------------------------------------------------------------------------
 # Let's do some math to set informative priors for a beta distribution
 # First, recognize that a and b are sort of hard to set priors for, right?
@@ -37,6 +36,8 @@ curve(dexp(x, rate = e), from = 0, to = 100, col = "blue")
 
 # simulate some prior draws
 n <- 1e5
+a <- 3
+b <- 11
 
 prior_draws <- data.frame(
   mu = rbeta(n, a, b),
@@ -55,6 +56,8 @@ prior_draws %>%
     median = quantile(value, prob = 0.5),
     upper95 = quantile(value, prob = 0.975)
   )
+
+curve(dbeta(x, a, b))
 
 #---------------------------------------------------
 data <- readRDS("week5/data/survival_data.rds")
@@ -111,14 +114,13 @@ p
 
 # plot the marginal distributions of alpha and beta
 posterior %>%
-  mcmc_hist(pars = c("alpha", "beta")) + 
+  mcmc_hist(pars = c("alpha", "beta")) +
   ggtitle("marginal distributions of a,b")
 
 # plot the joint distribution of alpha and beta
 posterior %>%
   mcmc_scatter(pars = c("alpha", "beta"), np = np) +
   theme_qfc() + ggtitle("joint distribution of a,b")
-
 
 posterior %>%
   mcmc_intervals(pars = "eta", regex_pars = c("mu", "alpha", "beta"))
@@ -128,18 +130,54 @@ posterior %>%
 
 p <-
   posterior %>%
-  mcmc_areas(regex_pars = c("mu", "theta"), 
-             prob = 0.8) + 
-  xlim(0,1.0) + theme_qfc()
+  mcmc_areas(
+    regex_pars = c("mu", "theta"),
+    prob = 0.8
+  ) +
+  xlim(0, 1.0) + theme_qfc()
 
 p <- p + ggtitle(expression(theta[mu] ~ vs ~ group ~ specific ~ theta[g]))
 p
 
-fit$summary() # estimates 
+fit$summary() # estimates
 data$n_alive / data$n_released # empirical MLE
 
 # Three things to do in groups
-# 1. do a prior sensitivity test 
-# 2. What is the probability that survival in group 2 is less than average? 
+# 1. do a prior sensitivity test
+# 2. What is the probability that survival in group 2 is less than average?
 # 2a. What is the probability that survival in group 2 is less than group 6?
-# 3. What is the Pr(survival > 0.5) if we went to a new site, stocked new critters? 
+# 3. What is the Pr(survival > 0.5) if we went to a new site, stocked new critters?
+
+
+#-------------------------------------------------------
+# Test whether probability in group 2 is < average
+
+head(posterior)
+avg_survival <- posterior$theta_mu
+farm2 <- posterior$`theta_g[2]`
+
+str(avg_survival)
+str(farm2)
+
+par(mfrow = c(2, 1))
+hist(avg_survival,
+  main = "marginal posterior distributions",
+  col = rgb(1, 0, 0, 0.2)
+)
+hist(farm2, add = T, col = rgb(0, 0, 1, 0.2))
+legend("topright",
+  bty = "n", legend = c("Avg theta", "theta[2]"),
+  fill = c("red", "blue")
+)
+
+hist(avg_survival - farm2, main = "avg theta - theta[2]", col = rgb(0, 0, 1, 0.2))
+hist(avg_survival - farm2, main = "avg theta - theta[2]", col = rgb(1, 0, 0, 0.2), add = T) # just making it pretty
+abline(lty = 3, lwd = 1.5, v = 0.0)
+
+# calculate the probability 
+PRlower <- sum((avg_survival - farm2) > 0) / length(farm2)
+
+print(paste0(
+  "Pr(theta[2] < theta[mu]) = ",
+  PRlower
+))
