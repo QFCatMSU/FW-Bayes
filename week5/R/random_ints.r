@@ -48,7 +48,7 @@ fit <- mod$sample(
   iter_sampling = 1000, 
   parallel_chains = 4, 
   refresh = 50, 
-  adapt_delta = 0.9999, 
+  adapt_delta = 0.99999, 
   step_size = 1e-3
 )
 
