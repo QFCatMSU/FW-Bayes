@@ -20,10 +20,10 @@ highlight-style: kate
 ## Purpose
 
 -   Introduce some background and theoretical concepts
--   The Devil's (aka Neal's) funnel (spooky seaz'n 👻)
--   Examine some ways to track down where things are going wrong in a model
--   Look at some more complicated examples
-    -   Examples of how this stuff manifests in real-world models
+-   The Devil's funnel (spooky seaz'n 👻)
+-   What to do about it
+-   Example
+-   Example #2 (Eight schools)
 
 ## Background
 
@@ -370,6 +370,23 @@ y_{i} & \sim N\left(\theta_{i}, \sigma_{i}^{2}\right) \\
 \end{aligned}
 $$
 
+:::
+
+[Betancourt and Girolami 2013]{.footerRight}
+
+## Example, centered vs. noncentered 
+
+::: {style="font-size: 85%;"}
+
+The centered parameterization of this model can be written as
+
+$$
+\begin{aligned}
+y_{i} & \sim N\left(\theta_{i}, \sigma_{i}^{2}\right) \\
+\theta_{i} & \sim N\left(\mu, \tau^{2}\right), \text { for } i=1, \ldots, 800
+\end{aligned}
+$$
+
 and it should have inferior performance relative to the noncentered model: 
 
 $$
@@ -383,11 +400,11 @@ $$
 
 [Betancourt and Girolami 2013]{.footerRight}
 
-## Implementing that in code 
+## Using Stan to simulate fake data  
 
-::: {style="font-size: 85%;"}
+::: {style="font-size: 75%;"}
 
-```{javascript echo = T, eval = F}
+```{R echo = T, eval = F}
 transformed data {
   real mu;
   real<lower=0> tau;
@@ -416,3 +433,217 @@ generated quantities {
 :::
 
 ## Calling that from R 
+
+```{R echo = T, eval = T}
+
+library("cmdstanr")   
+
+one_level <- cmdstan_model("src/sim_one_level.stan")
+
+# simulate data
+sim <- one_level$sample(
+  fixed_param = T, # look here 
+  iter_warmup = 0, iter_sampling = 1,
+  chains = 1, seed = 1
+)
+
+```
+
+- Note the fixed_param and iters
+
+## Extract the relevant quantities 
+
+```{R echo = T, eval = T}
+# extract it 
+y <- as.vector(sim$draws("y", format = "draws_matrix"))
+sigma <- as.vector(sim$draws("sigma", format = "draws_matrix"))
+theta <- as.vector(sim$draws("theta", format = "draws_matrix"))
+mu <- as.vector(sim$draws("mu_print", format = "draws_matrix"))
+tau <- as.vector(sim$draws("tau_print", format = "draws_matrix"))
+```
+
+## Look at it (duh) 
+
+```{R echo = T, eval = T}
+library(tidyverse)
+my_data <- data.frame(y, group = 1:length(y))
+my_data %>%
+    ggplot(aes(x = group, y = y)) + 
+    geom_point()
+```
+
+## The centered parameterization in code
+
+::: {style="font-size: 85%;"}
+
+```{R echo = T, eval = F}
+data {
+  int<lower=0> J;
+  array[J] real y;
+  array[J] real sigma;
+}
+parameters {
+  real mu;
+  real<lower=0> tau;
+  array[J] real theta;
+}
+model {
+  mu ~ normal(0, 5);
+  tau ~ cauchy(0, 2.5);
+  theta ~ normal(mu, tau);
+  y ~ normal(theta, sigma);
+}
+```
+:::
+
+## The noncentered parameterization in code
+
+::: {style="font-size: 85%;"}
+
+```{R echo = T, eval = F}
+data {
+  int<lower=0> J;
+  array[J] real y;
+  array[J] real sigma;
+}
+parameters {
+  real mu;
+  real<lower=0> tau;
+  array[J] real var_theta;
+}
+transformed parameters {
+  array[J] real theta;
+  for (j in 1:J) theta[j] = tau * var_theta[j] + mu;
+}
+model {
+  mu ~ normal(0, 5);
+  tau ~ cauchy(0, 2.5);
+  var_theta ~ normal(0, 1);
+  y ~ normal(theta, sigma);
+}
+```
+:::
+
+## Running things from R
+
+::: {style="font-size: 85%;"}
+
+
+```{R echo = T, eval = T}
+# Centered estimation model: 
+stan_data <- list(
+  J = length(y), y = y, sigma = sigma
+)
+one_level_cp <- cmdstan_model("src/one_level_cp.stan")
+
+fit_cp <- one_level_cp$sample(
+  data = stan_data,
+  iter_warmup = 1000, iter_sampling = 1000,
+  chains = 4, parallel_chains = 4,
+  seed = 13, refresh = 0, adapt_delta = 0.99
+)
+
+```
+
+:::
+
+## Checking diagnostics
+
+::: {style="font-size: 85%;"}
+
+```{R echo = T, eval = T}
+fit_cp$cmdstan_diagnose()
+```
+
+:::
+
+## Running things from R
+
+::: {style="font-size: 85%;"}
+
+```{R echo = T, eval = T}
+# noncentered estimation model: 
+one_level_ncp <- cmdstan_model("src/one_level_ncp.stan")
+
+fit_ncp <- one_level_ncp$sample(
+  data = stan_data,
+  iter_warmup = 1000, iter_sampling = 1000,
+  chains = 4, parallel_chains = 4,
+  seed = 13, refresh = 0, adapt_delta = 0.99
+)
+
+```
+:::
+
+## Checking diagnostics
+
+::: {style="font-size: 85%;"}
+
+```{R echo = T, eval = T}
+fit_ncp$cmdstan_diagnose()
+```
+
+:::
+
+## Comparing the two models
+
+```{R echo = T, eval = T}
+fit_cp$summary(c("mu", "tau"))
+fit_ncp$summary(c("mu", "tau"))
+
+```
+
+## First example wrap up 
+
+- The centered parameterization throws low-EBFMI warnings, occasional divergent transition warnings, and maximum treedepth reached warnings
+- NCP increases efficiency (measured as ESS / run time)
+
+## Eight schools in class demo 
+
+::: {style="font-size: 85%;"}
+
+Centered model:
+$$
+\begin{aligned}
+y_{j} & \sim \operatorname{Normal}\left(\theta_{j}, \sigma_{j}\right), \quad j=1, \ldots, J \\
+\theta_{j} & \sim \operatorname{Normal}(\mu, \tau), \quad j=1, \ldots, J \\
+\mu & \sim \operatorname{Normal}(0,10) \\
+\tau & \sim \operatorname{half}-\operatorname{Cauchy}(0,10)
+\end{aligned}
+$$
+
+Non-centered analog:
+
+$$
+\begin{aligned}\theta _j&=\ \mu +\tau \eta _j,\quad j=1,\ldots ,J\\
+\eta _j&\sim N(0,1),\quad j=1,\ldots ,J.\end{aligned}
+$$
+
+:::
+
+[Rubin 1981, Gelman et al. 2013; Stan Development Team 2023]{.footerRight}
+
+## Key thing to note about Eight Schools NCP vs. CP
+
+- NCP replaces the vector $\theta$ with a vector $\eta$ of i.i.d. standard normal parameters and then constructs $\theta$ deterministically from $\eta$ by scaling by $\tau$ and shifting by $\mu$ 
+
+[Rubin 1981, Gelman et al. 2013; Stan Development Team 2023]{.footerRight}
+
+## Key thing to note about Eight Schools NCP vs. CP
+
+- NCP replaces the vector $\theta$ with a vector $\eta$ of i.i.d. standard normal parameters and then constructs $\theta$ deterministically from $\eta$ by scaling by $\tau$ and shifting by $\mu$ 
+
+- To the code!
+
+[Rubin 1981, Gelman et al. 2013; Stan Development Team 2023]{.footerRight}
+
+## References
+
+- Betancourt, M. and Girolami, M. 2013. Hamiltonian Monte Carlo for hierarchical models. https://arxiv.org/abs/1312.0906
+
+- Gelman, A., Carlin, J. B., Stern, H. S., Dunson, D. B., Vehtari, A., and Rubin, D. B. 2013. Bayesian Data Analysis. Chapman & Hall/CRC Press, London, third edition.
+
+- Rubin, D. B. 1981. Estimation in Parallel Randomized Experiments. Journal of Educational and Behavioral Statistics. 6:377–401.
+
+- Stan Development Team. 2023. Stan Modeling Language Users Guide and Reference Manual. https://mc-stan.org/users/documentation/
+
