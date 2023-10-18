@@ -1,0 +1,59 @@
+---
+title: Even more hierarchical models 
+title-slide-attributes:
+    data-background-image: "https://qfcatmsu.github.io/Images/dark-big.png"  
+    data-background-size: "40%"
+    data-background-position: "6% 95%"
+subtitle: FW 891 <br> [Click here to view presentation online](https://qfcatmsu.github.io/FW-Bayes/week6/lec9.html){style="position:absolute;top:40%;left:35%;font-size:20px;"}
+author: Christopher Cahill
+date: 25 October 2023
+date-format: "D MMMM YYYY"
+format: 
+  revealjs:
+    css: "https://qfcatmsu.github.io/css/presStyle.css"
+    slide-number: c/t  
+    theme: simple 
+editor: visual
+highlight-style: kate
+---
+
+## Before we get started
+
+```{R echo = T, eval = F}
+install.packages("devtools")
+devtools::install_github("QFCatMSU/gg-qfc")
+library(ggqfc)
+```
+
+## Testing that installation
+
+```{R echo = T, eval = F}
+pp_roll() # test posterior predictive function  
+
+```
+
+## Purpose
+
+- Today we introduce a powerful extension of mixed effects models
+  - Random slopes (aka varying effects models)
+  - Repent for our earlier sins
+- Adventures in covariance a la McElreath (2023)
+- Simulate a varying effects problem
+- Discuss both a centered and noncentered version of this model
+  - Jump back and forth between presentation and live coding demo
+
+## A note up front
+
+- This lecture is drawing heavily on McElreath (2023), and much of the code and analyses are adapted from information in that text
+
+## A note up front
+
+- This lecture is drawing heavily on McElreath (2023), and much of the code and analyses are adapted from information in that text
+- If you want more information, check "Adventures in Covariance" chapter of this book
+
+## 
+
+# References
+
+McElreath 2023.  Statistical Rethinking
+
