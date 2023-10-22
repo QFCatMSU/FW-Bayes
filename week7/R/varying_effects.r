@@ -1,172 +1,294 @@
-
 library(tidyverse)
-library(mvtnorm)
+library(MASS)
+library(ellipse)
 library(ggqfc)
+library(gghighlight)
+library(bayesplot)
+library(cmdstanr)
+# devtools::install_github("rmcelreath/rethinking")
+library(rethinking)
 
 # -----------------------
 # Playing with multivariate distributions
 
-a <-3.5 
-b <- (-1) 
-sigma_a <- 1
-sigma_b <- 0.5
-rho <- (-0.7) 
-
-Mu <-c(a,b)
-
-cov_ab <-sigma_a*sigma_b*rho
+sigma_b0 <- 1
+sigma_b1 <- 0.5
+rho <- (-0.4)
+cov_b0_b1 <- sigma_b0 * sigma_b1 * rho
 
 # one way to generate the covariance matrix:
-SIGMA1 <-matrix(c(sigma_a^2,cov_ab,cov_ab,sigma_b^2),ncol=2)
+SIGMA1 <- matrix(c(sigma_b0^2, cov_b0_b1, cov_b0_b1, sigma_b1^2), ncol = 2)
 
-sigmas <-c(sigma_a,sigma_b) # standard deviations
-rho <-matrix(c(1,rho,rho,1),nrow=2) # correlation matrix
+sigmas <- c(sigma_b0, sigma_b1) # standard deviations
+rho_mat <- matrix(c(1, rho, rho, 1), nrow = 2) # correlation matrix
 
 # another way matrix multiply to get covariance matrix
-SIGMA2 <-diag(sigmas) %*% rho %*% diag(sigmas)
+SIGMA2 <- diag(sigmas) %*% rho_mat %*% diag(sigmas)
 
 # show that the two versions equal each other
-SIGMA1==SIGMA2
+SIGMA1 == SIGMA2
 
-
-
-nobs <- 1000
-# draw some standard normal N(0,1) distributions 
-set.seed(1)
-x <- rnorm(nobs, mean = 0, sd = 1)
-y <- rnorm(nobs, mean = 0, sd = 1)
-
-# covariance between x and y
-cov_xy <- mean(x*y) - mean(x)*mean(y)
-cov(x,y)
-cov_xy
-
-cov_ab <-sigma_a*sigma_b*rho
-Sigma <-matrix(c(sigma_a^2,cov_ab,cov_ab,sigma_b^2),ncol=2)
-
-# correlation is just rescaled covariance 
-# sd(x)*sd(y) is the largest possible covariance
-# sqrt(var(x))*sqrt(var(y))
-
-
-# covariance between x and itself
-cov(x,x)
-mean(x^2) - mean(x)^2
-
-
-
-
-# all variables centered on zero
-plot(z1, z2, xlim = c(-10, 10), ylim = c(-10, 10))
-
-# shift z1 to the right, X = (z1 + 5, z2)
-plot(z1 + 5, z2, xlim = c(-10, 10), ylim = c(-10, 10))
-
-# shift z1 to the left, Y = (z1 - 5, z2)
-plot(z1 - 5, z2, xlim = c(-10, 10), ylim = c(-10, 10))
-
-# scale z1 by a factor of 2, Z1 = (2*z1, z2)
-plot(2 * z1, z2, xlim = c(-10, 10), ylim = c(-10, 10))
-
-# scale z1 and z2 by a factor of 2, Z2 = (2*z1, 2*z2)
-plot(2 * z1, 2 * z2, xlim = c(-10, 10), ylim = c(-10, 10))
-
-# scale z1 and z2 and shift z2 - 2, Z3 = (2*z1, 2*z2 - 2)
-plot(2 * z1, 2 * z2 - 2, xlim = c(-10, 10), ylim = c(-10, 10))
-
-# even more shifts, W = (z1 + 4, z2 - z1 - 2)
-plot(z1 + 4, z2 - z1 - 2, xlim = c(-10, 10), ylim = c(-10, 10))
-
-# Note that we can write this in linear algebra as: 
-Z <- rbind(z1, z2) # z1, z2 are just N(0,1)
-A <- rbind(c(1, 0), c(-1, 1))
-b <- c(4, -2)
-X <- A %*% Z + b # X is now distributed as z1 + 4, z2 - z1 -2
-plot(X[1, ], X[2, ], xlim = c(-10, 10), ylim = c(-10, 10))
-
-# get the covariance matrix of W
-SIGMA <- A%*%t(A)
-
-# do the same thing as the last version with W in line 32, 41
-library(mvtnorm)
-print(b)
-print(SIGMA)
-W <- rmvnorm(n = nobs, mean = b, sigma = SIGMA) 
-plot(W, xlim = c(-10, 10), ylim = c(-10, 10))
-
-# convert variance covariance matrix SIGMA to correlation matrix 
-D <- diag(1/sqrt(diag(SIGMA)))
-D %*% SIGMA %*% D
-cov2cor(SIGMA) # check your math 
-
-#----------------
-sd_b0 <- 1
-sd_b1 <- 1
-
-# std deviations matrix 
-sig_mat <- rbind(c(sd_b0, 0), c(0, sd_b1))
-sig_mat
-
-# Corrlation matrix 
-rho <- 0.6
-R <- rbind(c(1, rho), c(rho, 1))
-
-# construct variance-covariance (SIGMA) | sd and correlation matrix 
-SIGMA <- sig_mat^2 %*% R
-cov2cor(SIGMA)
-R
-
-
-
-
-cov_mat <- matrix(c(sd_b0^2, sd_b0 * sd_b1 * rho, sd_b0 * sd_b1 * rho, sd_b1^2), nrow = 2)
-
-R
-b <- c(0, 0)
-W <- rmvnorm(n = nobs, mean = b, sigma = SIGMA) 
-
-
-plot(W, xlim = c(-10, 10), ylim = c(-10, 10))
-
-# 
-
-# See also https://willhipson.netlify.app/post/stan-random-slopes/varying_effects_stan/
-
-
-set.seed(1) # for reproducibility
+#----------------------------------
+# Let's create a varying effects simulation
 
 # unstandardized means and sds
-real_mean_y <- 4.25
-real_mean_x <- 3.25
-real_sd_y <- 0.45
-real_sd_x <- 0.54
+n_lakes <- 21 # number of lakes
+n_visits <- 7 # number of measurements/years at each lake
+total_obs <- n_lakes * n_visits
 
-N <- 30 # number of people
-n_days <- 7 # number of days
-total_obs <- N * n_days
+sigma <- 1 # population (likelihood) sd
+betas <- c(14, -0.15) # average intercept and slope
+sigmas <- c(2, 1) # intercept and slope sds
+rho <- -0.3 # covariance between intercepts and slopes
+rho_mat <- matrix(c(1, rho, rho, 1), nrow = 2) # correlation matrix
+SIGMA <- diag(sigmas) %*% rho_mat %*% diag(sigmas) # var covar
 
-sigma <- 1 # population sd
-beta <- c(0, 0.15) # average intercept and slope
-sigma_p <- c(1, 1) # intercept and slope sds
-rho <- -0.36 # covariance between intercepts and slopes
+# draw correlated slopes and intercepts:
+set.seed(562)
+vary_effects <- mvrnorm(n_lakes, betas, SIGMA)
 
-cov_mat <- matrix(c(sigma_p[1]^2, sigma_p[1] * sigma_p[2] * rho, sigma_p[1] * sigma_p[2] * rho, sigma_p[2]^2), nrow = 2)
-beta_p <- rmvnorm(N, mean = beta, sigma = cov_mat) # participant intercepts and slopes
+b0 <- vary_effects[, 1]
+b1 <- vary_effects[, 2]
 
-x <- matrix(c(rep(1, N * n_days), rnorm(N * n_days, 0, 1)), ncol = 2) # model matrix
-pid <- rep(1:N, each = n_days) # participant id
+# visualize it
+plot(b0, b1,
+  col = "steelblue", xlab = "intercepts (b0)", ylab = "slopes(b1)",
+  ylim = c(-3, 3), xlim = c(10, 19), main = "Visualizing correlation between slopes and intercepts"
+)
+for (l in c(0.1, 0.3, 0.5, 0.8, 0.99)) {
+  lines(ellipse(SIGMA, centre = betas, level = l))
+}
 
-sim_dat <- map_dfr(.x = 1:(N * n_days), ~ data.frame(
-  mu = x[.x, 1] * beta_p[pid[.x], 1] + x[.x, 2] * beta_p[pid[.x], 2],
-  pid = pid[.x],
-  x = x[.x, 2]
-))
+# simulating the rest of our data
+n <- n_visits * n_lakes # total number of observations
+visit <- rep(1:n_visits, n_lakes)
+lake_id <- rep(1:n_lakes, each = n_visits) # create a lake ID
+x <- rnorm(n, 0, 1) # create fake covariate data
+mu <- b0[lake_id] + b1[lake_id] * x # mean prediction
+y <- rnorm(n, mu, sigma) # add likelihood error to mean prediction
 
-sim_dat$y <- rnorm(210, sim_dat$mu, sigma) # creating observed y from mu and sigma
+data <- data.frame(y, x, lake_id, visit)
 
-dat <- sim_dat %>%
-  select(-mu) %>% # removing mu
-  mutate(
-    y = real_mean_y + (y * real_sd_y), # unstandardize
-    x = real_mean_x + (x * real_sd_x)
-  )
+# say bad weather means you couldn't go out 20% of the time:
+keep <- rbinom(nrow(data), size = 1, prob = 0.8)
+data <- data[which(keep == 1), ]
+
+p1 <-
+  data %>%
+  ggplot(aes(x = x, y = y, group = lake_id)) +
+  geom_point(color = "firebrick", alpha = 0.50) +
+  geom_smooth(method = "lm", se = FALSE, color = "black") +
+  xlab("standardized juvenile density") +
+  ylab("growth rate cm/yr") +
+  facet_wrap(~lake_id) +
+  theme_qfc()
+p1
+
+p2 <- data %>%
+  ggplot(aes(x = x, y = y)) +
+  geom_point(color = "firebrick", alpha = 0.5) +
+  geom_smooth(method = "lm", se = FALSE, color = "black") +
+  xlab("standardized juvenile density") +
+  ylab("growth rate cm/yr") +
+  theme_qfc()
+p2
+
+# compare with lm()
+lm(data$y ~ data$x)
+betas[2]
+
+# now we have data much like you could come across working
+# for a resource management agency somewhere...
+
+#----------------------------------
+
+# https://mc-stan.org/docs/2_18/functions-reference/lkj-correlation.html
+R <- rethinking::rlkjcorr(1e4, K = 2, eta = 2) # try eta = 1, 2, 4, 10
+rethinking::dens(R[, 1, 2], xlab = "correlation")
+
+# Now, let's do some prior predictive checks
+set.seed(4)
+betas_pp <- rnorm(2, mean = 0, sd = 25) # b0 and b1
+sigma_pp <- rexp(1, 0.01) # population error
+sigmas_pp <- rexp(2, 0.01) # sigma b0 and sigma b1
+Omega <- rethinking::rlkjcorr(n = 1, K = 2, eta = 2) # from McElreath's rethinking package
+
+Sigma_pp <- diag(sigmas_pp) %*% Omega %*% diag(sigmas_pp)
+beta_sim <- mvrnorm(n_lakes, betas_pp, Sigma_pp)
+b0_pp <- beta_sim[, 1]
+b1_pp <- beta_sim[, 2]
+visit_pp <- rep(1:n_visits, n_lakes)
+lake_id_pp <- rep(1:n_lakes, each = n_visits) # create a lake ID
+x_pp <- rnorm(n, 0, 1) # create fake covariate data
+mu_pp <- b0_pp[lake_id_pp] + b1_pp[lake_id_pp] * x_pp # mean prediction
+y_pp <- rnorm(n, mu_pp, sigma_pp)
+
+pp_data <- data.frame(y = y_pp, x = x_pp, lake_id, visit)
+
+pp1 <- pp_data %>%
+  ggplot(aes(x = x, y = y, group = lake_id)) +
+  geom_point(color = "firebrick", alpha = 0.50) +
+  geom_smooth(method = "lm", se = FALSE, color = "black") +
+  xlab("juvenile density") +
+  ylab("growth rate cm/yr") +
+  facet_wrap(~lake_id) +
+  ggtitle("simulated from priors") +
+  theme_qfc()
+pp1
+p1 # compare to original data
+
+pp2 <-
+  pp_data %>%
+  ggplot(aes(x = x, y = y)) +
+  geom_smooth(method = "lm", se = FALSE, color = "black") +
+  geom_point(size = 3, color = "firebrick", alpha = 0.5) +
+  gghighlight(lake_id == 18,
+    use_group_by = FALSE, max_highlight = Inf,
+    use_direct_label = FALSE
+  ) +
+  labs(
+    title = "simulated from priors",
+    subtitle = "Red points are data from lake 18 \n
+       Grey points are data from all other lakes"
+  ) +
+  xlab("juvenile density") +
+  ylab("growth rate cm/yr") +
+  theme_qfc()
+pp2
+p2 # compare to original data
+
+# can do this many times, but general theme is that this seems reasonable
+#----------------------------------
+# estimate the centered parameterization in Stan
+
+mod_cp <- cmdstan_model("week7/src/varying_effects_cp.stan")
+
+stan_data <- list(
+  n = nrow(data),
+  n_lakes = length(unique(data$lake_id)),
+  J = 2, # intercept + slope
+  id = data$lake_id,
+  X_ij = matrix(c(rep(1, nrow(data)), data$x), ncol = 2), 
+  y = data$y
+)
+
+fit <- mod_cp$sample(
+  data = stan_data,
+  seed = 1,
+  chains = 4,
+  iter_warmup = 1000,
+  iter_sampling = 1000,
+  parallel_chains = 4,
+  step_size = 0.01,
+  refresh = 500, 
+  adapt_delta = 0.99
+)
+
+fit$cmdstan_diagnose()
+fit$print(max_rows = 60)
+fit$print("betas")
+fit$print("OMEGA")
+fit$print("sigma")
+fit$print("sigma_lake")
+
+fit$print("betas_lake[2,2]")
+vary_effects[2,] 
+
+post <- fit$draws(format = "df") # extract draws x variables data frame
+np <- nuts_params(fit)
+
+#-------------------------------
+# visualizations
+
+color_scheme_set("darkgray")
+mcmc_pairs(post,
+  np = np, pars = c("betas[1]", "betas[2]", "sigma_lake[1]", "sigma_lake[2]", "sigma"),
+  off_diag_args = list(size = 0.75),
+  np_style = pairs_style_np(div_color = "firebrick", div_size = 2)
+)
+
+#-------------------------------
+# plot the main effects
+mcmc_areas(post, pars = c("betas[1]", "betas[2]", "sigma_lake[1]", "sigma_lake[2]", "sigma"), prob = 0.80) +
+  scale_y_discrete(expand = c(0, 0))
+
+#-------------------------------
+# plot the random slopes and intercepts:
+# first, pluck out the betas_lake, summarise mean slope and intercept each group
+betas_lake <- post[, grep("betas_lake", names(post))]
+betas_lake_mu <- betas_lake %>%
+  pivot_longer(cols = everything()) %>%
+  group_by(name) %>%
+  summarise(mean = mean(value))
+betas_lake_mu$rename <- NA
+betas_lake_mu$rename[grep(",1]", betas_lake_mu$name)] <- "intercept"
+betas_lake_mu$rename[grep(",2]", betas_lake_mu$name)] <- "slope"
+betas_lake_mu <-
+  betas_lake_mu %>%
+  spread(rename, mean)
+
+intercept <- betas_lake_mu$intercept[c(TRUE, FALSE)][1:n_lakes]
+slope <- betas_lake_mu$slope[c(FALSE, TRUE)][1:n_lakes]
+re <- data.frame(lake_id = 1:n_lakes, intercept, slope)
+re %>%
+  ggplot(aes(x = intercept, y = slope)) +
+  geom_point(color = "firebrick", alpha = 0.50) +
+  # geom_smooth(method = "lm", se = FALSE, color = "black") +
+  ggtitle(expression(negative ~ correlation ~ between ~ B[1[lake]] ~ and ~ B[0[lake]]),
+    subtitle = "posterior means"
+  ) +
+  theme_qfc()
+re
+
+#-------------------------------
+# visualize correlated slopes and intercepts one more way 
+beta0 <- post[, which(names(post) == "betas[1]")]
+beta1 <- post[, which(names(post) == "betas[2]")]
+my_df <- data.frame(beta0, beta1)
+names(my_df) <- c("beta0", "beta1")
+
+seq(-1, 1, length.out = 100) %>% # create a sequence of evenly spaced numbers from -1 to 1
+  map_dfr(~ data.frame(y = my_df$beta0 + .x * my_df$beta1,
+                       x = .x,
+                       int = factor(ntile(my_df$beta0, 3), levels = c(1, 2, 3),
+                                    labels = c("[0-33%)", "[33%-66%)", "[66%-100%)")))) %>%
+  group_by(x, int) %>%
+  summarise(mu = mean(y),
+            lower = quantile(y, probs = 0.05),
+            upper = quantile(y, probs = 0.9)) %>%
+  ungroup() %>%
+  ggplot() +  
+  geom_ribbon(aes(x = x, ymin = lower, ymax = upper), fill = "cadetblue4", alpha = 0.50) +
+  geom_line(aes(x = x, y = mu), color = "black", linewidth = 2) +
+  xlab ("standardized density") + ylab("growth rate (cm/yr)") + 
+  labs(title = "Relation between standardized density and growth rate\n as a function of intercept",
+       subtitle = "Intercept percentile",
+       caption = "Shaded area = 90% uncertainty interval") +
+  facet_wrap(~int) +
+  theme_qfc() + 
+  theme(plot.subtitle = element_text(hjust = 0.5))
+
+#-------------------------------
+# plot posterior predictive distribution vs. data
+pp_dist <-
+  summarise_draws(fit, ~ quantile(.x, probs = c(0.025, 0.5, 0.975))) %>%
+  filter(grepl("y_rep", variable))
+
+data$lower <- pp_dist$`2.5%`
+data$med <- pp_dist$`50%`
+data$upper <- pp_dist$`97.5%`
+
+data %>%
+  ggplot(aes(x = x, y = y)) +
+  geom_ribbon(aes(ymin = lower, ymax = upper),
+    alpha = 0.5, fill = "cadetblue4"
+  ) +
+  geom_line(aes(x = x, y = med),
+    linetype = 1, lwd = 0.75,
+    color = "black"
+  ) +
+  geom_point(size = 0.75)
+
+#-------------------------------
+vary_effects # true values 
+re # estimated means
