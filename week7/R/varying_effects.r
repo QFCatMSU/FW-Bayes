@@ -32,8 +32,8 @@ SIGMA1 == SIGMA2
 # Let's create a varying effects simulation
 
 # unstandardized means and sds
-n_lakes <- 21 # number of lakes
-n_visits <- 7 # number of measurements/years at each lake
+n_lakes <- 30 # number of lakes
+n_visits <- 5 # number of measurements/years at each lake
 total_obs <- n_lakes * n_visits
 
 sigma <- 1 # population (likelihood) sd
@@ -44,7 +44,7 @@ rho_mat <- matrix(c(1, rho, rho, 1), nrow = 2) # correlation matrix
 SIGMA <- diag(sigmas) %*% rho_mat %*% diag(sigmas) # var covar
 
 # draw correlated slopes and intercepts:
-set.seed(562)
+set.seed(5621)
 vary_effects <- mvrnorm(n_lakes, betas, SIGMA)
 
 b0 <- vary_effects[, 1]
@@ -70,7 +70,7 @@ y <- rnorm(n, mu, sigma) # add likelihood error to mean prediction
 data <- data.frame(y, x, lake_id, visit)
 
 # say bad weather means you couldn't go out 20% of the time:
-keep <- rbinom(nrow(data), size = 1, prob = 0.8)
+keep <- rbinom(nrow(data), size = 1, prob = 0.75)
 data <- data[which(keep == 1), ]
 
 p1 <-
@@ -238,8 +238,8 @@ re %>%
     subtitle = "posterior means"
   ) +
   theme_qfc()
-re
-
+re           # estimated means
+vary_effects # truth
 #-------------------------------
 # visualize correlated slopes and intercepts one more way 
 beta0 <- post[, which(names(post) == "betas[1]")]
@@ -292,3 +292,46 @@ data %>%
 #-------------------------------
 vary_effects # true values 
 re # estimated means
+
+#-------------------------------
+# Noncentered version of the model 
+
+mod_ncp <- cmdstan_model("week7/src/varying_effects_ncp.stan")
+
+fit_ncp <- mod_ncp$sample(
+  data = stan_data,
+  seed = 1,
+  chains = 4,
+  iter_warmup = 1000,
+  iter_sampling = 1000,
+  parallel_chains = 4,
+  step_size = 0.01,
+  refresh = 500, 
+  max_treedepth = 12,
+  adapt_delta = 0.99
+)
+
+fit_ncp$print("betas")
+fit_ncp$print("OMEGA")
+post <- fit_ncp$draws(format = "df") # extract draws x variables data frame
+
+#-------------------------------
+# prove to yourself that both cp and ncp return same estimates...
+betas_lake <- post[, grep("betas_lake", names(post))]
+betas_lake_mu <- betas_lake %>%
+  pivot_longer(cols = everything()) %>%
+  group_by(name) %>%
+  summarise(mean = mean(value))
+betas_lake_mu$rename <- NA
+betas_lake_mu$rename[grep(",1]", betas_lake_mu$name)] <- "intercept"
+betas_lake_mu$rename[grep(",2]", betas_lake_mu$name)] <- "slope"
+betas_lake_mu <-
+  betas_lake_mu %>%
+  spread(rename, mean)
+
+intercept <- betas_lake_mu$intercept[c(TRUE, FALSE)][1:n_lakes]
+slope <- betas_lake_mu$slope[c(FALSE, TRUE)][1:n_lakes]
+re_ncp <- data.frame(lake_id = 1:n_lakes, intercept, slope)
+
+re # centered
+re_ncp # noncentered
