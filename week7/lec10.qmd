@@ -450,7 +450,8 @@ SIGMA
 ## Cholesky factors
 
 ```{R echo = T, eval = T}
-# convert Cholesky factor of correlation matrix to covariance Cholesky factor 
+# convert Cholesky factor of correlation matrix 
+# to covariance Cholesky factor 
 L_corr <- t(chol(OMEGA)) # note chol() returns upper triangular matrix
 diag(sigmas) %*% L_corr
 
