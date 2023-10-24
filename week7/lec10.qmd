@@ -17,42 +17,569 @@ editor: visual
 highlight-style: kate
 ---
 
-## Before we get started
-
-```{R echo = T, eval = F}
-install.packages("devtools")
-devtools::install_github("QFCatMSU/gg-qfc")
-library(ggqfc)
-```
-
-## Testing that installation
-
-```{R echo = T, eval = F}
-pp_roll() # test posterior predictive function  
-
-```
-
 ## Purpose
 
 -   Today we introduce a powerful extension of mixed effects models
     -   Random slopes (aka varying effects models)
     -   Repent for our earlier sins
 -   Adventures in covariance a la McElreath (2023)
+    -   Cover some math necessary for working with covariance matrices
 -   Simulate a varying effects problem
--   Discuss both a centered and noncentered version of this model
-    -   Jump back and forth between presentation and live coding demo
+-   Develop both centered and noncentered varying effects models in Stan
 
-## A note up front
-
--   This lecture is drawing heavily on McElreath (2023), and much of the code and analyses are adapted from information in that text
-
-## A note up front
+## Some references
 
 -   This lecture is drawing heavily on McElreath (2023), and much of the code and analyses are adapted from information in that text
--   If you want more information, check "Adventures in Covariance" chapter of this book
 
-## 
+## Some references
+
+-   This lecture is drawing heavily on McElreath (2023), and much of the code and analyses are adapted from information in that text
+    -   If you want more information, check "Adventures in Covariance" chapter of this book
+
+## Some references
+
+-   This lecture is drawing heavily on McElreath (2023), and much of the code and analyses are adapted from information in that text
+    -   If you want more information, check "Adventures in Covariance" chapter of this book
+-   See also Gelman and Hill (2007)
+    -   Specifically chapter 13
+
+## Thinking about variability in ecological systems
+
+```{R echo = F, eval = T}
+
+library(ggqfc)
+library(tidyverse)
+library(gghighlight)
+
+R <- rethinking::rlkjcorr(1e4, K = 2, eta = 2) 
+
+set.seed(431)
+n_lakes <- 30 # number of lakes
+n_visits <- 5 # number of measurements/years at each lake
+n <- n_visits * n_lakes # total number of observations
+visit <- rep(1:n_visits, n_lakes)
+lake_id <- rep(1:n_lakes, each = n_visits)
+
+betas_pp <- c(14, -0.15) # b0 and b1
+sigma_pp <- 1 # population error
+sigmas_pp <- c(0.3, 0.3) # sigma b0 and sigma b1
+Omega <- rethinking::rlkjcorr(n = 1, K = 2, eta = 2) # from McElreath's rethinking package
+
+Sigma_pp <- diag(sigmas_pp) %*% Omega %*% diag(sigmas_pp)
+beta_sim <- MASS::mvrnorm(n_lakes, betas_pp, Sigma_pp)
+b0_pp <- beta_sim[, 1]
+b1_pp <- beta_sim[, 2]
+visit_pp <- rep(1:n_visits, n_lakes)
+lake_id_pp <- rep(1:n_lakes, each = n_visits) # create a lake ID
+x_pp <- rnorm(n, 0, 1) # create fake covariate data
+mu_pp <- b0_pp[lake_id_pp] + b1_pp[lake_id_pp] * x_pp # mean prediction
+y_pp <- rnorm(n, mu_pp, sigma_pp)
+
+pp_data <- data.frame(y = y_pp, x = x_pp, lake_id, visit)
+
+pp1 <- pp_data %>%
+  ggplot(aes(x = x, y = y, group = lake_id)) +
+  geom_point(color = "firebrick", alpha = 0.750) +
+  geom_smooth(method = "lm", se = FALSE, color = "black") +
+  xlab("covariate") +
+  ylab("response variable") +
+  facet_wrap(~lake_id) 
+pp1
+
+```
+
+# Three key takeways 
+
+## Point #1
+
+-   variability in both intercepts *and* slopes among replicates
+
+```{R echo = F, eval = T}
+pp1
+```
+
+## Point #2
+
+-   slopes get steeper as intercepts get bigger
+
+```{R echo = F, eval = T}
+pp1
+```
+
+## Point #3
+
+-   some groups display [Simpson's paradox](https://en.wikipedia.org/wiki/Simpson%27s_paradox)
+
+```{R echo = F, eval = T}
+pp1
+```
+
+## Simpson's paradox
+
+```{R echo = F, eval = T}
+
+pp2 <-
+  pp_data %>%
+  ggplot(aes(x = x, y = y)) +
+  geom_smooth(method = "lm", se = FALSE, color = "black") +
+  geom_point(size = 3, color = "firebrick", alpha = 0.75) +
+  gghighlight(lake_id == 1,
+    use_group_by = FALSE, max_highlight = Inf,
+    use_direct_label = FALSE
+  ) +
+  labs(
+    subtitle = "Colored points are data from replicate 1 \n
+       Grey points are data from all other replicates"
+  ) +
+  xlab("covariate") +
+  ylab("response variable") +
+  theme_qfc()
+pp2
+```
+
+## Group question
+
+-   what is a question in your field of study that might show a similar pattern?
+
+```{R echo = F, eval = T}
+pp1
+```
+
+## Varying effects
+
+-   Generalization of standard multilevel regression
+    -   Specifically, models that allow slopes and intercepts to vary by group
+-   Several ways to write, here's one for the model we just visualized
+
+## Varying effects maths
+
+::: {style="font-size:30px"}
+
+$$
+\begin{array}
+ \text{y}_{i} \sim \operatorname{N}\left(\mu_{i}, \sigma\right) & \text { [likelihood] } \\
+ \mu_{i}=\beta_{0[group]}+\beta_{1[group]}x_{1[i]} & \text { [linear model] } \\
+\end{array}
+$$
+
+:::
+
+[adapted from McElreath 2023]{.footerRight}
+
+## Varying effects maths
+
+::: {style="font-size:30px"}
+
+$$
+\begin{array}
+ \text{y}_{i} \sim \operatorname{N}\left(\mu_{i}, \sigma\right) & \text { [likelihood] } \\
+ \mu_{i}=\beta_{0[group]}+\beta_{1[group]}x_{1[i]} & \text { [linear model] } \\
+\end{array}
+$$
+
+Then comes the matrix of varying intercepts and slopes, with it’s covariance matrix $\mathbf{\Sigma}$:
+
+<br>
+
+:::
+
+[adapted from McElreath 2023]{.footerRight}
+
+## Varying effects maths
+
+::: {style="font-size:30px"}
+
+$$
+\begin{array}
+ \text{y}_{i} \sim \operatorname{N}\left(\mu_{i}, \sigma\right) & \text { [likelihood] } \\
+ \mu_{i}=\beta_{0[group]}+\beta_{1[group]}x_{1[i]} & \text { [linear model] } \\
+\end{array}
+$$
+
+Then comes the matrix of varying intercepts and slopes, with it’s covariance matrix $\mathbf{\Sigma}$:
+$$
+\begin{array}{l}\begin{aligned}{\left[\begin{array}{c}\beta_{0_{group}} \\
+\beta_{1_{group}}\end{array}\right] } & \sim \operatorname{MVN}\left(\left[\begin{array}{l}\beta_{0} \\
+\beta_{1}\end{array}\right], \mathbf{\Sigma}\right) \text { [population of varying effects] }\\
+\mathbf{\Sigma} & =\left(\begin{array}{cc}\sigma_{\beta_{0}} & 0 \\
+0 & \sigma_{\beta_{1}}\end{array}\right) \mathbf{\Omega} \left(\begin{array}{cc}\sigma_{\beta_{0}} & 0 \\
+0 & \sigma_{\beta_{1}}\end{array}\right) \text { [construct covariance matrix] } \end{aligned}
+\end{array}
+$$
+
+:::
+
+[adapted from McElreath 2023]{.footerRight}
+
+## Varying effects maths
+
+::: {style="font-size:30px"}
+
+$$
+\begin{array}
+ \text{y}_{i} \sim \operatorname{N}\left(\mu_{i}, \sigma\right) & \text { [likelihood] } \\
+ \mu_{i}=\beta_{0[group]}+\beta_{1[group]}x_{1[i]} & \text { [linear model] } \\
+\end{array}
+$$
+
+Then comes the matrix of varying intercepts and slopes, with it’s covariance matrix $\mathbf{\Sigma}$:
+$$
+\begin{array}{l}\begin{aligned}{\left[\begin{array}{c}\beta_{0_{group}} \\
+\beta_{1_{group}}\end{array}\right] } & \sim \operatorname{MVN}\left(\left[\begin{array}{l}\beta_{0} \\
+\beta_{1}\end{array}\right], \mathbf{\Sigma}\right) \text { [population of varying effects] }\\
+\mathbf{\Sigma} & =\left(\begin{array}{cc}\sigma_{\beta_{0}} & 0 \\
+0 & \sigma_{\beta_{1}}\end{array}\right) \mathbf{\Omega} \left(\begin{array}{cc}\sigma_{\beta_{0}} & 0 \\
+0 & \sigma_{\beta_{1}}\end{array}\right) \text { [construct covariance matrix] } \end{aligned}
+\end{array}
+$$
+
+- $\mathbf{\Omega}$ is a correlation matrix
+
+:::
+
+[adapted from McElreath 2023]{.footerRight}
+
+## Let's break that down 
+
+::: {style="font-size:33px"}
+
+- Math on the previous slide says that each group has a $\beta_{0[group]}$ and $\beta_{1[group]}$ with a prior distribution defined by the two dimensional Gaussian distribution with means $\beta_{0}$ and $\beta_{1}$ and covariance matrix $\mathbf{\Sigma}$
+
+:::
+
+[adapted from McElreath 2023]{.footerRight}
+
+## Let's break that down 
+
+::: {style="font-size:33px"}
+
+- Math on the previous slide says that each group has a $\beta_{0[group]}$ and $\beta_{1[group]}$ with a prior distribution defined by the two dimensional Gaussian distribution with means $\beta_{0}$ and $\beta_{1}$ and covariance matrix $\mathbf{\Sigma}$
+  - This is a multivariate normal distribution
+
+:::
+
+[adapted from McElreath 2023]{.footerRight}
+
+## Let's break that down 
+
+::: {style="font-size:33px"}
+
+- Math on the previous slide says that each group has a $\beta_{0[group]}$ and $\beta_{1[group]}$ with a prior distribution defined by the two dimensional Gaussian distribution with means $\beta_{0}$ and $\beta_{1}$ and covariance matrix $\mathbf{\Sigma}$
+  - This is a multivariate normal distribution
+- The final line defines how we construct our covariance matrix $\mathbf{\Sigma}$ by factoring it into a diagonal matrix of $\sigma_{\beta_{0}}$ and $\sigma_{\beta_{1}}$ and a correlation matrix $\mathbf{\Omega}$
+
+:::
+
+[adapted from McElreath 2023]{.footerRight}
+
+## Let's break that down
+
+::: {style="font-size:33px"}
+
+- Math on the previous slide says that each group has a $\beta_{0[group]}$ and $\beta_{1[group]}$ with a prior distribution defined by the two dimensional Gaussian distribution with means $\beta_{0}$ and $\beta_{1}$ and covariance matrix $\mathbf{\Sigma}$
+  - This is a multivariate normal distribution
+- The final line defines how we construct our covariance matrix $\mathbf{\Sigma}$ by factoring it into a diagonal matrix of $\sigma_{\beta_{0}}$ and $\sigma_{\beta_{1}}$ and a correlation matrix $\mathbf{\Omega}$
+  - Several ways to construct $\mathbf{\Sigma}$, but splitting it into standard deviations, $\sigma_{\beta_{0}}$ and $\sigma_{\beta_{1}}$, and a correlation matrix $\mathbf{\Omega}$ helps with understanding
+
+:::
+
+[adapted from McElreath 2023]{.footerRight}
+
+## Let's break that down
+
+::: {style="font-size:33px"}
+
+- Math on the previous slide says that each group has a $\beta_{0[group]}$ and $\beta_{1[group]}$ with a prior distribution defined by the two dimensional Gaussian distribution with means $\beta_{0}$ and $\beta_{1}$ and covariance matrix $\mathbf{\Sigma}$
+  - This is a multivariate normal distribution
+- The final line defines how we construct our covariance matrix $\mathbf{\Sigma}$ by factoring it into a diagonal matrix of $\sigma_{\beta_{0}}$ and $\sigma_{\beta_{1}}$ and a correlation matrix $\mathbf{\Omega}$
+  - Several ways to construct $\mathbf{\Sigma}$, but splitting it into standard deviations, $\sigma_{\beta_{0}}$ and $\sigma_{\beta_{1}}$, and a correlation matrix $\mathbf{\Omega}$ helps with learning
+- Compare this with a standard normal distribution which takes a mean and a standard deviation
+
+:::
+
+[adapted from McElreath 2023]{.footerRight}
+
+## The correlation matrix 
+
+- For this simple example, the correlation matrix looks like 
+
+$$
+\mathbf{\Omega}=\left(\begin{array}{ll}
+1 & \rho \\
+\rho & 1
+\end{array}\right)
+$$
+
+[adapted from McElreath 2023]{.footerRight}
+
+## The correlation matrix 
+
+- For this simple example, the correlation matrix looks like 
+
+$$
+\mathbf{\Omega}=\left(\begin{array}{ll}
+1 & \rho \\
+\rho & 1
+\end{array}\right)
+$$
+
+- where $\rho$ is the correlation between $\beta_{0}$ and $\beta_{1}$
+
+[adapted from McElreath 2023]{.footerRight}
+
+## The correlation matrix 
+
+- For this simple example, the correlation matrix looks like 
+
+$$
+\mathbf{\Omega}=\left(\begin{array}{ll}
+1 & \rho \\
+\rho & 1
+\end{array}\right)
+$$
+
+- where $\rho$ is the correlation between $\beta_{0}$ and $\beta_{1}$
+- $\mathbf{\Omega}$ gets more complicated for models with more varying slopes
+
+[adapted from McElreath 2023]{.footerRight}
+
+## Cholesky decomposition 
+
+- Note that we can take any arbitrary symmetric, positive-definite matrix $\mathbf{A}$, and factor or decompose it into  
+$$
+\mathbf{A}=\mathbf{L} \mathbf{L}^{T}
+$$
+
+## Cholesky decomposition 
+
+- Note that we can take any arbitrary symmetric, positive-definite matrix $\mathbf{A}$, and factor or decompose it into  
+$$
+\mathbf{A}=\mathbf{L} \mathbf{L}^{T}
+$$
+
+- where $\mathbf{L}$ is a lower triangular matrix with real and positive diagonal entries and $\mathbf{L}^{T}$ is a transpose of $\mathbf{L}$
+
+## Cholesky Decomposition 
+
+- If we visualize a Cholesky decomposition 
+
+::: {style="font-size:31px"}
+
+$$
+\left[\begin{array}{lll}
+A_{00} & A_{01} & A_{02} \\
+A_{10} & A_{11} & A_{12} \\
+A_{20} & A_{21} & A_{22}
+\end{array}\right]=\left[\begin{array}{lll}
+L_{00} & 0 & 0 \\
+L_{10} & L_{11} & 0 \\
+L_{20} & L_{21} & L_{22}
+\end{array}\right]\left[\begin{array}{ccc}
+L_{00} & L_{10} & L_{20} \\
+0 & L_{11} & L_{21} \\
+0 & 0 & L_{22}
+\end{array}\right]
+$$
+
+:::
+
+## Cholesky Decomposition 
+
+- If we visualize a Cholesky decomposition 
+
+::: {style="font-size:31px"}
+
+$$
+\left[\begin{array}{lll}
+A_{00} & A_{01} & A_{02} \\
+A_{10} & A_{11} & A_{12} \\
+A_{20} & A_{21} & A_{22}
+\end{array}\right]=\left[\begin{array}{lll}
+L_{00} & 0 & 0 \\
+L_{10} & L_{11} & 0 \\
+L_{20} & L_{21} & L_{22}
+\end{array}\right]\left[\begin{array}{ccc}
+L_{00} & L_{10} & L_{20} \\
+0 & L_{11} & L_{21} \\
+0 & 0 & L_{22}
+\end{array}\right]
+$$
+
+- This is helpful from a numerical perspective, particularly with noncentered parameterizations  
+
+:::
+
+## Cholesky factors continued
+
+- Note that there is a lot of convenient linear algebra that can be done with Cholesky factors of covariance matrices $\mathbf{L}$ or of correlation matrices $\mathbf{L_{corr}}$
+  - For example, 
+$$
+\mathbf{L}=\left(\begin{array}{cc}
+\sigma_{\beta_{0}} & 0 \\
+0 & \sigma_{\beta_{1}}
+\end{array}\right) \mathbf{L_{corr}}
+$$
+
+- See this [link](https://mlisi.xyz/post/simulating-correlated-variables-with-the-cholesky-factorization/) for a useful review
+
+## Cholesky factors
+
+```{R echo = T, eval = T}
+# create a correlation matrix and declare sigmas
+OMEGA <- matrix(c(1, 0.7, 0.7, 1), nrow = 2)
+sigmas <- c(1, 2) # sd_b0, sd_b1
+
+OMEGA
+sigmas
+
+# note also
+diag(sigmas) # diagonal matrix 
+
+```
+
+
+## Cholesky factors
+
+```{R echo = T, eval = T}
+
+# calculate covariance matrix:
+SIGMA <- diag(sigmas) %*% OMEGA %*% diag(sigmas)
+SIGMA
+```
+
+## Cholesky factors
+
+```{R echo = T, eval = T}
+# convert Cholesky factor of correlation matrix to covariance Cholesky factor 
+L_corr <- t(chol(OMEGA)) # note chol() returns upper triangular matrix
+diag(sigmas) %*% L_corr
+
+t(chol(SIGMA)) # L of SIGMA
+
+```
+
+## Cholesky factors
+
+```{R echo = T, eval = T}
+# Cholesky factor of correlation matrix to 
+# covariance matrix Cholesky factor:
+L_corr <- t(chol(OMEGA)) # note chol() returns upper tri
+Lambda <- diag(sigmas) %*% L_corr
+
+t(chol(SIGMA)) # L of SIGMA
+Lambda
+```
+
+## Cholesky factors
+
+```{R echo = T, eval = T}
+# generate random values with desired covariance
+Z <- rbind(rnorm(1e4),rnorm(1e4))
+X <- Lambda %*% Z
+par(mfrow=c(1,2))
+plot(Z[1,]~Z[2,], main = "uncorrelated deviates", col = "firebrick")
+plot(X[1,]~X[2,], main = "correlated deviates", col = "firebrick")
+```
+
+## A problem
+
+::: {style="font-size:31px"}
+
+- People want to know the extent to which juvenile walleye growth rate is density dependent
+  - Has implications for both basic ecology and management 
+- DNR Biologists go to a collection of lakes and measure length of age-0 walleye in fall as a proxy of juvenile growth rate
+- Each year, the biologists attempt to go to 30 lakes in total (weather pending)
+  - They also conduct surveys to get an estimate of juvenile density
+- Let's simulate some fake data representing this problem, and then build some Stan models to recover
+- go to the `varying_effects.r` script 
+
+:::
+
+[see also Cahill et al. 2020]{.footerRight}
+
+## Hyperpriors for varying effects model 
+
+::: {style="font-size:31px"}
+
+$$
+\begin{array}{l}\begin{aligned}\beta_{0} & \sim \operatorname{Normal}(0,25) & \text { [prior for average intercept] }\\
+\beta_{1} & \sim \operatorname{Normal}(0,25) & \text { [prior for average slope] } \\
+\sigma & \sim \operatorname{Exponential}(0.01) &  \text { [prior for stddev within group] }\\
+\sigma_{\beta_{0}} & \sim \operatorname{Exponential}(0.01) & \text{[prior stddev among intercepts]}\\
+\sigma_{\beta_{1}} & \sim \operatorname{Exponential}(0.01) & \text{[prior stddev among intercepts]}\\
+\mathbf{\Omega} & \sim \operatorname{LKJ} \operatorname{corr}(2) & \text{[prior for correlation matrix]} \end{aligned}\\
+\end{array}
+$$
+
+- $\operatorname{LKJ} \operatorname{corr}(2)$ defines a weakly informative prior on $\rho$ that is skeptical of extreme correlations near -1 or 1 
+
+:::
+
+[adapted from McElreath 2023]{.footerRight}
+
+## Visualizing the LKJcorr prior
+
+- $\operatorname{LKJ} \operatorname{corr}(1)$ 
+
+```{R echo = F, eval = T}
+
+R <- rethinking::rlkjcorr(1e5, K = 2, eta = 1) # try eta = 1, 2, 4, 10
+rethinking::dens(R[, 1, 2], xlab = "correlation")
+```
+
+## Visualizing the LKJcorr prior
+
+- $\operatorname{LKJ} \operatorname{corr}(2)$ 
+
+```{R echo = F, eval = T}
+
+R <- rethinking::rlkjcorr(1e5, K = 2, eta = 2) # try eta = 1, 2, 4, 10
+rethinking::dens(R[, 1, 2], xlab = "correlation")
+
+```
+
+## Visualizing the LKJcorr prior
+
+- $\operatorname{LKJ} \operatorname{corr}(4)$ 
+
+```{R echo = F, eval = T}
+
+R <- rethinking::rlkjcorr(1e5, K = 2, eta = 4) # try eta = 1, 2, 4, 10
+rethinking::dens(R[, 1, 2], xlab = "correlation")
+
+```
+
+## Visualizing the LKJcorr prior
+
+- $\operatorname{LKJ} \operatorname{corr}(10)$ 
+
+```{R echo = F, eval = T}
+
+R <- rethinking::rlkjcorr(1e5, K = 2, eta = 10) # try eta = 1, 2, 4, 10
+rethinking::dens(R[, 1, 2], xlab = "correlation")
+
+```
+
+## Wrap up 
+
+- Introduced a powerful extension to mixed effects models: varying effects
+- Went through a bunch of math to show how to play with multivariate normal distributions 
+- Simulated an example, conducted prior predictive checks, estimated the model
+- Showed a non-centered version of this model as well
+- Up next, spatial random effects
 
 # References
 
-McElreath 2023. Statistical Rethinking
+::: {style="font-size:31px"}
+
+Cahill et al. 2020.  A spatial-temporal approach to modeling somatic growth across inland fisheries landscapes.  CJFAS.
+
+Gelman, A. and J. Hill. 2007. Data analysis using regression and multilevel/hierarchical models
+
+McElreath 2023. Statistical Rethinking.
+
+Simpson's paradox Wikipedia: <https://en.wikipedia.org/wiki/Simpson%27s_paradox>
+
+[https://mlisi.xyz/post/simulating-correlated-variables-with-the-cholesky-factorization/](https://mlisi.xyz/post/simulating-correlated-variables-with-the-cholesky-factorization/)
+
+:::

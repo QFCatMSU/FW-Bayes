@@ -9,14 +9,14 @@ library(cmdstanr)
 library(rethinking)
 
 # -----------------------
-# Playing with multivariate distributions
+# adventures in covariance
 
 sigma_b0 <- 1
 sigma_b1 <- 0.5
 rho <- (-0.4)
 cov_b0_b1 <- sigma_b0 * sigma_b1 * rho
 
-# one way to generate the covariance matrix:
+# one way to generate the covariance matrix - note this is not the way in presentation 
 SIGMA1 <- matrix(c(sigma_b0^2, cov_b0_b1, cov_b0_b1, sigma_b1^2), ncol = 2)
 
 sigmas <- c(sigma_b0, sigma_b1) # standard deviations
@@ -24,10 +24,21 @@ rho_mat <- matrix(c(1, rho, rho, 1), nrow = 2) # correlation matrix
 
 # another way matrix multiply to get covariance matrix
 SIGMA2 <- diag(sigmas) %*% rho_mat %*% diag(sigmas)
+# diag(sigmas) %*% L --> diag_pre_multiply() in stan
 
 # show that the two versions equal each other
 SIGMA1 == SIGMA2
 
+# playing with Cholesky decompositions
+
+U <- chol(SIGMA1)    # upper triangular matrix
+L <- t(chol(SIGMA1)) # lower triangular matrix
+L %*% t(L)           # recover SIGMA1 as L*L^T
+
+# thinking about pre_diag_multiply
+# diag(sigmas) %*% t(chol(rho_mat))
+# SIGMA <- diag(sigmas) %*% rho_mat %*% diag(sigmas)
+# t(chol(SIGMA))
 #----------------------------------
 # Let's create a varying effects simulation
 
