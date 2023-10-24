@@ -51,5 +51,5 @@ model {
 }
 generated quantities {
   matrix[2, 2] OMEGA;                                // Correlation Matrix 
-  OMEGA = multiply_lower_tri_self_transpose(L_corr); // L*L^T 
+  OMEGA = multiply_lower_tri_self_transpose(L_corr); // L_corr*L_corr^T 
 }
