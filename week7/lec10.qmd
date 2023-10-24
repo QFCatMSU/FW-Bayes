@@ -560,6 +560,10 @@ rethinking::dens(R[, 1, 2], xlab = "correlation")
 
 ```
 
+## Why go through all of that 
+
+![](images/why.jpg)
+
 ## Wrap up 
 
 - Introduced a powerful extension to mixed effects models: varying effects
