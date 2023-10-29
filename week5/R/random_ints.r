@@ -79,7 +79,7 @@ p <- mcmc_trace(posterior, pars = c("mu_alpha", "b1", "sd_obs"), np = np) +
 p
 
 # chains for stuff associated with random effects 
-p <- mcmc_trace(posterior,  regex_pars = c("alpha_pop", "b1", "sd_obs", "sd_alpha"),
+p <- mcmc_trace(posterior,  regex_pars = c("alpha_j", "b1", "sd_obs", "sd_alpha"),
                 np = np) +
   theme_qfc()
 p

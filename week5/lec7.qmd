@@ -288,10 +288,6 @@ parameters {
 ::: {style="font-size: 85%;"}
 ```{javascript eval = F, echo = T}
 //... see code on previous slide 
-transformed parameters {
-  vector[3] alpha_pop; 
-  alpha_pop = mu_alpha + alpha_j; // group int is global int + random effect
-}
 model {
   vector[n] w_preds; 
   mu_alpha ~ normal(50, 15);             // hyper prior
@@ -300,7 +296,7 @@ model {
   b1 ~ normal(0, 10);                    // slope 
   sd_obs ~ normal(0, 25);                // likelihood error term 
   for(i in 1:n){
-    w_preds[i] = alpha_pop[population[i]] + b1*lengths[i];
+    w_preds[i] = alpha_j[population[i]] + b1*lengths[i];
   }
   weights ~ normal(w_preds, sd_obs);     // likelihood 
 }
@@ -361,7 +357,7 @@ fit$cmdstan_diagnose()
 ## Pluck out the posterior summaries and compare to `lmer()`
 
 ```{R echo = T, eval = T}
-fit$summary("alpha_pop")                    # Bayesian 
+fit$summary("alpha_j")                    # Bayesian 
 coef(fit_partial)$`my_df$population`[,1]    # frequentist 
 
 ```
