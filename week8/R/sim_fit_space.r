@@ -6,7 +6,7 @@ library(bayesplot)
 library(tidybayes)
 
 set.seed(17)
-n_site <- 100 # number of sampling locations 
+n_site <- 200 # number of sampling locations 
 # simulate random x,y site locations:
 g <- data.frame(
   easting = runif(n_site, 0, 10),
@@ -91,7 +91,7 @@ p1 <- out %>%
   geom_point(size = out$my_cex, shape = out$my_pch) +
   ylab("northing (km)") + xlab("easting (km)") + 
   ggtitle("detecting dependency via \nresiduals plotted in space")
-
+p1 
 #--------------------------------------------------------------------
 
 # compile the estimation model
@@ -104,7 +104,7 @@ stan_data <-
     site = site_id,
     y = y,
     dist_sites = dist_sites,
-    prior_gp_theta = c(0, 5),
+    prior_gp_theta = c(0, 2.5),
     prior_gp_sigma = c(0.5),
     prior_intercept = c(0, 10),
     prior_sd_obs = 0.5
@@ -130,25 +130,10 @@ fit <- mod$sample(
   iter_sampling = 1000, 
   step_size = 0.01
 )
+# saveRDS(fit, "week8/data/fit.rds")
+fit <- readRDS("week8/data/fit.rds")
 
 fit$cmdstan_diagnose()
-
-post <-
-  summarise_draws(fit, ~ quantile(.x, probs = c(0.5))) %>%
-  filter(grepl("resid", variable))
-
-out$E1 <- post$`50%`
-out$my_cex1 <- 3 * abs(out$E1) / max(out$E1) + 0.75
-out$sign1 <- as.numeric(out$E1 >=0) + 1
-out$my_pch1 <- c(1, 16)[out$sign1]
-
-p2 <- out %>%
-  ggplot(aes(x = easting, y = northing)) +
-  geom_point(size = out$my_cex1, shape = out$my_pch1) +
-  ylab("northing (km)") + xlab("easting (km)") + 
-  ggtitle("detecting dependency via \nresiduals plotted in space")
-
-cowplot::plot_grid(p1, p2, ncol = 2)
 
 # The main difference - error around intercept 
 # frequentist 

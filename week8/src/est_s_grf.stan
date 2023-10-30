@@ -44,7 +44,3 @@ model {
   // likelihood 
   y ~ normal(y_hat, sd_obs);
 }
-generated quantities{
-  vector[n] resid; 
-  resid = y - y_hat; 
-}

@@ -30,6 +30,73 @@
       margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
       vertical-align: middle;
     }
+    /* CSS for syntax highlighting */
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        background-color: #ffffff;
+        color: #a0a0a0;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #a0a0a0;  padding-left: 4px; }
+    div.sourceCode
+      { color: #1f1c1b; background-color: #ffffff; }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span { color: #1f1c1b; } /* Normal */
+    code span.al { color: #bf0303; background-color: #f7e6e6; font-weight: bold; } /* Alert */
+    code span.an { color: #ca60ca; } /* Annotation */
+    code span.at { color: #0057ae; } /* Attribute */
+    code span.bn { color: #b08000; } /* BaseN */
+    code span.bu { color: #644a9b; font-weight: bold; } /* BuiltIn */
+    code span.cf { color: #1f1c1b; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #924c9d; } /* Char */
+    code span.cn { color: #aa5500; } /* Constant */
+    code span.co { color: #898887; } /* Comment */
+    code span.cv { color: #0095ff; } /* CommentVar */
+    code span.do { color: #607880; } /* Documentation */
+    code span.dt { color: #0057ae; } /* DataType */
+    code span.dv { color: #b08000; } /* DecVal */
+    code span.er { color: #bf0303; text-decoration: underline; } /* Error */
+    code span.ex { color: #0095ff; font-weight: bold; } /* Extension */
+    code span.fl { color: #b08000; } /* Float */
+    code span.fu { color: #644a9b; } /* Function */
+    code span.im { color: #ff5500; } /* Import */
+    code span.in { color: #b08000; } /* Information */
+    code span.kw { color: #1f1c1b; font-weight: bold; } /* Keyword */
+    code span.op { color: #1f1c1b; } /* Operator */
+    code span.ot { color: #006e28; } /* Other */
+    code span.pp { color: #006e28; } /* Preprocessor */
+    code span.re { color: #0057ae; background-color: #e0e9f8; } /* RegionMarker */
+    code span.sc { color: #3daee9; } /* SpecialChar */
+    code span.ss { color: #ff5500; } /* SpecialString */
+    code span.st { color: #bf0303; } /* String */
+    code span.va { color: #0057ae; } /* Variable */
+    code span.vs { color: #bf0303; } /* VerbatimString */
+    code span.wa { color: #bf0303; } /* Warning */
   </style>
   <link rel="stylesheet" href="lec11_files/libs/revealjs/dist/theme/quarto.css">
   <link rel="stylesheet" href="https://qfcatmsu.github.io/css/presStyle.css">
@@ -344,8 +411,360 @@ Christopher Cahill
 <section id="purpose" class="slide level2">
 <h2>Purpose</h2>
 <ul>
+<li>Background</li>
 <li>Recognizing dependency in simple models</li>
-<li></li>
+<li>How can we deal with dependency problems
+<ul>
+<li>Introduction to spatial random effects</li>
+</ul></li>
+</ul>
+</section>
+<section id="why-do-we-care-about-space" class="slide level2">
+<h2>Why do we care about space</h2>
+<ul>
+<li>Most of our problems in ecology and mgmt are inherently spatial</li>
+</ul>
+
+<img data-src="images/space.png" class="r-stretch"><p><span class="footerRight">Tillman et al.&nbsp;1994</span></p>
+</section>
+<section id="nearby-things-tend-to-be-more-alike" class="slide level2">
+<h2>Nearby things tend to be more alike</h2>
+
+<img data-src="images/radar.png" class="r-stretch"><p><span class="footerRight">Paraphrased from Fisher 1935 and Tobler 1970</span></p>
+<p><span class="footerLeft">Photo credit: accuweather.com</span></p>
+</section>
+<section id="however" class="slide level2">
+<h2>However…</h2>
+<ul>
+<li>It is really hard to estimate spatial (or spatial-temporal) dynamics in most statistical models</li>
+</ul>
+
+<img data-src="images/pain.jpg" class="r-stretch"><p><span class="footerRight">Cressie and Wikle 2010</span></p>
+</section>
+<section id="spatial-dependency-poses-issues-for-traditional-experimental-design" class="slide level2">
+<h2>Spatial dependency poses issues for traditional experimental design</h2>
+
+<img data-src="images/fisher.png" class="r-stretch"><p><span class="footerRight">Sir Ronald Fisher</span></p>
+</section>
+<section id="spatial-dependency-poses-issues-for-traditional-experimental-design-1" class="slide level2">
+<h2>Spatial dependency poses issues for traditional experimental design</h2>
+<ul>
+<li>Statistical theory of experimental designs (Fisher 1935)</li>
+</ul>
+<p><span class="footerRight">Paraphrased from Fisher 1935</span></p>
+</section>
+<section id="spatial-dependency-poses-issues-for-traditional-experimental-design-2" class="slide level2">
+<h2>Spatial dependency poses issues for traditional experimental design</h2>
+<ul>
+<li>Statistical theory of experimental designs (Fisher 1935)
+<ul>
+<li><em>After choosing the area we usually have no guidance beyond the widely verified fact that patches in close proximity are commonly more alike…than those which are further apart</em></li>
+</ul></li>
+</ul>
+<p><span class="footerRight">Paraphrased from Fisher 1935</span></p>
+</section>
+<section id="spatial-dependency-poses-issues-for-traditional-experimental-design-3" class="slide level2">
+<h2>Spatial dependency poses issues for traditional experimental design</h2>
+<ul>
+<li>Statistical theory of experimental designs (Fisher 1935)
+<ul>
+<li><em>After choosing the area we usually have no guidance beyond the widely verified fact that patches in close proximity are commonly more alike…than those which are further apart</em></li>
+</ul></li>
+<li>Fisher avoided space with the introduction of randomization into the scientific method</li>
+</ul>
+<p><span class="footerRight">Paraphrased from Fisher 1935</span></p>
+</section>
+<section id="spatial-dependency-poses-issues-for-traditional-experimental-design-4" class="slide level2">
+<h2>Spatial dependency poses issues for traditional experimental design</h2>
+<ul>
+<li>Statistical theory of experimental designs (Fisher 1935)
+<ul>
+<li><em>After choosing the area we usually have no guidance beyond the widely verified fact that patches in close proximity are commonly more alike…than those which are further apart</em></li>
+</ul></li>
+<li>Fisher avoided space with the introduction of randomization into the scientific method</li>
+<li>We have hustled spatial dependence to the back door</li>
+</ul>
+<p><span class="footerRight">Paraphrased from Fisher 1935</span></p>
+</section>
+<section id="spatial-dependency-poses-issues-for-traditional-experimental-design-5" class="slide level2">
+<h2>Spatial dependency poses issues for traditional experimental design</h2>
+<ul>
+<li>Statistical theory of experimental designs (Fisher 1935)
+<ul>
+<li><em>After choosing the area we usually have no guidance beyond the widely verified fact that patches in close proximity are commonly more alike…than those which are further apart</em></li>
+</ul></li>
+<li>Fisher avoided space with the introduction of randomization into the scientific method</li>
+<li>We have hustled spatial dependence to the back door
+<ul>
+<li>Not rejecting this paradigm of experimental inference</li>
+</ul></li>
+</ul>
+<p><span class="footerRight">Paraphrased from Fisher 1935</span></p>
+</section>
+<section id="observational-data-represent-the-wilder-side-of-science-and-statistical-inference" class="slide level2">
+<h2>Observational data represent the wilder side of science and statistical inference</h2>
+
+<img data-src="images/alice.png" class="r-stretch"></section>
+<section id="observational-data-represent-the-wilder-side-of-science-and-statistical-inference-1" class="slide level2">
+<h2>Observational data represent the wilder side of science and statistical inference</h2>
+<ul>
+<li>Great potential for biased inference</li>
+</ul>
+<p><span class="footerRight">sensu Walters 1986; Cressie and Wikle 2010</span></p>
+</section>
+<section id="observational-data-represent-the-wilder-side-of-science-and-statistical-inference-2" class="slide level2">
+<h2>Observational data represent the wilder side of science and statistical inference</h2>
+<ul>
+<li>Great potential for biased inference
+<ul>
+<li>Wrong operating model</li>
+<li>Unmeasured yet influential covariates</li>
+<li>Lack of replication or randomization</li>
+</ul></li>
+</ul>
+<p><span class="footerRight">sensu Walters 1986; Cressie and Wikle 2010</span></p>
+</section>
+<section id="observational-data-represent-the-wilder-side-of-science-and-statistical-inference-3" class="slide level2">
+<h2>Observational data represent the wilder side of science and statistical inference</h2>
+<ul>
+<li>Great potential for biased inference
+<ul>
+<li>Wrong operating model</li>
+<li>Unmeasured yet influential covariates</li>
+<li>Lack of replication or randomization</li>
+</ul></li>
+<li>Causal inference more challenging than in controlled experiments</li>
+</ul>
+<p><span class="footerRight">sensu Walters 1986; Cressie and Wikle 2010</span></p>
+</section>
+<section id="observational-data-represent-the-wilder-side-of-science-and-statistical-inference-4" class="slide level2">
+<h2>Observational data represent the wilder side of science and statistical inference</h2>
+<ul>
+<li>Great potential for biased inference
+<ul>
+<li>Wrong operating model</li>
+<li>Unmeasured yet influential covariates</li>
+<li>Lack of replication or randomization</li>
+</ul></li>
+<li>Causal inference more challenging than in controlled experiments</li>
+<li>Notions of space and time even more relevant?</li>
+</ul>
+<p><span class="footerRight">sensu Walters 1986; Cressie and Wikle 2010</span></p>
+</section>
+<section id="observational-data-represent-the-wilder-side-of-science-and-statistical-inference-5" class="slide level2">
+<h2>Observational data represent the wilder side of science and statistical inference</h2>
+<ul>
+<li>Great potential for biased inference
+<ul>
+<li>Wrong operating model</li>
+<li>Unmeasured yet influential covariates</li>
+<li>Lack of replication or randomization</li>
+</ul></li>
+<li>Causal inference more challenging than in controlled experiments</li>
+<li>Notions of space and time even more relevant?</li>
+<li>This is most of our data!</li>
+</ul>
+<p><span class="footerRight">sensu Walters 1986; Cressie and Wikle 2010</span></p>
+</section>
+<section id="observational-data-represent-the-wilder-side-of-science-and-statistical-inference-6" class="slide level2">
+<h2>Observational data represent the wilder side of science and statistical inference</h2>
+
+<img data-src="images/alice.png" class="r-stretch"></section>
+<section id="hierarchical-modeling-as-a-powerful-tool-for-ecological-inference" class="slide level2">
+<h2>Hierarchical modeling as a powerful tool for ecological inference</h2>
+<ul>
+<li>Unifying field of statistics</li>
+<li>Many technical benefits</li>
+<li>Helps deal with dependency
+<ul>
+<li>i.e., Hurlburt’s pseudoreplication</li>
+</ul></li>
+<li>So we are going to use these to address the spatial dependency issue</li>
+</ul>
+<p><span class="footerRight">Hurlburt 1984; Royle and Dorazio 2008</span></p>
+</section>
+<section>
+<section id="recognizing-dependency-in-statistical-models" class="title-slide slide level1 center">
+<h1>Recognizing dependency in statistical models</h1>
+
+</section>
+<section id="what-do-we-look-for-when-checking-statistical-models" class="slide level2">
+<h2>What do we look for when checking statistical models?</h2>
+<ul>
+<li>Zuur and Ieno 2016 offered a 10 step approach</li>
+</ul>
+</section>
+<section id="protocol-for-presenting-regression-type-analyses" class="slide level2">
+<h2>Protocol for presenting regression-type analyses</h2>
+<ol type="1">
+<li>State appropriate questions</li>
+<li>Visualize the experimental design</li>
+<li>Conduct data exploration</li>
+<li>Identify the dependency structure in the data</li>
+<li>Present a statistical model</li>
+<li>Fit said model</li>
+<li>“validate” the model</li>
+<li>Interpret and present output</li>
+<li>Model visualizations</li>
+<li>Simulate from the model</li>
+</ol>
+<p><span class="footerRight">Zuur and Ieno 2016</span></p>
+</section>
+<section id="the-take-home-point-from-zuur-and-ieno" class="slide level2">
+<h2>The take home point from Zuur and Ieno</h2>
+<p><br></p>
+<p>“<em>Before starting the analysis carefully consider which observations for your response variable can be dependent. If dependency is present, apply a statistical technique that is able to cope with it</em>”</p>
+<p><span class="footerRight">Zuur et al.&nbsp;2017</span></p>
+</section>
+<section id="thinking-about-dependency" class="slide level2">
+<h2>Thinking about dependency</h2>
+<ul>
+<li>Suppose samples are collected by different laboratories
+<ul>
+<li>Perhaps due to differences in techniques or scientists themselves among laboratories, we likely have among-lab dependency</li>
+</ul></li>
+</ul>
+<p><span class="footerRight">Zuur et al.&nbsp;2017</span></p>
+</section>
+<section id="thinking-about-dependency-1" class="slide level2">
+<h2>Thinking about dependency</h2>
+<ul>
+<li>Suppose related species are analyzed together in one analysis
+<ul>
+<li>Perhaps due to similarities between the species we have among-species dependency</li>
+</ul></li>
+</ul>
+<p><span class="footerRight">Zuur et al.&nbsp;2017</span></p>
+</section>
+<section id="thinking-about-dependency-2" class="slide level2">
+<h2>Thinking about dependency</h2>
+<ul>
+<li>Suppose we take repeated measurements on individual rats
+<ul>
+<li>Perhaps due to individual differences among rats, the data scientists collect from one rat is more likely to be similar to other data from collected from that rat</li>
+</ul></li>
+</ul>
+<p><span class="footerRight">Zuur et al.&nbsp;2017</span></p>
+</section>
+<section id="what-dependency-is-not" class="slide level2">
+<h2>What dependency is not</h2>
+<ul>
+<li>Two sites have high bird counts, and they weren’t sampled by the same person or lab</li>
+<li>However, both sites have a low cover measurement, which is the cause of the high bird counts</li>
+</ul>
+
+<img data-src="images/jay.jpg" class="r-stretch"><p><span class="footerRight">Zuur et al.&nbsp;2017</span></p>
+</section>
+<section id="visualize-experimental-design-spatial-dependency" class="slide level2">
+<h2>Visualize experimental design: spatial dependency</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-2"><a href="#cb1-2"></a><span class="fu">library</span>(ggqfc)</span>
+<span id="cb1-3"><a href="#cb1-3"></a>data <span class="ot">&lt;-</span> <span class="fu">read.table</span>(<span class="at">file =</span> <span class="st">"data/ph_dat.txt"</span>, <span class="at">header =</span> <span class="cn">TRUE</span>, <span class="at">dec =</span> <span class="st">"."</span>)</span>
+<span id="cb1-4"><a href="#cb1-4"></a>data <span class="sc">%&gt;%</span></span>
+<span id="cb1-5"><a href="#cb1-5"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> Easting, <span class="at">y =</span> Northing)) <span class="sc">+</span></span>
+<span id="cb1-6"><a href="#cb1-6"></a>  <span class="fu">geom_point</span>(<span class="at">shape =</span> <span class="dv">16</span>) <span class="sc">+</span> <span class="fu">theme_qfc</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><span class="footerRight">Zuur et al.&nbsp;2017</span></p>
+</section>
+<section id="visualize-experimental-design-spatial-dependency-1" class="slide level2">
+<h2>Visualize experimental design: spatial dependency</h2>
+
+<img data-src="lec11_files/figure-revealjs/unnamed-chunk-2-1.png" width="960" class="r-stretch"><p><span class="footerRight">Zuur et al.&nbsp;2017</span></p>
+</section>
+<section id="running-an-analysis" class="slide level2">
+<h2>Running an analysis</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a>data<span class="sc">$</span>fForested <span class="ot">&lt;-</span> <span class="fu">factor</span>(data<span class="sc">$</span>Forested,</span>
+<span id="cb2-2"><a href="#cb2-2"></a>                        <span class="at">levels =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>),</span>
+<span id="cb2-3"><a href="#cb2-3"></a>                        <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"Yes"</span>, <span class="st">"No"</span>))</span>
+<span id="cb2-4"><a href="#cb2-4"></a>data<span class="sc">$</span>LOGAltitude <span class="ot">&lt;-</span> <span class="fu">log10</span>(data<span class="sc">$</span>Altitude)</span>
+<span id="cb2-5"><a href="#cb2-5"></a></span>
+<span id="cb2-6"><a href="#cb2-6"></a><span class="co"># Model selected using some stepwise AIC approach</span></span>
+<span id="cb2-7"><a href="#cb2-7"></a>fit <span class="ot">&lt;-</span> <span class="fu">lm</span>(pH <span class="sc">~</span> LOGAltitude <span class="sc">+</span> SDI <span class="sc">+</span> fForested <span class="sc">+</span> LOGAltitude<span class="sc">:</span>fForested, </span>
+<span id="cb2-8"><a href="#cb2-8"></a>          <span class="at">data =</span> data)</span>
+<span id="cb2-9"><a href="#cb2-9"></a>E3 <span class="ot">&lt;-</span> <span class="fu">resid</span>(fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><span class="footerRight">Zuur et al.&nbsp;2017</span></p>
+</section>
+<section id="validating-the-model" class="slide level2">
+<h2>Validating the model</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="fu">plot</span>(<span class="at">x =</span> <span class="fu">fitted</span>(fit), <span class="at">y =</span> E3)</span>
+<span id="cb3-2"><a href="#cb3-2"></a><span class="fu">abline</span>(<span class="at">h =</span> <span class="dv">0</span>, <span class="at">v =</span> <span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<img data-src="lec11_files/figure-revealjs/unnamed-chunk-4-1.png" width="960" class="r-stretch"><p><span class="footerRight">Zuur et al.&nbsp;2017</span></p>
+</section>
+<section id="validating-the-model-1" class="slide level2">
+<h2>Validating the model</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a><span class="fu">hist</span>(E3)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<img data-src="lec11_files/figure-revealjs/unnamed-chunk-5-1.png" width="960" class="r-stretch"><p><span class="footerRight">Zuur et al.&nbsp;2017</span></p>
+</section>
+<section id="validating-the-model-2" class="slide level2">
+<h2>Validating the model</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a><span class="co"># Independence due to model misfit</span></span>
+<span id="cb5-2"><a href="#cb5-2"></a><span class="fu">plot</span>(<span class="at">x =</span> data<span class="sc">$</span>SDI, <span class="at">y =</span> E3) <span class="co"># residuals vs. predictors </span></span>
+<span id="cb5-3"><a href="#cb5-3"></a><span class="fu">abline</span>(<span class="at">h =</span> <span class="dv">0</span>, <span class="at">v =</span> <span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<img data-src="lec11_files/figure-revealjs/unnamed-chunk-6-1.png" width="960" class="r-stretch"><p><span class="footerRight">Zuur et al.&nbsp;2017</span></p>
+</section>
+<section id="validating-the-model-3" class="slide level2">
+<h2>Validating the model</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a><span class="co"># Independence due to model misfit</span></span>
+<span id="cb6-2"><a href="#cb6-2"></a><span class="fu">plot</span>(<span class="at">x =</span> data<span class="sc">$</span>LOGAltitude, <span class="at">y =</span> E3) <span class="co"># residuals vs. predictors </span></span>
+<span id="cb6-3"><a href="#cb6-3"></a><span class="fu">abline</span>(<span class="at">h =</span> <span class="dv">0</span>, <span class="at">v =</span> <span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<img data-src="lec11_files/figure-revealjs/unnamed-chunk-7-1.png" width="960" class="r-stretch"><p><span class="footerRight">Zuur et al.&nbsp;2017</span></p>
+</section>
+<section id="can-we-find-spatial-patterns" class="slide level2">
+<h2>Can we find spatial patterns?</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a><span class="co"># Can we find spatial patterns in the residuals?</span></span>
+<span id="cb7-2"><a href="#cb7-2"></a>data<span class="sc">$</span>E3 <span class="ot">&lt;-</span> <span class="fu">resid</span>(fit)</span>
+<span id="cb7-3"><a href="#cb7-3"></a>data<span class="sc">$</span>my_cex <span class="ot">&lt;-</span> <span class="dv">3</span> <span class="sc">*</span> <span class="fu">abs</span>(data<span class="sc">$</span>E3) <span class="sc">/</span> <span class="fu">max</span>(data<span class="sc">$</span>E3) <span class="sc">+</span> <span class="fl">0.75</span></span>
+<span id="cb7-4"><a href="#cb7-4"></a>data<span class="sc">$</span>sign <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(data<span class="sc">$</span>E3 <span class="sc">&gt;=</span><span class="dv">0</span>) <span class="sc">+</span> <span class="dv">1</span></span>
+<span id="cb7-5"><a href="#cb7-5"></a>data<span class="sc">$</span>my_pch <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">16</span>)[data<span class="sc">$</span>sign]</span>
+<span id="cb7-6"><a href="#cb7-6"></a></span>
+<span id="cb7-7"><a href="#cb7-7"></a><span class="co"># Convert Easting / Northing to km</span></span>
+<span id="cb7-8"><a href="#cb7-8"></a>data<span class="sc">$</span>easting_km <span class="ot">&lt;-</span> data<span class="sc">$</span>Easting<span class="sc">/</span><span class="dv">1000</span></span>
+<span id="cb7-9"><a href="#cb7-9"></a>data<span class="sc">$</span>northing_km <span class="ot">&lt;-</span> data<span class="sc">$</span>Northing<span class="sc">/</span><span class="dv">1000</span></span>
+<span id="cb7-10"><a href="#cb7-10"></a></span>
+<span id="cb7-11"><a href="#cb7-11"></a>data <span class="sc">%&gt;%</span></span>
+<span id="cb7-12"><a href="#cb7-12"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> easting_km, <span class="at">y =</span> northing_km)) <span class="sc">+</span></span>
+<span id="cb7-13"><a href="#cb7-13"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> data<span class="sc">$</span>my_cex, <span class="at">shape =</span> data<span class="sc">$</span>my_pch) <span class="sc">+</span></span>
+<span id="cb7-14"><a href="#cb7-14"></a>  <span class="fu">ylab</span>(<span class="st">"northing (km)"</span>) <span class="sc">+</span> <span class="fu">xlab</span>(<span class="st">"easting (km)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><span class="footerRight">Zuur et al.&nbsp;2017</span></p>
+</section>
+<section id="can-we-find-spatial-patterns-1" class="slide level2">
+<h2>Can we find spatial patterns?</h2>
+
+<img data-src="lec11_files/figure-revealjs/unnamed-chunk-9-1.png" width="960" class="r-stretch"><p><span class="footerRight">Zuur et al.&nbsp;2017</span></p>
+</section></section>
+<section id="introduction-to-spatial-random-effects" class="title-slide slide level1 center">
+<h1>Introduction to spatial random effects</h1>
+
+</section>
+
+<section id="references" class="title-slide slide level1 center">
+<h1>References</h1>
+<ul>
+<li><p>Cressie and Wikle 2010. Spatio-temporal Statistics.</p></li>
+<li><p>Fischer 1935</p></li>
+<li><p>Tillman et al.&nbsp;1994. Space: The final frontier for ecological theory. Ecology.</p></li>
+<li><p>Royle and Dorazio 2008. Hierarchical modeling and inference in ecology</p></li>
+<li><p>Tobler 1970.</p></li>
+<li><p>Walters 1986. Adaptive Management.</p></li>
+<li><p>Zuur and Ieno 2016. A protocol for conducting and presenting results of regression-type analyses. Methods in Ecology and Evolution. 7: 636–664.</p></li>
+<li><p>Zuur, A.F., Ieno, E.N., and Saveliev, A.A. 2017. Spatial, temporal and spatial–temporal ecological data analysis with R-INLA. Highland Statistics Ltd.</p></li>
 </ul>
 <div class="footer footer-default">
 
@@ -561,6 +980,44 @@ Christopher Cahill
         ]
       });
     </script>
+    
+    <script>
+      // htmlwidgets need to know to resize themselves when slides are shown/hidden.
+      // Fire the "slideenter" event (handled by htmlwidgets.js) when the current
+      // slide changes (different for each slide format).
+      (function () {
+        // dispatch for htmlwidgets
+        function fireSlideEnter() {
+          const event = window.document.createEvent("Event");
+          event.initEvent("slideenter", true, true);
+          window.document.dispatchEvent(event);
+        }
+
+        function fireSlideChanged(previousSlide, currentSlide) {
+          fireSlideEnter();
+
+          // dispatch for shiny
+          if (window.jQuery) {
+            if (previousSlide) {
+              window.jQuery(previousSlide).trigger("hidden");
+            }
+            if (currentSlide) {
+              window.jQuery(currentSlide).trigger("shown");
+            }
+          }
+        }
+
+        // hookup for slidy
+        if (window.w3c_slidy) {
+          window.w3c_slidy.add_observer(function (slide_num) {
+            // slide_num starts at position 1
+            fireSlideChanged(null, w3c_slidy.slides[slide_num - 1]);
+          });
+        }
+
+      })();
+    </script>
+
     <script id="quarto-html-after-body" type="application/javascript">
     window.document.addEventListener("DOMContentLoaded", function (event) {
       const toggleBodyColorMode = (bsSheetEl) => {

@@ -19,6 +19,369 @@ highlight-style: kate
 
 ## Purpose
 
-- Why do we care
+- Background
 - Recognizing dependency in simple models
-- 
+- How can we deal with dependency problems 
+    - Introduction to spatial random effects
+
+## Why do we care about space 
+
+- Most of our problems in ecology and mgmt are inherently spatial
+
+![](images/space.png)
+
+[Tillman et al. 1994]{.footerRight}
+
+## Nearby things tend to be more alike
+
+![](images/radar.png)
+
+
+[Paraphrased from Fisher 1935 and Tobler 1970
+]{.footerRight}
+
+[Photo credit: accuweather.com
+]{.footerLeft}
+
+## However...
+
+- It is really hard to estimate spatial (or spatial-temporal) dynamics in most statistical models
+
+![](images/pain.jpg)
+
+[Cressie and Wikle 2010]{.footerRight}
+
+## Spatial dependency poses issues for traditional experimental design 
+
+![](images/fisher.png)
+
+[Sir Ronald Fisher]{.footerRight}
+
+## Spatial dependency poses issues for traditional experimental design 
+
+- Statistical theory of experimental designs (Fisher 1935)
+
+[Paraphrased from Fisher 1935]{.footerRight}
+
+## Spatial dependency poses issues for traditional experimental design 
+
+- Statistical theory of experimental designs (Fisher 1935)
+    - *After choosing the area we usually have no guidance   beyond the widely verified fact that patches in close proximity are commonly more alike…than those which are further apart*
+
+[Paraphrased from Fisher 1935]{.footerRight}
+
+## Spatial dependency poses issues for traditional experimental design 
+
+- Statistical theory of experimental designs (Fisher 1935)
+    - *After choosing the area we usually have no guidance   beyond the widely verified fact that patches in close proximity are commonly more alike…than those which are further apart*
+- Fisher avoided space with the introduction of randomization into the scientific method
+
+
+
+[Paraphrased from Fisher 1935]{.footerRight}
+
+## Spatial dependency poses issues for traditional experimental design 
+
+- Statistical theory of experimental designs (Fisher 1935)
+    - *After choosing the area we usually have no guidance   beyond the widely verified fact that patches in close proximity are commonly more alike…than those which are further apart*
+- Fisher avoided space with the introduction of randomization into the scientific method
+- We have hustled spatial dependence to the back door 
+
+[Paraphrased from Fisher 1935]{.footerRight}
+
+## Spatial dependency poses issues for traditional experimental design 
+
+- Statistical theory of experimental designs (Fisher 1935)
+    - *After choosing the area we usually have no guidance   beyond the widely verified fact that patches in close proximity are commonly more alike…than those which are further apart*
+- Fisher avoided space with the introduction of randomization into the scientific method
+- We have hustled spatial dependence to the back door 
+    - Not rejecting this paradigm of experimental inference
+
+[Paraphrased from Fisher 1935]{.footerRight}
+
+## Observational data represent the wilder side of science and statistical inference 
+
+![](images/alice.png)
+
+## Observational data represent the wilder side of science and statistical inference 
+
+- Great potential for biased inference
+
+[sensu Walters 1986; Cressie and Wikle 2010]{.footerRight}
+
+## Observational data represent the wilder side of science and statistical inference 
+
+- Great potential for biased inference
+    - Wrong operating model 
+    - Unmeasured yet influential covariates
+    - Lack of replication or randomization 
+
+[sensu Walters 1986; Cressie and Wikle 2010]{.footerRight}
+
+## Observational data represent the wilder side of science and statistical inference 
+
+- Great potential for biased inference
+    - Wrong operating model 
+    - Unmeasured yet influential covariates
+    - Lack of replication or randomization 
+- Causal inference more challenging than in controlled experiments 
+
+[sensu Walters 1986; Cressie and Wikle 2010]{.footerRight}
+
+## Observational data represent the wilder side of science and statistical inference 
+
+- Great potential for biased inference
+    - Wrong operating model 
+    - Unmeasured yet influential covariates
+    - Lack of replication or randomization 
+- Causal inference more challenging than in controlled experiments 
+- Notions of space and time even more relevant? 
+
+[sensu Walters 1986; Cressie and Wikle 2010]{.footerRight}
+
+## Observational data represent the wilder side of science and statistical inference 
+
+- Great potential for biased inference
+    - Wrong operating model 
+    - Unmeasured yet influential covariates
+    - Lack of replication or randomization 
+- Causal inference more challenging than in controlled experiments 
+- Notions of space and time even more relevant? 
+- This is most of our data!
+
+[sensu Walters 1986; Cressie and Wikle 2010]{.footerRight}
+
+## Observational data represent the wilder side of science and statistical inference 
+
+![](images/alice.png)
+
+## Hierarchical modeling as a powerful tool for ecological inference
+
+- Unifying field of statistics
+- Many technical benefits
+- Helps deal with dependency 
+    - i.e., Hurlburt's pseudoreplication
+- So we are going to use these to address the spatial dependency issue
+
+[Hurlburt 1984; Royle and Dorazio 2008]{.footerRight}
+
+# Recognizing dependency in statistical models 
+
+## What do we look for when checking statistical models? 
+
+- Zuur and Ieno 2016 offered a 10 step approach
+
+## Protocol for presenting regression-type analyses
+
+1. State appropriate questions
+2. Visualize the experimental design
+3. Conduct data exploration
+4. Identify the dependency structure in the data
+5. Present a statistical model
+6. Fit said model
+7. "validate" the model
+8. Interpret and present output
+9. Model visualizations
+10. Simulate from the model 
+
+[Zuur and Ieno 2016]{.footerRight}
+
+## The take home point from Zuur and Ieno
+
+<br>
+
+"*Before starting the analysis carefully consider which
+observations for your response variable can be dependent.
+If dependency is present, apply a statistical technique that
+is able to cope with it*"
+
+[Zuur et al. 2017]{.footerRight}
+
+## Thinking about dependency 
+
+- Suppose samples are collected by different laboratories
+    - Perhaps due to differences in techniques or scientists themselves among laboratories, we likely have among-lab dependency 
+
+[Zuur et al. 2017]{.footerRight}
+
+## Thinking about dependency 
+
+-   Suppose related species are analyzed together in one analysis 
+    - Perhaps due to similarities between the species we have among-species dependency 
+
+[Zuur et al. 2017]{.footerRight}
+
+## Thinking about dependency 
+
+-   Suppose we take repeated measurements on individual rats
+    - Perhaps due to individual differences among rats, the data scientists collect from one rat is more likely to be similar to other data from collected from that rat 
+
+[Zuur et al. 2017]{.footerRight}
+
+## What dependency is not 
+
+- Two sites have high bird counts, and they weren't sampled by the same person or lab 
+- However, both sites have a low cover measurement, which is the cause of the high bird counts  
+
+![](images/jay.jpg)
+
+
+[Zuur et al. 2017]{.footerRight}
+
+## Visualize experimental design: spatial dependency
+
+```{R echo = T, eval = F}
+library(tidyverse)
+library(ggqfc)
+data <- read.table(file = "data/ph_dat.txt", header = TRUE, dec = ".")
+data %>%
+  ggplot(aes(x = Easting, y = Northing)) +
+  geom_point(shape = 16) + theme_qfc()
+```
+
+[Zuur et al. 2017]{.footerRight}
+
+## Visualize experimental design: spatial dependency
+
+```{R echo = F, eval = T}
+library(tidyverse)
+library(ggqfc)
+data <- read.table(file = "data/ph_dat.txt", header = TRUE, dec = ".")
+data %>%
+  ggplot(aes(x = Easting, y = Northing)) +
+  geom_point(shape = 16) + theme_qfc()
+```
+
+[Zuur et al. 2017]{.footerRight}
+
+## Running an analysis
+
+```{R echo = T, eval = T}
+data$fForested <- factor(data$Forested,
+                        levels = c(1, 2),
+                        labels = c("Yes", "No"))
+data$LOGAltitude <- log10(data$Altitude)
+
+# Model selected using some stepwise AIC approach
+fit <- lm(pH ~ LOGAltitude + SDI + fForested + LOGAltitude:fForested, 
+          data = data)
+E3 <- resid(fit)
+
+```
+
+[Zuur et al. 2017]{.footerRight}
+
+
+## Validating the model 
+
+```{R echo = T, eval = T}
+plot(x = fitted(fit), y = E3)
+abline(h = 0, v = 0)
+
+```
+
+[Zuur et al. 2017]{.footerRight}
+
+## Validating the model 
+
+```{R echo = T, eval = T}
+hist(E3)
+```
+
+[Zuur et al. 2017]{.footerRight}
+
+## Validating the model 
+
+```{R echo = T, eval = T}
+# Independence due to model misfit
+plot(x = data$SDI, y = E3) # residuals vs. predictors 
+abline(h = 0, v = 0)
+
+```
+
+[Zuur et al. 2017]{.footerRight}
+
+## Validating the model 
+
+```{R echo = T, eval = T}
+# Independence due to model misfit
+plot(x = data$LOGAltitude, y = E3) # residuals vs. predictors 
+abline(h = 0, v = 0)
+
+```
+
+[Zuur et al. 2017]{.footerRight}
+
+## Can we find spatial patterns? 
+
+```{R echo = T, eval = F}
+# Can we find spatial patterns in the residuals?
+data$E3 <- resid(fit)
+data$my_cex <- 3 * abs(data$E3) / max(data$E3) + 0.75
+data$sign <- as.numeric(data$E3 >=0) + 1
+data$my_pch <- c(1, 16)[data$sign]
+
+# Convert Easting / Northing to km
+data$easting_km <- data$Easting/1000
+data$northing_km <- data$Northing/1000
+
+data %>%
+  ggplot(aes(x = easting_km, y = northing_km)) +
+  geom_point(size = data$my_cex, shape = data$my_pch) +
+  ylab("northing (km)") + xlab("easting (km)")
+
+```
+
+[Zuur et al. 2017]{.footerRight}
+
+
+## Can we find spatial patterns? 
+
+```{R echo = F, eval = T}
+# Can we find spatial patterns in the residuals?
+data$E3 <- resid(fit)
+data$my_cex <- 3 * abs(data$E3) / max(data$E3) + 0.75
+data$sign <- as.numeric(data$E3 >=0) + 1
+data$my_pch <- c(1, 16)[data$sign]
+
+# Convert Easting / Northing to km
+data$easting_km <- data$Easting/1000
+data$northing_km <- data$Northing/1000
+
+data %>%
+  ggplot(aes(x = easting_km, y = northing_km)) +
+  geom_point(size = data$my_cex, shape = data$my_pch) +
+  ylab("northing (km)") + xlab("easting (km)") + 
+  theme_qfc()
+
+```
+
+[Zuur et al. 2017]{.footerRight}
+
+# Introduction to spatially explicit random effects
+
+- Point process vs. areal data
+- Gaussian Random Fields 
+- Exponential covariance function 
+
+
+# References
+
+- Cressie and Wikle 2010.  Spatio-temporal Statistics. 
+
+- Fischer 1935. 
+
+- Tillman et al. 1994. Space: The final frontier for ecological theory. Ecology.
+
+- Royle and Dorazio 2008.  Hierarchical modeling and inference in ecology 
+
+- Tobler 1970. 
+
+- Walters 1986.  Adaptive Management.
+
+- Zuur and Ieno 2016. A protocol for conducting and presenting
+results of regression-type analyses. Methods in Ecology and Evolution. 7: 636–664.
+
+- Zuur, A.F., Ieno, E.N., and Saveliev, A.A. 2017. Spatial, temporal and
+spatial–temporal ecological data analysis with R-INLA. Highland Statistics
+Ltd.
