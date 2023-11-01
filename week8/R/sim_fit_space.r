@@ -23,7 +23,8 @@ site_id <- 1:n_site
 gp_theta <- 1.4 # Gaussian process scale parameter
 gp_sigma <- 0.5 # Gaussian process variance / spatial noise parameter
 beta0 <- 7 # linear regression intercept
-sd_obs <- 0.4
+sd_obs <- 0.4 # observation error for likelihood
+
 sim_data <-
   list(
     n_sites = nrow(Locs),
@@ -123,7 +124,7 @@ inits <- function() {
 fit <- mod$sample(
   data = stan_data,
   init = inits,
-  seed = 215,
+  seed = 212,
   chains = 4,
   parallel_chains = 4,
   iter_warmup = 1000,
@@ -142,3 +143,15 @@ confint(fit1)
 # Bayesian
 summarise_draws(fit, ~ quantile(.x, probs = c(0.025, 0.5, 0.975))) %>%
   filter(grepl("beta0", variable))
+
+posterior <- fit$draws(format = "df")
+color_scheme_set("gray")
+
+p <- mcmc_hist(posterior, par = "gp_theta")
+p + geom_vline(xintercept = gp_theta, lwd = 2) + ggqfc::theme_qfc()
+
+p <- mcmc_hist(posterior, par = "gp_sigma")
+p + geom_vline(xintercept = gp_sigma, lwd = 2) + ggqfc::theme_qfc()
+
+p <- mcmc_hist(posterior, par = "eff_range")
+p + geom_vline(xintercept = -log(0.05)/gp_theta, lwd = 2) + ggqfc::theme_qfc()

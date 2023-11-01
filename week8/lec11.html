@@ -8,7 +8,7 @@
 <link href="lec11_files/libs/quarto-html/light-border.css" rel="stylesheet">
 <link href="lec11_files/libs/quarto-html/quarto-html.min.css" rel="stylesheet" data-mode="light">
 <link href="lec11_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.4.322">
+  <meta name="generator" content="quarto-1.4.455">
 
   <meta name="author" content="Christopher Cahill">
   <meta name="dcterms.date" content="2023-10-30">
@@ -32,7 +32,7 @@
     }
     /* CSS for syntax highlighting */
     pre > code.sourceCode { white-space: pre; position: relative; }
-    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span { line-height: 1.25; }
     pre > code.sourceCode > span:empty { height: 1.2em; }
     .sourceCode { overflow: visible; }
     code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -439,7 +439,7 @@ Christopher Cahill
 <li>It is really hard to estimate spatial (or spatial-temporal) dynamics in most statistical models</li>
 </ul>
 
-<img data-src="images/pain.jpg" class="r-stretch"><p><span class="footerRight">Cressie and Wikle 2010</span></p>
+<img data-src="images/pain.jpg" class="r-stretch"><p><span class="footerRight">Cressie and Wikle 2011</span></p>
 </section>
 <section id="spatial-dependency-poses-issues-for-traditional-experimental-design" class="slide level2">
 <h2>Spatial dependency poses issues for traditional experimental design</h2>
@@ -510,7 +510,7 @@ Christopher Cahill
 <ul>
 <li>Great potential for biased inference</li>
 </ul>
-<p><span class="footerRight">sensu Walters 1986; Cressie and Wikle 2010</span></p>
+<p><span class="footerRight">sensu Walters 1986; Cressie and Wikle 2011</span></p>
 </section>
 <section id="observational-data-represent-the-wilder-side-of-science-and-statistical-inference-2" class="slide level2">
 <h2>Observational data represent the wilder side of science and statistical inference</h2>
@@ -522,7 +522,7 @@ Christopher Cahill
 <li>Lack of replication or randomization</li>
 </ul></li>
 </ul>
-<p><span class="footerRight">sensu Walters 1986; Cressie and Wikle 2010</span></p>
+<p><span class="footerRight">sensu Walters 1986; Cressie and Wikle 2011</span></p>
 </section>
 <section id="observational-data-represent-the-wilder-side-of-science-and-statistical-inference-3" class="slide level2">
 <h2>Observational data represent the wilder side of science and statistical inference</h2>
@@ -535,7 +535,7 @@ Christopher Cahill
 </ul></li>
 <li>Causal inference more challenging than in controlled experiments</li>
 </ul>
-<p><span class="footerRight">sensu Walters 1986; Cressie and Wikle 2010</span></p>
+<p><span class="footerRight">sensu Walters 1986; Cressie and Wikle 2011</span></p>
 </section>
 <section id="observational-data-represent-the-wilder-side-of-science-and-statistical-inference-4" class="slide level2">
 <h2>Observational data represent the wilder side of science and statistical inference</h2>
@@ -549,7 +549,7 @@ Christopher Cahill
 <li>Causal inference more challenging than in controlled experiments</li>
 <li>Notions of space and time even more relevant?</li>
 </ul>
-<p><span class="footerRight">sensu Walters 1986; Cressie and Wikle 2010</span></p>
+<p><span class="footerRight">sensu Walters 1986; Cressie and Wikle 2011</span></p>
 </section>
 <section id="observational-data-represent-the-wilder-side-of-science-and-statistical-inference-5" class="slide level2">
 <h2>Observational data represent the wilder side of science and statistical inference</h2>
@@ -564,7 +564,7 @@ Christopher Cahill
 <li>Notions of space and time even more relevant?</li>
 <li>This is most of our data!</li>
 </ul>
-<p><span class="footerRight">sensu Walters 1986; Cressie and Wikle 2010</span></p>
+<p><span class="footerRight">sensu Walters 1986; Cressie and Wikle 2011</span></p>
 </section>
 <section id="observational-data-represent-the-wilder-side-of-science-and-statistical-inference-6" class="slide level2">
 <h2>Observational data represent the wilder side of science and statistical inference</h2>
@@ -683,7 +683,7 @@ Christopher Cahill
 <span id="cb2-6"><a href="#cb2-6"></a><span class="co"># Model selected using some stepwise AIC approach</span></span>
 <span id="cb2-7"><a href="#cb2-7"></a>fit <span class="ot">&lt;-</span> <span class="fu">lm</span>(pH <span class="sc">~</span> LOGAltitude <span class="sc">+</span> SDI <span class="sc">+</span> fForested <span class="sc">+</span> LOGAltitude<span class="sc">:</span>fForested, </span>
 <span id="cb2-8"><a href="#cb2-8"></a>          <span class="at">data =</span> data)</span>
-<span id="cb2-9"><a href="#cb2-9"></a>E3 <span class="ot">&lt;-</span> <span class="fu">resid</span>(fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb2-9"><a href="#cb2-9"></a>E3 <span class="ot">&lt;-</span> <span class="fu">rstandard</span>(fit) <span class="co"># could also use resid(), but this is better way </span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p><span class="footerRight">Zuur et al.&nbsp;2017</span></p>
 </section>
@@ -748,28 +748,138 @@ Christopher Cahill
 <h2>Can we find spatial patterns?</h2>
 
 <img data-src="lec11_files/figure-revealjs/unnamed-chunk-9-1.png" width="960" class="r-stretch"><p><span class="footerRight">Zuur et al.&nbsp;2017</span></p>
-</section></section>
-<section id="introduction-to-spatially-explicit-random-effects" class="title-slide slide level1 center">
-<h1>Introduction to spatially explicit random effects</h1>
+</section>
+<section id="a-point-about-the-types-of-spatial-data" class="slide level2">
+<h2>A point about the types of spatial data</h2>
 <ul>
 <li>Point process vs.&nbsp;areal data</li>
-<li>Gaussian Random Fields</li>
-<li>Exponential covariance function</li>
+</ul>
+<p><span class="footerRight">Zuur et al.&nbsp;2017</span></p>
+</section></section>
+<section>
+<section id="introduction-to-spatial-random-effects" class="title-slide slide level1 center">
+<h1>Introduction to spatial random effects</h1>
+
+</section>
+<section id="introduction-to-spatial-random-effects-1" class="slide level2">
+<h2>Introduction to spatial random effects</h2>
+<ul>
+<li>Spatial effects can be incorporated many ways
+<ul>
+<li>Predictors of model’s mean response</li>
+<li>Models of covariance (e.g., kriging)
+<ul>
+<li>splines</li>
+<li>hierarchical intercepts indexed by region</li>
+<li>Gaussian Processes, etc.</li>
+</ul></li>
+</ul></li>
+<li>Recent extensions include modeling spatial deviations as random effects using Gaussian Random Fields</li>
+</ul>
+<p><span class="footerRight">Cressie and Wikle 2011; Anderson and Ward 2019</span></p>
+</section>
+<section id="gaussian-random-fields-grfs" class="slide level2">
+<h2>Gaussian Random Fields (GRFs)</h2>
+<ul>
+<li>GRFs represent a two-dimensional version of Gaussian processes and define the expected value, variance, and covariance of random draws from a Multivariate Normal Distribution (MVN)</li>
+<li><a href="https://en.wikipedia.org/wiki/Gaussian_process">Gaussian processes</a> in this context are analogous to kriging</li>
+<li>Simply put: interpolation technique that allows us to model the covariance among sites according to some function</li>
+</ul>
+<p><span class="footerRight">Cressie and Wikle 2011; Anderson and Ward 2019</span></p>
+</section>
+<section id="spatial-gaussian-processes" class="slide level2">
+<h2>Spatial Gaussian Processes</h2>
+<ul>
+<li>We have a few options with the kernel function
+<ul>
+<li>Exponential, squared-exponential, matern, etc.</li>
+</ul></li>
+<li>We will start with an exponential kernel function</li>
 </ul>
 </section>
+<section id="the-exponential-covariance-function" class="slide level2">
+<h2>The exponential covariance function</h2>
+<p><span class="math display">\[
+\begin{array}{l}\epsilon_{s} \sim \operatorname{MVN}(0, \Sigma)\\
+\text{where } \Sigma \text{ is a covariance matrix with:}\\
+\Sigma_{i, j}=\sigma^{2}_{gp} \exp \left( - \text {distances}_{i,j} / \theta_{gp}\right), \text { if } i \neq j \\
+\Sigma_{i, j}=\sigma^{2}_{gp}, \text { if } i=j\end{array}
+\]</span></p>
+<p><span class="footerRight">Cressie and Wikle 2011; Anderson and Ward 2019</span></p>
+</section>
+<section id="the-exponential-covariance-function-1" class="slide level2">
+<h2>The exponential covariance function</h2>
+<p><span class="math display">\[
+\begin{array}
+{l}\epsilon_{s} \sim \operatorname{MVN}(0, \Sigma)\\
+\text{where } \Sigma \text{ is a covariance matrix with:}\\
+\Sigma_{i, j}=\sigma^{2}_{gp} \exp \left( - \text {distances}_{i,j} / \theta_{gp}\right), \text { if } i \neq j \\
+\Sigma_{i, j}=\sigma^{2}_{gp}, \text { if } i=j\end{array}
+\]</span></p>
+<div style="font-size:29px">
+<ul>
+<li><span class="math inline">\(\epsilon_{s}\)</span> is a spatially explicit random effect</li>
+<li><span class="math inline">\(\theta_{gp}\)</span> controls how quickly the correlation decays between locations</li>
+<li><span class="math inline">\(\sigma^{2}_{gp}\)</span> is the marginal variability of the spatial function at all locations</li>
+<li><span class="math inline">\(\text {distances}_{i,j}\)</span> is a matrix describing Euclidean distance between sample locations</li>
+</ul>
+</div>
+<p><span class="footerRight">Cressie and Wikle 2011; Anderson and Ward 2019</span></p>
+</section>
+<section id="an-spatially-explicit-model" class="slide level2">
+<h2>An spatially explicit model</h2>
+<ul>
+<li>pH measured at a <em>n</em> sites</li>
+<li>Want to estimate average pH and its uncertainty</li>
+</ul>
+<div style="font-size:29px">
+<p><span class="math display">\[
+\begin{array}{l}
+y_{s} \sim \operatorname{N}(\mu_{s}, \sigma^2_{obs}) &amp; \text{[likelihood]} \\
+\operatorname{\mu}_{s}=\beta_{0}+\varepsilon_{s} &amp; \text{[mean prediction]} \\
+\varepsilon_{s} \sim \operatorname{MVN}\left(0, \Sigma\right) &amp; \text{[spatial random effects]}\\
+\text { where } \\
+\Sigma_{i, j}=\sigma^{2}_{gp} \color{#E78021}{\exp \left( - \text {distances}_{i,j} / \theta_{gp}\right)}, \text { if } i \neq j &amp; \text{[exponential kernel]}\\
+\Sigma_{i, j}=\color{#8D44AD}{\sigma^{2}_{gp}}, \text { if } i=j &amp; \text{[marginal spatial variance]}
+\end{array}
+\]</span></p>
+<ul>
+<li>note the <em>s</em></li>
+</ul>
+</div>
+</section></section>
+<section>
+<section id="to-the-r-and-stan-code-to-implement-this-model" class="title-slide slide level1 center">
+<h1>To the R and Stan code to implement this model</h1>
 
+</section>
+<section id="recap" class="slide level2">
+<h2>Recap</h2>
+<ul>
+<li>Talked about them importance of space in applied ecological settings</li>
+<li>Discussed a bunch of ways to recognize dependency in applied datasets</li>
+<li>Showed one way (GRFs and GPs) to incorporate spatial effects into hierarchical models</li>
+</ul>
+</section>
+<section id="recap-1" class="slide level2">
+<h2>Recap</h2>
+
+<img data-src="images/trek.jpeg" class="r-stretch"></section></section>
 <section id="references" class="title-slide slide level1 center">
 <h1>References</h1>
+<div style="font-size:29px">
 <ul>
-<li><p>Cressie and Wikle 2010. Spatio-temporal Statistics.</p></li>
-<li><p>Fischer 1935.</p></li>
+<li><p>Anderson and Ward. 2019. Black swans in space: modeling spatiotemporal processes with extremes. Ecology.</p></li>
+<li><p>Cressie and Wikle 2011. Statistics for spatio-temporal data.</p></li>
+<li><p>Fischer 1935. The design of experiments.</p></li>
 <li><p>Tillman et al.&nbsp;1994. Space: The final frontier for ecological theory. Ecology.</p></li>
 <li><p>Royle and Dorazio 2008. Hierarchical modeling and inference in ecology</p></li>
-<li><p>Tobler 1970.</p></li>
+<li><p>Tobler, W. R. 1970. A Computer Movie Simulating Urban Growth in the Detroit Region. Economic Geography. 46: 234–240. doi:10.2307/143141. ISSN 0013-0095. JSTOR 143141. Retrieved 2023-10-02.</p></li>
 <li><p>Walters 1986. Adaptive Management.</p></li>
 <li><p>Zuur and Ieno 2016. A protocol for conducting and presenting results of regression-type analyses. Methods in Ecology and Evolution. 7: 636–664.</p></li>
 <li><p>Zuur, A.F., Ieno, E.N., and Saveliev, A.A. 2017. Spatial, temporal and spatial–temporal ecological data analysis with R-INLA. Highland Statistics Ltd.</p></li>
 </ul>
+</div>
 <div class="footer footer-default">
 
 </div>

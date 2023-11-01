@@ -20,12 +20,16 @@ transformed parameters {
   matrix<lower=0>[n_sites, n_sites] SIGMA;
   vector[n] y_hat;
   real<lower=0> gp_sigma_sq;
-
+  real delta = 1e-9; 
+  
   // transformations
   gp_sigma_sq = pow(gp_sigma, 2.0);  
 
   // cov matrix between sites
   SIGMA = gp_sigma_sq * exp(-dist_sites / gp_theta);
+  
+  // Numerical trick to ensure covariance matrix is positive definite:
+  SIGMA  = add_diag(SIGMA, delta); // add small offset to every diagonal element of SIGMA  
 
   // calculate predicted value of each observation
   for (i in 1:n) {
@@ -43,4 +47,7 @@ model {
   eps_s ~ multi_normal(rep_vector(0, n_sites), SIGMA);
   // likelihood 
   y ~ normal(y_hat, sd_obs);
+}
+generated quantities {
+   real eff_range = 3/gp_theta; // distance at which correlation drops ~ 0.05
 }
