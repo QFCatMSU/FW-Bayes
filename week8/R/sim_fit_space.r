@@ -5,8 +5,8 @@ library(cmdstanr)
 library(bayesplot)
 library(tidybayes)
 
-set.seed(17)
-n_site <- 200 # number of sampling locations 
+set.seed(1)
+n_site <- 30 # number of sampling locations 
 # simulate random x,y site locations:
 g <- data.frame(
   easting = runif(n_site, 0, 10),
@@ -17,13 +17,14 @@ Locs <- unique(g)
 dist_sites <- as.matrix(dist(Locs))
 
 # set up a vector indicating the site index identifiers
-site_id <- 1:n_site
+n_per_site <- 10
+site_id <- rep(1:n_site, each = n_per_site)
 
 # model parameters to simulate
 gp_theta <- 1.4 # Gaussian process scale parameter
-gp_sigma <- 0.5 # Gaussian process variance / spatial noise parameter
-beta0 <- 7 # linear regression intercept
-sd_obs <- 0.4 # observation error for likelihood
+gp_sigma <- 0.2 # Gaussian process variance / spatial noise parameter
+beta0 <- 0 # linear regression intercept
+sd_obs <- 0.1 # observation error for likelihood
 
 sim_data <-
   list(
@@ -106,9 +107,9 @@ stan_data <-
     y = y,
     dist_sites = dist_sites,
     prior_gp_theta = c(0, 2.5),
-    prior_gp_sigma = c(0.5),
-    prior_intercept = c(0, 10),
-    prior_sd_obs = 0.5
+    prior_gp_sigma = c(0, 1),
+    prior_intercept = c(0, 1),
+    prior_sd_obs = c(0,1)
   )
 
 inits <- function() {
@@ -124,15 +125,18 @@ inits <- function() {
 fit <- mod$sample(
   data = stan_data,
   init = inits,
-  seed = 212,
+  seed = 1,
   chains = 4,
   parallel_chains = 4,
-  iter_warmup = 1000,
-  iter_sampling = 1000, 
-  step_size = 0.01
+  iter_warmup = 5000,
+  iter_sampling = 5000, 
+  step_size = 0.01, 
+  max_treedepth = 12,
+  adapt_delta = 0.999,
+  refresh = 500
 )
 # saveRDS(fit, "week8/data/fit.rds")
-fit <- readRDS("week8/data/fit.rds")
+# fit <- readRDS("week8/data/fit.rds")
 
 fit$cmdstan_diagnose()
 
@@ -155,3 +159,60 @@ p + geom_vline(xintercept = gp_sigma, lwd = 2) + ggqfc::theme_qfc()
 
 p <- mcmc_hist(posterior, par = "eff_range")
 p + geom_vline(xintercept = -log(0.05)/gp_theta, lwd = 2) + ggqfc::theme_qfc()
+
+p <- mcmc_hist(posterior, par = "beta0")
+p <- p + geom_vline(xintercept = median(posterior$beta0), lwd = 2) + ggqfc::theme_qfc()
+p
+
+# plot chain of one parameter
+p <- mcmc_trace(posterior, pars = "beta0", np = np) +
+     theme_qfc() + theme(text = element_text(size = 20))
+p
+
+#---------------
+# Non centered -- better for data limited situations 
+
+# compile the estimation model
+mod <- cmdstanr::cmdstan_model("week8/src/est_s_grf_ncp.stan")
+
+stan_data <-
+  list(
+    n_sites = nrow(Locs),
+    n = length(site_id),
+    site = site_id,
+    y = y,
+    dist_sites = dist_sites,
+    prior_gp_theta = c(0, 2.5),
+    prior_gp_sigma = c(0, 1),
+    prior_intercept = c(0, 1),
+    prior_sd_obs = c(0,1)
+  )
+
+inits <- function() {
+  list(
+    gp_sigma = 0.1,
+    gp_theta = 1,
+    beta0 = 2,
+    sd_obs = 0.4, 
+    z_s = rep(0, n_site)
+  )
+}
+
+fit_ncp <- mod$sample(
+  data = stan_data,
+  init = inits,
+  seed = 1,
+  chains = 4,
+  parallel_chains = 4,
+  iter_warmup = 1000, # fewer iterations 
+  iter_sampling = 1000, # fewer iterations
+  step_size = 0.01, 
+  max_treedepth = 12,
+  adapt_delta = 0.999, 
+  500
+)
+
+# saveRDS(fit, "week8/data/fit.rds")
+# fit <- readRDS("week8/data/fit.rds")
+
+fit_ncp$cmdstan_diagnose()

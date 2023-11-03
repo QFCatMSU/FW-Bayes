@@ -12,14 +12,16 @@ data {
 parameters {
   real<lower=0> gp_theta;
   real<lower=0> gp_sigma;
-  vector[n_sites] eps_s;  
+  vector[n_sites] z_s;   // noncentering terms 
   real beta0;
   real<lower=0> sd_obs; 
 }
 transformed parameters {
   matrix<lower=0>[n_sites, n_sites] SIGMA;
+  matrix[n_sites, n_sites] L;
   vector[n] y_pred;
   real<lower=0> gp_sigma_sq;
+  vector[n_sites] eps_s;  
   real delta = 1e-9; 
   
   // transformations
@@ -30,7 +32,12 @@ transformed parameters {
   
   // Numerical trick to ensure covariance matrix is positive definite:
   SIGMA  = add_diag(SIGMA, delta); // add small offset to every diagonal element of SIGMA  
-
+  
+  L = cholesky_decompose(SIGMA); 
+  
+  // calculate spatial re's given L and z_s
+  eps_s = L * z_s; 
+  
   // calculate predicted value of each observation
   for (i in 1:n) {
     y_pred[i] = beta0 + eps_s[site[i]]; 
@@ -42,9 +49,8 @@ model {
   gp_sigma ~ normal(prior_gp_sigma[1], prior_gp_sigma[2]);
   beta0 ~ normal(prior_intercept[1], prior_intercept[2]);
   sd_obs ~ normal(prior_sd_obs[1], prior_sd_obs[2]); 
+  z_s ~ std_normal(); 
   
-  // spatial re's
-  eps_s ~ multi_normal(rep_vector(0, n_sites), SIGMA);
   // likelihood 
   y ~ normal(y_pred, sd_obs);
 }
