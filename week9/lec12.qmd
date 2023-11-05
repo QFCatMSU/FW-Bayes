@@ -1,0 +1,61 @@
+---
+title: "State-space models" 
+title-slide-attributes:
+    data-background-image: "https://qfcatmsu.github.io/Images/dark-big.png"  
+    data-background-size: "40%"
+    data-background-position: "6% 95%"
+subtitle: FW 891 <br> [Click here to view presentation online](https://qfcatmsu.github.io/FW-Bayes/week7/lec10.html){style="position:absolute;top:40%;left:35%;font-size:20px;"}
+author: Christopher Cahill
+date: 6 November 2023
+date-format: "D MMMM YYYY"
+format: 
+  revealjs:
+    css: "https://qfcatmsu.github.io/css/presStyle.css"
+    slide-number: c/t  
+    theme: simple 
+editor: visual
+highlight-style: kate
+---
+
+## Purpose
+
+- Background
+- Recognizing dependency in simple models
+- How can we deal with dependency problems 
+    - Introduction to spatial random effects
+
+## Why do we care about space 
+
+- Most of our problems in ecology and mgmt are inherently spatial
+
+![](images/space.png)
+
+[Tillman et al. 1994]{.footerRight}
+
+
+# References
+
+::: {style="font-size:29px"}
+
+- Anderson and Ward. 2019.  Black swans in space: modeling spatiotemporal processes with extremes. Ecology.
+
+- Cressie and Wikle 2011.  Statistics for spatio-temporal data.  
+
+- Fischer 1935. The design of experiments. 
+
+- Tillman et al. 1994. Space: The final frontier for ecological theory. Ecology.
+
+- Royle and Dorazio 2008.  Hierarchical modeling and inference in ecology 
+
+- Tobler, W. R. 1970. A Computer Movie Simulating Urban Growth in the Detroit Region. Economic Geography. 46: 234–240. doi:10.2307/143141. ISSN 0013-0095. JSTOR 143141. Retrieved 2023-10-02.
+
+- Walters 1986.  Adaptive Management.
+
+- Zuur and Ieno 2016. A protocol for conducting and presenting
+results of regression-type analyses. Methods in Ecology and Evolution. 7: 636–664.
+
+- Zuur, A.F., Ieno, E.N., and Saveliev, A.A. 2017. Spatial, temporal and
+spatial–temporal ecological data analysis with R-INLA. Highland Statistics
+Ltd.
+
+:::

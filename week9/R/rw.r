@@ -1,5 +1,5 @@
 #-------------------------------
-# intro to state-space models  
+# intro to state-space models
 #-------------------------------
 
 library(tidyverse)
@@ -31,9 +31,102 @@ sim_data <- data.frame(y_t, x_t, t = 1:nt)
 sim_data %>%
   ggplot(aes(x = t, y = y_t)) +
   geom_point(alpha = 0.5) +
-  geom_line(aes(x = t, y = x_t), col = "black", lwd = 0.5, 
-            linetype = 6) +
+  geom_line(aes(x = t, y = x_t),
+    col = "black", lwd = 0.5,
+    linetype = 6
+  ) +
   theme_qfc()
+
+# -------------------------
+# linear model
+
+fit_lm <- lm(sim_data$y_t ~ sim_data$t)
+y_pred_t <- predict(fit_lm, se = TRUE)
+
+sim_data$med <- y_pred_t$fit
+sim_data$lower <- y_pred_t$fit - 1.96 * y_pred_t$se.fit
+sim_data$upper <- y_pred_t$fit + 1.96 * y_pred_t$se.fit
+
+p1 <- sim_data %>%
+  ggplot(aes(x = t, y = y_t)) +
+  geom_point(alpha = 0.5) +
+  geom_ribbon(aes(ymin = lower, ymax = upper),
+    alpha = 0.5, fill = "cadetblue4"
+  ) +
+  geom_line(aes(x = t, y = med)) +
+  geom_line(aes(x = t, y = x_t),
+    col = "black", lwd = 0.3,
+    linetype = 1
+  ) +
+  ylim(2, 11.3) +
+  ylab(expression(y[t])) +
+  geom_ribbon(aes(ymin = lower, ymax = upper),
+    alpha = 0.65, fill = "white"
+  ) +
+  theme_qfc()
+p1
+
+# -------------------------
+# loess smoother 
+
+fit_loess = loess( sim_data$y_t ~ sim_data$t )
+y_pred_t = predict(fit_loess, se=TRUE)
+
+sim_data$med <- y_pred_t$fit
+sim_data$lower <- y_pred_t$fit - 1.96 * y_pred_t$se.fit
+sim_data$upper <- y_pred_t$fit + 1.96 * y_pred_t$se.fit
+
+p1 <- sim_data %>%
+  ggplot(aes(x = t, y = y_t)) +
+  geom_point(alpha = 0.5) +
+  geom_ribbon(aes(ymin = lower, ymax = upper),
+    alpha = 0.5, fill = "cadetblue4"
+  ) +
+  geom_line(aes(x = t, y = med)) +
+  geom_line(aes(x = t, y = x_t),
+    col = "black", lwd = 0.3,
+    linetype = 1
+  ) +
+  ylim(2, 11.3) +
+  ylab(expression(y[t])) +
+  geom_ribbon(aes(ymin = lower, ymax = upper),
+    alpha = 0.65, fill = "white"
+  ) +
+  theme_qfc()
+p1
+
+# -------------------------
+# generalized additive model
+
+library(mgcv)
+fit_gam = gam(sim_data$y_t ~ s(sim_data$t)) # smoother over time
+y_pred_t = predict(fit_gam, se=TRUE)
+
+sim_data$med <- y_pred_t$fit
+sim_data$lower <- y_pred_t$fit - 1.96 * y_pred_t$se.fit
+sim_data$upper <- y_pred_t$fit + 1.96 * y_pred_t$se.fit
+
+p1 <- sim_data %>%
+  ggplot(aes(x = t, y = y_t)) +
+  geom_point(alpha = 0.5) +
+  geom_ribbon(aes(ymin = lower, ymax = upper),
+    alpha = 0.5, fill = "cadetblue4"
+  ) +
+  geom_line(aes(x = t, y = med)) +
+  geom_line(aes(x = t, y = x_t),
+    col = "black", lwd = 0.3,
+    linetype = 1
+  ) +
+  ylim(2, 11.3) +
+  ylab(expression(y[t])) +
+  geom_ribbon(aes(ymin = lower, ymax = upper),
+    alpha = 0.65, fill = "white"
+  ) +
+  theme_qfc()
+p1
+
+# -------------------------
+# Kalman filter / dynamic linear model 
 
 # compile the estimation model
 library(cmdstanr)
@@ -77,6 +170,7 @@ post <-
   filter(grepl("pred_y_t", variable))
 
 # add extra rows to your data frame:
+sim_data <- sim_data[, 1:3] # clean up 
 sim_data[nrow(sim_data) + stan_data$nt_pred, ] <- NA
 sim_data$t <- 1:nrow(sim_data)
 
@@ -115,7 +209,7 @@ p1 <- p1 + geom_ribbon(aes(ymin = sim_data$lower, ymax = sim_data$upper),
     col = "black", lwd = 0.5,
     linetype = 6
   ) +
-  ylim(2, 12.75) + 
+  ylim(2, 12.75) +
   geom_line(aes(x = t, y = med),
     linetype = 1, lwd = 1,
     color = "cadetblue4"
