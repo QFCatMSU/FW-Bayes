@@ -9,7 +9,7 @@ library(tidybayes)
 library(bayesplot)
 library(cowplot)
 
-nt <- 100 # number of time steps
+nt <- 15 # number of time steps
 x0 <- 3 # intercept
 sig_p <- 0.2 # process error
 sig_o <- 0.4 # observation error
@@ -130,7 +130,7 @@ p1
 
 # compile the estimation model
 library(cmdstanr)
-mod <- cmdstanr::cmdstan_model("week9/src/rw.stan")
+mod <- cmdstanr::cmdstan_model("week9/src/rw_cp.stan")
 
 stan_data <-
   list(
@@ -189,7 +189,6 @@ p1 <- sim_data %>%
   ) +
   ylim(2, 11.3) +
   ylab(expression(y[t])) +
-  ggtitle("posterior predictive distribution around y(t)") +
   theme_qfc()
 
 post <-

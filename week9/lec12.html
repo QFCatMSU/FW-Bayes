@@ -12,7 +12,7 @@
 
   <meta name="author" content="Christopher Cahill">
   <meta name="dcterms.date" content="2023-11-06">
-  <title>State-space modeling</title>
+  <title>State-space models</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
@@ -328,7 +328,7 @@
     <div class="slides">
 
 <section id="title-slide" data-background-image="https://qfcatmsu.github.io/Images/dark-big.png" data-background-position="6% 95%" data-background-size="40%" class="quarto-title-block center">
-  <h1 class="title">State-space modeling</h1>
+  <h1 class="title">State-space models</h1>
   <p class="subtitle">FW 891 <br> <a href="https://qfcatmsu.github.io/FW-Bayes/week7/lec10.html" style="position:absolute;top:40%;left:35%;font-size:20px;">Click here to view presentation online</a></p>
 
 <div class="quarto-title-authors">
@@ -344,35 +344,768 @@ Christopher Cahill
 <section id="purpose" class="slide level2">
 <h2>Purpose</h2>
 <ul>
-<li>Background</li>
-<li>Recognizing dependency in simple models</li>
-<li>How can we deal with dependency problems
+<li>Goal</li>
+<li>Background
 <ul>
-<li>Introduction to spatial random effects</li>
+<li>Some applications and history</li>
+</ul></li>
+<li>Dynamic linear model and some extensions</li>
+<li>Identifying nonidentifiability</li>
+<li>Future directions and other extensions<br>
+</li>
+<li>R and Stan demo</li>
+</ul>
+</section>
+<section id="a-key-reference-on-ecological-state-space-models" class="slide level2">
+<h2>A key reference on ecological state space models:</h2>
+
+<img data-src="images/paper.png" class="r-stretch"></section>
+<section id="what-is-a-state-space-model" class="slide level2">
+<h2>What is a state space model</h2>
+<ul>
+<li>State space models are a popular modeling framework for analyzing time-series data</li>
+</ul>
+<p><span class="footerRight">Auger-Methe et al.&nbsp;2021</span></p>
+</section>
+<section id="what-is-a-state-space-model-1" class="slide level2">
+<h2>What is a state space model</h2>
+<ul>
+<li><p>State space models are a popular modeling framework for analyzing time-series data</p></li>
+<li><p>Useful for modeling population dynamics, metapopulation dynamics, fisheries stock assessments, integrated population models, capture recapture data, animal movement, and biodiversity data</p></li>
+</ul>
+<p><span class="footerRight">Auger-Methe et al.&nbsp;2021</span></p>
+</section>
+<section id="what-is-a-state-space-model-2" class="slide level2">
+<h2>What is a state space model</h2>
+<ul>
+<li><p>State space models are a popular modeling framework for analyzing time-series data</p></li>
+<li><p>Useful for modeling population dynamics, metapopulation dynamics, fisheries stock assessments, integrated population models, capture recapture data, animal movement, and biodiversity data</p></li>
+<li><p>Quite popular because they directly model temporal autocorrelation in a way that helps differentiate process variation vs.&nbsp;observation error.</p></li>
+</ul>
+<p><span class="footerRight">Auger-Methe et al.&nbsp;2021</span></p>
+</section>
+<section id="what-is-a-state-space-model-3" class="slide level2">
+<h2>What is a state space model</h2>
+<ul>
+<li>A type of hierarchical model</li>
+</ul>
+<p><span class="footerRight">Auger-Methe et al.&nbsp;2021</span></p>
+</section>
+<section id="what-is-a-state-space-model-4" class="slide level2">
+<h2>What is a state space model</h2>
+<ul>
+<li>A type of hierarchical model
+<ul>
+<li>Hierarchical structure accomodates modeling two time series:</li>
+</ul></li>
+</ul>
+<p><span class="footerRight">Auger-Methe et al.&nbsp;2021</span></p>
+</section>
+<section id="what-is-a-state-space-model-5" class="slide level2">
+<h2>What is a state space model</h2>
+<ul>
+<li>A type of hierarchical model
+<ul>
+<li>Hierarchical structure accomodates modeling two time series:
+<ol type="1">
+<li>A state or process time series that is unobserved and attempts to reflect the true, but hidden, state of nature</li>
+</ol></li>
+</ul></li>
+</ul>
+<p><span class="footerRight">Auger-Methe et al.&nbsp;2021</span></p>
+</section>
+<section id="what-is-a-state-space-model-6" class="slide level2">
+<h2>What is a state space model</h2>
+<ul>
+<li>A type of hierarchical model
+<ul>
+<li>Hierarchical structure accomodates modeling two time series:
+<ol type="1">
+<li>A state or process time series that is unobserved and attempts to reflect the true, but hidden, state of nature</li>
+<li>An observation time series that consists of observations related to the state time series</li>
+</ol></li>
+</ul></li>
+</ul>
+<p><span class="footerRight">Auger-Methe et al.&nbsp;2021</span></p>
+</section>
+<section id="what-is-a-state-space-model-7" class="slide level2">
+<h2>What is a state space model</h2>
+<ul>
+<li>A type of hierarchical model
+<ul>
+<li>Hierarchical structure accomodates modeling two time series:
+<ol type="1">
+<li>A state or process time series that is unobserved and attempts to reflect the true, but hidden, state of nature</li>
+<li>An observation time series that consists of observations related to the state time series</li>
+</ol></li>
+</ul></li>
+<li>An example</li>
+</ul>
+<p><span class="footerRight">Auger-Methe et al.&nbsp;2021</span></p>
+</section>
+<section id="a-historical-aside" class="slide level2">
+<h2>A historical aside</h2>
+<ul>
+<li>The Kalman filter</li>
+</ul>
+</section>
+<section id="a-historical-aside-1" class="slide level2">
+<h2>A historical aside</h2>
+<ul>
+<li>The Kalman filter
+<ul>
+<li>A mathematical technique that removes “noise” from data</li>
 </ul></li>
 </ul>
 </section>
-<section id="why-do-we-care-about-space" class="slide level2">
-<h2>Why do we care about space</h2>
+<section id="a-historical-aside-2" class="slide level2">
+<h2>A historical aside</h2>
 <ul>
-<li>Most of our problems in ecology and mgmt are inherently spatial</li>
+<li>The Kalman filter
+<ul>
+<li>A mathematical technique that removes “noise” from data</li>
+<li>Used to estimate and control the gradually changing condition of complex systems optimally from incomplete information</li>
+</ul></li>
+</ul>
+</section>
+<section id="a-historical-aside-3" class="slide level2">
+<h2>A historical aside</h2>
+<ul>
+<li>The Kalman filter
+<ul>
+<li>A mathematical technique that removes “noise” from data</li>
+<li>Used to estimate and control the gradually changing condition of complex systems optimally from incomplete information
+<ul>
+<li>Think flight control systems</li>
+</ul></li>
+</ul></li>
+</ul>
+</section>
+<section id="a-historical-aside-4" class="slide level2">
+<h2>A historical aside</h2>
+<ul>
+<li>The Kalman filter
+<ul>
+<li>A mathematical technique that removes “noise” from data</li>
+<li>Used to estimate and control the gradually changing condition of complex systems optimally from incomplete information
+<ul>
+<li>Think flight control systems</li>
+</ul></li>
+<li>Importance</li>
+</ul></li>
+</ul>
+</section>
+<section id="a-historical-aside-5" class="slide level2">
+<h2>A historical aside</h2>
+<ul>
+<li>The Kalman filter
+<ul>
+<li>A mathematical technique that removes “noise” from data</li>
+<li>Used to estimate and control the gradually changing condition of complex systems optimally from incomplete information
+<ul>
+<li>Think flight control systems</li>
+</ul></li>
+<li>Importance</li>
+<li>Remarkably simple and elegant</li>
+</ul></li>
+</ul>
+</section>
+<section id="a-historical-aside-6" class="slide level2">
+<h2>A historical aside</h2>
+
+<img data-src="images/rocket.jpg" class="r-stretch"></section>
+<section id="a-historical-aside-7" class="slide level2">
+<h2>A historical aside</h2>
+
+<img data-src="images/filter.png" class="r-stretch"><p><a href="https://www.lancaster.ac.uk/stor-i-student-sites/jack-trainer/how-nasa-used-the-kalman-filter-in-the-apollo-program/" class="footerRight">https://www.lancaster.ac.uk/stor-i-student-sites/jack-trainer/how-nasa-used-the-kalman-filter-in-the-apollo-program/</a></p>
+</section>
+<section id="a-historical-aside-8" class="slide level2">
+<h2>A historical aside</h2>
+
+<img data-src="images/kalman.jpg" class="r-stretch"><p><span class="footerRight">Rudolf Kalman receiving the National Medal of Science from Barack Obama: Photo NAE</span></p>
+</section>
+<section id="other-applications-in-ecology-and-resource-management" class="slide level2">
+<h2>Other applications in ecology and resource management?</h2>
+</section>
+<section id="other-applications-in-ecology-and-resource-management-1" class="slide level2">
+<h2>Other applications in ecology and resource management?</h2>
+<ul>
+<li>Hint</li>
+</ul>
+</section>
+<section id="other-applications-in-ecology-and-resource-management-2" class="slide level2">
+<h2>Other applications in ecology and resource management?</h2>
+
+<img data-src="images/AM.jpg" class="r-stretch"><p><span class="footerRight">Walters 1986; Photo: Wikipedia</span></p>
+</section>
+<section id="other-applications-in-ecology-and-resource-management-3" class="slide level2">
+<h2>Other applications in ecology and resource management?</h2>
+
+<img data-src="images/cj.png" class="r-stretch"><p><span class="footerRight">Walters 1986; Photo: Wikipedia</span></p>
+</section>
+<section id="a-toy-example-normal-dynamic-linear-model" class="slide level2">
+<h2>A toy example: normal dynamic linear model</h2>
+<ul>
+<li>Time series of univariate observations <span class="math inline">\(y_{t}\)</span>
+<ul>
+<li>Evenly spaced points in time <span class="math inline">\(t (t = 1,2,...,T)\)</span></li>
+</ul></li>
+</ul>
+<p><span class="footerRight">Auger-Methe et al.&nbsp;2021</span></p>
+</section>
+<section id="a-toy-example-normal-dynamic-linear-model-1" class="slide level2">
+<h2>A toy example: normal dynamic linear model</h2>
+<ul>
+<li>Time series of univariate observations <span class="math inline">\(y_{t}\)</span>
+<ul>
+<li>Evenly spaced points in time <span class="math inline">\(t (t = 1,2,...,T)\)</span></li>
+</ul></li>
+<li>Call the time series of states <span class="math inline">\(z_{t}\)</span></li>
+</ul>
+<p><span class="footerRight">Auger-Methe et al.&nbsp;2021</span></p>
+</section>
+<section id="a-toy-example-normal-dynamic-linear-model-2" class="slide level2">
+<h2>A toy example: normal dynamic linear model</h2>
+<ul>
+<li>Time series of univariate observations <span class="math inline">\(y_{t}\)</span>
+<ul>
+<li>Evenly spaced points in time <span class="math inline">\(t (t = 1,2,...,T)\)</span></li>
+</ul></li>
+<li>Call the time series of states <span class="math inline">\(z_{t}\)</span></li>
+<li>Process variance and observation error modeled using Gaussian distributions and both are modeled with linear equations</li>
+</ul>
+<p><span class="footerRight">Auger-Methe et al.&nbsp;2021</span></p>
+</section>
+<section id="a-toy-example-normal-dynamic-linear-model-3" class="slide level2">
+<h2>A toy example: normal dynamic linear model</h2>
+<ul>
+<li>Time series of univariate observations <span class="math inline">\(y_{t}\)</span>
+<ul>
+<li>Evenly spaced points in time <span class="math inline">\(t (t = 1,2,...,T)\)</span></li>
+</ul></li>
+<li>Call the time series of states <span class="math inline">\(z_{t}\)</span></li>
+<li>Process variance and observation error modeled using Gaussian distributions and both are modeled with linear equations</li>
+<li>This is a normal dynamic linear model</li>
+</ul>
+<p><span class="footerRight">Auger-Methe et al.&nbsp;2021</span></p>
+</section>
+<section id="the-toy-example-in-math" class="slide level2">
+<h2>The toy example in math:</h2>
+<div style="font-size:34px">
+<p><span class="math display">\[
+\begin{array}{c}
+z_{t}= \alpha + z_{t-1}+\varepsilon_{t}, \quad \varepsilon_{t} \sim \mathrm{N}\left(0, \sigma_{p}^{2}\right), &amp; \color{#E78021}{\text{[process equation]}} \\\\
+y_{t}= z_{t}+\eta_{t}, \quad \eta_{t} \sim \mathrm{N}\left(0, \sigma_{o}^{2}\right) . &amp; \color{#8D44AD}{\text{[observation equation]}} \\
+\end{array}
+\]</span></p>
+</div>
+<p><span class="footerRight">Auger-Methe et al.&nbsp;2021</span></p>
+</section>
+<section id="the-toy-example-in-math-1" class="slide level2">
+<h2>The toy example in math:</h2>
+<div style="font-size:34px">
+<p><span class="math display">\[
+\begin{array}{c}
+z_{t}= \alpha + z_{t-1}+\varepsilon_{t}, \quad \varepsilon_{t} \sim \mathrm{N}\left(0, \sigma_{p}^{2}\right), &amp; \color{#E78021}{\text{[process equation]}} \\\\
+y_{t}= z_{t}+\eta_{t}, \quad \eta_{t} \sim \mathrm{N}\left(0, \sigma_{o}^{2}\right) . &amp; \color{#8D44AD}{\text{[observation equation]}} \\
+\end{array}
+\]</span></p>
+<ul>
+<li>The time-series follows a random walk with drift or trend term <span class="math inline">\(\alpha\)</span></li>
+</ul>
+</div>
+<p><span class="footerRight">Auger-Methe et al.&nbsp;2021</span></p>
+</section>
+<section id="the-toy-example-in-math-2" class="slide level2">
+<h2>The toy example in math:</h2>
+<div style="font-size:34px">
+<p><span class="math display">\[
+\begin{array}{c}
+z_{t}= \alpha + z_{t-1}+\varepsilon_{t}, \quad \varepsilon_{t} \sim \mathrm{N}\left(0, \sigma_{p}^{2}\right), &amp; \color{#E78021}{\text{[process equation]}}\\\\
+y_{t}= z_{t}+\eta_{t}, \quad \eta_{t} \sim \mathrm{N}\left(0, \sigma_{o}^{2}\right) . &amp; \color{#8D44AD}{\text{[observation equation]}} \\
+\end{array}
+\]</span></p>
+<ul>
+<li>The time-series follows a random walk with drift or trend term <span class="math inline">\(\alpha\)</span></li>
+<li><span class="math inline">\(\sigma_{p}^{2}\)</span> represents process variance</li>
+<li><span class="math inline">\(\sigma_{o}^{2}\)</span> represents obsrvation variance</li>
+</ul>
+</div>
+<p><span class="footerRight">Auger-Methe et al.&nbsp;2021</span></p>
+</section>
+<section id="the-toy-example-in-math-3" class="slide level2">
+<h2>The toy example in math:</h2>
+<div style="font-size:34px">
+<p><span class="math display">\[
+\begin{array}{c}
+z_{t}= \alpha + z_{t-1}+\varepsilon_{t}, \quad \varepsilon_{t} \sim \mathrm{N}\left(0, \sigma_{p}^{2}\right), &amp; \color{#E78021}{\text{[process equation]}} \\\\
+y_{t}= z_{t}+\eta_{t}, \quad \eta_{t} \sim \mathrm{N}\left(0, \sigma_{o}^{2}\right) . &amp; \color{#8D44AD}{\text{[observation equation]}} \\
+\end{array}
+\]</span></p>
+<ul>
+<li>The time-series follows a random walk with drift or trend term <span class="math inline">\(\alpha\)</span></li>
+<li><span class="math inline">\(\sigma_{p}^{2}\)</span> represents process variance</li>
+<li><span class="math inline">\(\sigma_{o}^{2}\)</span> represents obsrvation variance</li>
+<li><span class="math inline">\(\varepsilon_{t}\)</span> represent process errors</li>
+<li><span class="math inline">\(\eta_{t}\)</span> represent observation errors</li>
+</ul>
+</div>
+<p><span class="footerRight">Auger-Methe et al.&nbsp;2021</span></p>
+</section>
+<section id="the-toy-example-in-pictures" class="slide level2">
+<h2>The toy example in pictures</h2>
+
+<img data-src="images/dependence.png" class="r-stretch"><p><span class="footerRight">Auger-Methe et al.&nbsp;2021</span></p>
+</section>
+<section id="two-main-assumptions" class="slide level2">
+<h2>Two main assumptions</h2>
+<div style="font-size:34px">
+<ul>
+<li>State space models (SSMs) assume states evolve as a Markov process, generally as a first order process</li>
+</ul>
+</div>
+<p><span class="footerRight">Aeberhard et al.&nbsp;2018; Auger-Methe et al.&nbsp;2021</span></p>
+</section>
+<section id="two-main-assumptions-1" class="slide level2">
+<h2>Two main assumptions</h2>
+<div style="font-size:34px">
+<ul>
+<li>State space models (SSMs) assume states evolve as a Markov process, generally as a first order process
+<ul>
+<li>For toy model, this means that the state at time <span class="math inline">\(t, z_{t}\)</span> depends only on the state at the previous time step <span class="math inline">\(z_{t-1}\)</span></li>
+</ul></li>
+</ul>
+</div>
+<p><span class="footerRight">Aeberhard et al.&nbsp;2018; Auger-Methe et al.&nbsp;2021</span></p>
+</section>
+<section id="two-main-assumptions-2" class="slide level2">
+<h2>Two main assumptions</h2>
+<div style="font-size:34px">
+<ul>
+<li>State space models (SSMs) assume states evolve as a Markov process, generally as a first order process
+<ul>
+<li>For toy model, this means that the state at time <span class="math inline">\(t, z_{t}\)</span> depends only on the state at the previous time step <span class="math inline">\(z_{t-1}\)</span></li>
+</ul></li>
+<li>Second, SSMs assume observations are independent of one another after we account for their dependence on the states</li>
+</ul>
+</div>
+<p><span class="footerRight">Aeberhard et al.&nbsp;2018; Auger-Methe et al.&nbsp;2021</span></p>
+</section>
+<section id="two-main-assumptions-3" class="slide level2">
+<h2>Two main assumptions</h2>
+<div style="font-size:34px">
+<ul>
+<li>State space models (SSMs) assume states evolve as a Markov process, generally as a first order process
+<ul>
+<li>For toy model, this means that the state at time <span class="math inline">\(t, z_{t}\)</span> depends only on the state at the previous time step <span class="math inline">\(z_{t-1}\)</span></li>
+</ul></li>
+<li>Second, SSMs assume observations are independent of one another after we account for their dependence on the states
+<ul>
+<li>More formally, given some state <span class="math inline">\(z_{t}\)</span>, each observation <span class="math inline">\(y_{t}\)</span> is conditionally independent of all other observations</li>
+</ul></li>
+</ul>
+</div>
+<p><span class="footerRight">Aeberhard et al.&nbsp;2018; Auger-Methe et al.&nbsp;2021</span></p>
+</section>
+<section id="two-main-assumptions-4" class="slide level2">
+<h2>Two main assumptions</h2>
+<div style="font-size:34px">
+<ul>
+<li>State space models (SSMs) assume states evolve as a Markov process, generally as a first order process
+<ul>
+<li>For toy model, this means that the state at time <span class="math inline">\(t, z_{t}\)</span> depends only on the state at the previous time step <span class="math inline">\(z_{t-1}\)</span></li>
+</ul></li>
+<li>Second, SSMs assume observations are independent of one another after we account for their dependence on the states
+<ul>
+<li>More formally, given some state <span class="math inline">\(z_{t}\)</span>, each observation <span class="math inline">\(y_{t}\)</span> is conditionally independent of all other observations</li>
+<li>Phrased differently, dependence between observations results from dependence between hidden states <span class="math inline">\(z_{t}\)</span></li>
+</ul></li>
+</ul>
+</div>
+<p><span class="footerRight">Aeberhard et al.&nbsp;2018; Auger-Methe et al.&nbsp;2021</span></p>
+</section>
+<section id="two-main-assumptions-5" class="slide level2">
+<h2>Two main assumptions</h2>
+<div style="font-size:34px">
+<ul>
+<li>State space models (SSMs) assume states evolve as a Markov process, generally as a first order process
+<ul>
+<li>For toy model, this means that the state at time <span class="math inline">\(t, z_{t}\)</span> depends only on the state at the previous time step <span class="math inline">\(z_{t-1}\)</span></li>
+</ul></li>
+<li>Second, SSMs assume observations are independent of one another after we account for their dependence on the states
+<ul>
+<li>More formally, given some state <span class="math inline">\(z_{t}\)</span>, each observation <span class="math inline">\(y_{t}\)</span> is conditionally independent of all other observations</li>
+<li>Phrased differently, dependence between observations results from dependence between hidden states <span class="math inline">\(z_{t}\)</span></li>
+</ul></li>
+<li>In a pop dy context, this could be interpretted to mean that <span class="math inline">\(y_{t}\)</span> values are autocorrelated because the underlying process driving them is autocorrelated through time</li>
+</ul>
+</div>
+<p><span class="footerRight">Aeberhard et al.&nbsp;2018; Auger-Methe et al.&nbsp;2021</span></p>
+</section>
+<section id="the-toy-example-needs-one-more-thing" class="slide level2">
+<h2>The toy example needs one more thing:</h2>
+<div style="font-size:34px">
+<p><span class="math display">\[
+\begin{array}{c}
+z_{t}= \alpha + z_{t-1}+\varepsilon_{t}, \quad \varepsilon_{t} \sim \mathrm{N}\left(0, \sigma_{p}^{2}\right), &amp; \color{#E78021}{\text{[process equation]}} \\\\
+y_{t}= z_{t}+\eta_{t}, \quad \eta_{t} \sim \mathrm{N}\left(0, \sigma_{o}^{2}\right) . &amp; \color{#8D44AD}{\text{[observation equation]}} \\
+\end{array}
+\]</span></p>
+<ul>
+<li>We must define the state at <span class="math inline">\(z_{t=0}\)</span></li>
+</ul>
+</div>
+<p><span class="footerRight">Auger-Methe et al.&nbsp;2021</span></p>
+</section>
+<section id="the-toy-example-needs-one-more-thing-1" class="slide level2">
+<h2>The toy example needs one more thing:</h2>
+<div style="font-size:34px">
+<p><span class="math display">\[
+\begin{array}{c}
+z_{t}= \alpha + z_{t-1}+\varepsilon_{t}, \quad \varepsilon_{t} \sim \mathrm{N}\left(0, \sigma_{p}^{2}\right), &amp; \color{#E78021}{\text{[process equation]}} \\\\
+y_{t}= z_{t}+\eta_{t}, \quad \eta_{t} \sim \mathrm{N}\left(0, \sigma_{o}^{2}\right) . &amp; \color{#8D44AD}{\text{[observation equation]}} \\
+\end{array}
+\]</span></p>
+<ul>
+<li>We must define the state at <span class="math inline">\(z_{t=0}\)</span>
+<ul>
+<li>Typically referred to as the initialization equation</li>
+</ul></li>
+</ul>
+</div>
+<p><span class="footerRight">Auger-Methe et al.&nbsp;2021</span></p>
+</section>
+<section id="the-toy-example-needs-one-more-thing-2" class="slide level2">
+<h2>The toy example needs one more thing:</h2>
+<div style="font-size:34px">
+<p><span class="math display">\[
+\begin{array}{c}
+z_{t}= \alpha + z_{t-1}+\varepsilon_{t}, \quad \varepsilon_{t} \sim \mathrm{N}\left(0, \sigma_{p}^{2}\right), &amp; \color{#E78021}{\text{[process equation]}} \\\\
+y_{t}= z_{t}+\eta_{t}, \quad \eta_{t} \sim \mathrm{N}\left(0, \sigma_{o}^{2}\right) . &amp; \color{#8D44AD}{\text{[observation equation]}} \\
+\end{array}
+\]</span></p>
+<ul>
+<li>We must define the state at <span class="math inline">\(z_{t=0}\)</span>
+<ul>
+<li>Typically referred to as the initialization equation</li>
+</ul></li>
+<li>We’ll set <span class="math inline">\(z_{t=0} = z_{0}\)</span>, where <span class="math inline">\(z_{0}\)</span> is an estimated parameter</li>
+</ul>
+</div>
+<p><span class="footerRight">Auger-Methe et al.&nbsp;2021</span></p>
+</section>
+<section id="handling-nonlinearity" class="slide level2">
+<h2>Handling nonlinearity</h2>
+<div style="font-size:30px">
+<ul>
+<li>Our toy example is useful for teaching but rarely helpful in practice</li>
+</ul>
+</div>
+<p><span class="footerRight">Jamieson and Brooks 2004; Auger-Methe et al.&nbsp;2021</span></p>
+</section>
+<section id="handling-nonlinearity-1" class="slide level2">
+<h2>Handling nonlinearity</h2>
+<div style="font-size:30px">
+<ul>
+<li>Our toy example is useful for teaching but rarely helpful in practice</li>
+<li>Some useful extensions are</li>
+</ul>
+</div>
+<p><span class="footerRight">Jamieson and Brooks 2004; Auger-Methe et al.&nbsp;2021</span></p>
+</section>
+<section id="handling-nonlinearity-2" class="slide level2">
+<h2>Handling nonlinearity</h2>
+<div style="font-size:30px">
+<ul>
+<li>Our toy example is useful for teaching but rarely helpful in practice</li>
+<li>Some useful extensions are</li>
+</ul>
+<p><span class="math display">\[
+\begin{array}{c}
+z_{t}=z_{t-1} \exp \left(\beta_{0}+\beta_{1} z_{t-1}+\varepsilon_{t}\right), \quad \varepsilon_{t} \sim \mathrm{N}\left(0, \sigma_{p}^{2}\right) &amp; \color{#E78021}{\text{[process equation]}} \\
+y_{t}=z_{t}+\eta_{t}, \quad \eta_{t} \sim \mathrm{N}\left(0, \sigma_{o}^{2}\right) . &amp; \color{#8D44AD}{\text{[observation equation]}}
+\end{array}
+\]</span></p>
+</div>
+<p><span class="footerRight">Jamieson and Brooks 2004; Auger-Methe et al.&nbsp;2021</span></p>
+</section>
+<section id="handling-nonlinearity-3" class="slide level2">
+<h2>Handling nonlinearity</h2>
+<div style="font-size:30px">
+<ul>
+<li>Our toy example is useful for teaching but rarely helpful in practice</li>
+<li>Some useful extensions are</li>
+</ul>
+<p><span class="math display">\[
+\begin{array}{c}
+z_{t}=z_{t-1} \exp \left(\beta_{0}+\beta_{1} z_{t-1}+\varepsilon_{t}\right), \quad \varepsilon_{t} \sim \mathrm{N}\left(0, \sigma_{p}^{2}\right) &amp; \color{#E78021}{\text{[process equation]}} \\
+y_{t}=z_{t}+\eta_{t}, \quad \eta_{t} \sim \mathrm{N}\left(0, \sigma_{o}^{2}\right) . &amp; \color{#8D44AD}{\text{[observation equation]}}
+\end{array}
+\]</span></p>
+<ul>
+<li>stochastic logistic model</li>
+</ul>
+</div>
+<p><span class="footerRight">Jamieson and Brooks 2004; Auger-Methe et al.&nbsp;2021</span></p>
+</section>
+<section id="handling-nonlinearity-4" class="slide level2">
+<h2>Handling nonlinearity</h2>
+<div style="font-size:30px">
+<ul>
+<li>Our toy example is useful for teaching but rarely helpful in practice</li>
+<li>Some useful extensions are</li>
+</ul>
+<p><span class="math display">\[
+\begin{array}{c}
+w_{t}=w_{t-1}+\beta_{0}+\beta_{1} \exp \left(w_{t-1}\right)+\varepsilon_{t}, \quad \varepsilon_{t} \sim \mathrm{N}\left(0, \sigma_{p}^{2}\right) &amp; \color{#E78021}{\text{[process eq.]}} \\
+y_{t}=\exp \left(w_{t}\right)+\eta_{t}, \quad \eta_{t} \sim \mathrm{N}\left(0, \sigma_{o}^{2}\right) &amp; \color{#8D44AD}{\text{[observation eq.]}} \\
+\text{where } w_{t} = log(z_{t}) \\
+\end{array}
+\]</span></p>
+<ul>
+<li>playing with math and modeling population on logarithmic scale</li>
+</ul>
+</div>
+<p><span class="footerRight">Jamieson and Brooks 2004; Auger-Methe et al.&nbsp;2021</span></p>
+</section>
+<section id="handling-nonlinearity-5" class="slide level2">
+<h2>Handling nonlinearity</h2>
+<div style="font-size:30px">
+<ul>
+<li>Our toy example is useful for teaching but rarely helpful in practice</li>
+<li>Some useful extensions are</li>
+</ul>
+<p><span class="math display">\[
+\begin{array}{c}
+z_{t}=z_{t-1} \exp \left(\beta_{0}+\beta_{1} \log \left(z_{t-1}\right)+\varepsilon_{t}\right), \quad \varepsilon_{t} \sim \mathrm{N}\left(0, \sigma_{p}^{2}\right) &amp; \color{#E78021}{\text{[process eq.]}} \\
+\end{array}
+\]</span></p>
+<ul>
+<li>Gompertz model, which assumes that per-unit-abundance growth rate depends on log abundance</li>
+</ul>
+</div>
+<p><span class="footerRight">Jamieson and Brooks 2004; Auger-Methe et al.&nbsp;2021</span></p>
+</section>
+<section id="handling-nonlinearity-6" class="slide level2">
+<h2>Handling nonlinearity</h2>
+<div style="font-size:30px">
+<ul>
+<li>Our toy example is useful for teaching but rarely helpful in practice</li>
+<li>Some useful extensions are</li>
+</ul>
+<p><span class="math display">\[
+\begin{array}{c}
+w_{t}=\beta_{0}+\left(1+\beta_{1}\right) w_{t-1}+\varepsilon_{t}, \quad \varepsilon_{t} \sim \mathrm{N}\left(0, \sigma_{p}^{2}\right), &amp; \color{#E78021}{\text{[process equation]}} \\
+g_{t}=w_{t}+\eta_{t}, \quad \eta_{t} \sim \mathrm{N}\left(0, \sigma_{o}^{2}\right), &amp; \color{#8D44AD}{\text{[observation equation]}} \\
+\text{where } w_{t} = log(z_{t}) \text{ and } g_{t} = log(y_{t})\\
+\end{array}
+\]</span></p>
+<ul>
+<li>Linearized Gompertz model</li>
+</ul>
+</div>
+<p><span class="footerRight">Jamieson and Brooks 2004; Auger-Methe et al.&nbsp;2021</span></p>
+</section>
+<section id="whats-the-point" class="slide level2">
+<h2>What’s the point?</h2>
+
+<img data-src="images/why.jpg" class="r-stretch"></section>
+<section id="state-space-models-are-complex" class="slide level2">
+<h2>State space models are complex</h2>
+<ul>
+<li>e.g., see Thorson et al.&nbsp;2016</li>
+</ul>
+<p><span class="footerRight">Auger-Methe et al.&nbsp;2021</span></p>
+</section>
+<section id="state-space-models-are-complex-1" class="slide level2">
+<h2>State space models are complex</h2>
+<ul>
+<li>e.g., see Thorson et al.&nbsp;2016</li>
+<li>Are there simpler alternatives?
+<ul>
+<li>SSMs superior to simpler models when both the process variance and the observation error are large (e.g., de Valpine and Hastings 2002)</li>
+</ul></li>
+</ul>
+<p><span class="footerRight">Auger-Methe et al.&nbsp;2021</span></p>
+</section>
+<section id="state-space-models-are-complex-2" class="slide level2">
+<h2>State space models are complex</h2>
+<ul>
+<li>e.g., see Thorson et al.&nbsp;2016</li>
+<li>Are there simpler alternatives?
+<ul>
+<li>SSMs superior to simpler models when both the process variance and the observation error are large (e.g., de Valpine and Hastings 2002)</li>
+<li>Many studies have shown that SSMs provided better inference than simpler models</li>
+</ul></li>
+</ul>
+<p><span class="footerRight">Auger-Methe et al.&nbsp;2021</span></p>
+</section>
+<section id="state-space-models-are-complex-3" class="slide level2">
+<h2>State space models are complex</h2>
+<ul>
+<li>e.g., see Thorson et al.&nbsp;2016</li>
+<li>Are there simpler alternatives?
+<ul>
+<li>SSMs superior to simpler models when both the process variance and the observation error are large (e.g., de Valpine and Hastings 2002)</li>
+<li>Many studies have shown that SSMs provided better inference than simpler models</li>
+</ul></li>
+<li>Should SSMs be the default for many ecological time series?</li>
+</ul>
+<p><span class="footerRight">Auger-Methe et al.&nbsp;2021</span></p>
+</section>
+<section id="nonidentifiability" class="slide level2">
+<h2>Nonidentifiability</h2>
+
+<img data-src="images/dragons.png" class="r-stretch"><p><a href="https://en.wikipedia.org/wiki/Here_be_dragons" class="footerRight">The Hunt-Lenox Globe: here be dragons</a></p>
+</section>
+<section id="nonidentifiability-1" class="slide level2">
+<h2>Nonidentifiability</h2>
+<ul>
+<li>Identifiability refers to whether there is a unique representation of the model</li>
 </ul>
 
-<img data-src="images/space.png" class="r-stretch"><p><span class="footerRight">Tillman et al.&nbsp;1994</span></p>
+<img data-src="images/profile.png" class="r-stretch"><p><span class="footerRight">Auger-Methe et al.&nbsp;2021</span></p>
 </section>
+<section id="nonidentifiability-2" class="slide level2">
+<h2>Nonidentifiability</h2>
+<ul>
+<li>Identifiability refers to whether there is a unique representation of the model
+<ul>
+<li>Intrinsic vs.&nbsp;extrinsic nonidentifiability</li>
+</ul></li>
+</ul>
+<p><span class="footerRight">Auger-Methe et al.&nbsp;2021</span></p>
+</section>
+<section id="nonidentifiability-3" class="slide level2">
+<h2>Nonidentifiability</h2>
+<ul>
+<li>Identifiability refers to whether there is a unique representation of the model
+<ul>
+<li>Intrinsic vs.&nbsp;extrinsic nonidentifiability</li>
+</ul></li>
+<li>Misusing informed priors may hide identifiability issues</li>
+</ul>
+<p><span class="footerRight">Auger-Methe et al.&nbsp;2021</span></p>
+</section>
+<section id="nonidentifiability-4" class="slide level2">
+<h2>Nonidentifiability</h2>
+<ul>
+<li>Identifiability refers to whether there is a unique representation of the model
+<ul>
+<li>Intrinsic vs.&nbsp;extrinsic nonidentifiability</li>
+</ul></li>
+<li>Misusing informed priors may hide identifiability issues</li>
+<li>Diagnostics in the Bayesian framework</li>
+</ul>
+<p><span class="footerRight">Auger-Methe et al.&nbsp;2021</span></p>
+</section>
+<section id="nonidentifiability-5" class="slide level2">
+<h2>Nonidentifiability</h2>
+<ul>
+<li>Identifiability refers to whether there is a unique representation of the model
+<ul>
+<li>Intrinsic vs.&nbsp;extrinsic nonidentifiability</li>
+</ul></li>
+<li>Misusing informed priors may hide identifiability issues</li>
+<li>Diagnostics in the Bayesian framework
+<ul>
+<li>Correlation between parameters</li>
+</ul></li>
+</ul>
+<p><span class="footerRight">Auger-Methe et al.&nbsp;2021</span></p>
+</section>
+<section id="nonidentifiability-6" class="slide level2">
+<h2>Nonidentifiability</h2>
+<ul>
+<li>Identifiability refers to whether there is a unique representation of the model
+<ul>
+<li>Intrinsic vs.&nbsp;extrinsic nonidentifiability</li>
+</ul></li>
+<li>Misusing informed priors may hide identifiability issues</li>
+<li>Diagnostics in the Bayesian framework
+<ul>
+<li>Correlation between parameters</li>
+<li>Simulation
+<ul>
+<li>If your model is non-identifiable, parameters are usually biased with large variances</li>
+</ul></li>
+</ul></li>
+</ul>
+<p><span class="footerRight">Auger-Methe et al.&nbsp;2021</span></p>
+</section>
+<section id="nonidentifiability-7" class="slide level2">
+<h2>Nonidentifiability</h2>
+<ul>
+<li>Identifiability refers to whether there is a unique representation of the model
+<ul>
+<li>Intrinsic vs.&nbsp;extrinsic nonidentifiability</li>
+</ul></li>
+<li>Misusing informed priors may hide identifiability issues</li>
+<li>Diagnostics in the Bayesian framework
+<ul>
+<li>Correlation between parameters</li>
+<li>Simulation
+<ul>
+<li>If your model is non-identifiable, parameters are usually biased with large variances</li>
+</ul></li>
+</ul></li>
+<li><em>One should choose priors with great care for SSMs</em></li>
+</ul>
+<p><span class="footerRight">Auger-Methe et al.&nbsp;2021</span></p>
+</section>
+<section id="remedies-for-nonidentifiability" class="slide level2">
+<h2>Remedies for nonidentifiability</h2>
+<ul>
+<li>Reformulate the model</li>
+<li>Make simplifying assumptions when data are limited</li>
+<li>Estimate measurement errors externally</li>
+<li>Integrate additional data</li>
+<li>Try to use replicated observations</li>
+<li>Match temporal resolution between states and observations
+<ul>
+<li>If one has a data set with locations every 8 h, it would be challenging to estimate behavioral states lasting &lt;16–24 h</li>
+</ul></li>
+</ul>
+<p><span class="footerRight">Auger-Methe et al.&nbsp;2021</span></p>
+</section>
+<section id="wrap-up" class="slide level2">
+<h2>Wrap up</h2>
+<ul>
+<li>SSMs are flexible models for time series that can be used to answer a broad range of ecological questions</li>
+<li>They can be used to model univariate or multivariate time series</li>
+<li>SSMs can be linear or nonlinear, and have discrete or continuous time steps</li>
+<li>Key point:</li>
+</ul>
+<p><span class="footerRight">Auger-Methe et al.&nbsp;2021</span></p>
+</section>
+<section id="wrap-up-1" class="slide level2">
+<h2>Wrap up</h2>
+<ul>
+<li>SSMs are flexible models for time series that can be used to answer a broad range of ecological questions</li>
+<li>They can be used to model univariate or multivariate time series</li>
+<li>SSMs can be linear or nonlinear, and have discrete or continuous time steps</li>
+<li>Key point:
+<ul>
+<li>Recognize that this is a crash course, and there are a great many extensions of SSMs in ecology</li>
+</ul></li>
+</ul>
+<p><span class="footerRight">Auger-Methe et al.&nbsp;2021</span></p>
+</section>
+<section id="to-the-example" class="title-slide slide level1 center">
+<h1>To the example</h1>
+
+</section>
+
 <section id="references" class="title-slide slide level1 center">
 <h1>References</h1>
 <div style="font-size:29px">
 <ul>
-<li><p>Anderson and Ward. 2019. Black swans in space: modeling spatiotemporal processes with extremes. Ecology.</p></li>
-<li><p>Cressie and Wikle 2011. Statistics for spatio-temporal data.</p></li>
-<li><p>Fischer 1935. The design of experiments.</p></li>
-<li><p>Tillman et al.&nbsp;1994. Space: The final frontier for ecological theory. Ecology.</p></li>
-<li><p>Royle and Dorazio 2008. Hierarchical modeling and inference in ecology</p></li>
-<li><p>Tobler, W. R. 1970. A Computer Movie Simulating Urban Growth in the Detroit Region. Economic Geography. 46: 234–240. doi:10.2307/143141. ISSN 0013-0095. JSTOR 143141. Retrieved 2023-10-02.</p></li>
-<li><p>Walters 1986. Adaptive Management.</p></li>
-<li><p>Zuur and Ieno 2016. A protocol for conducting and presenting results of regression-type analyses. Methods in Ecology and Evolution. 7: 636–664.</p></li>
-<li><p>Zuur, A.F., Ieno, E.N., and Saveliev, A.A. 2017. Spatial, temporal and spatial–temporal ecological data analysis with R-INLA. Highland Statistics Ltd.</p></li>
+<li><p>Aeberhard et al.&nbsp;2018. Review of state–space models for fisheries science. Annual Review of Statistics and Its Application 5:215–235.</p></li>
+<li><p>Auger-Methe et al.&nbsp;2021. A guide to state-space modeling of ecological time series. Ecological Monographs.</p></li>
+<li><p>de Valpine and Hastings 2002. Fitting population models incorporating process noise and observation error. Ecological Monographs.</p></li>
+<li><p>Jamieson and Brooks 2004. Density dependence in North American ducks. Animal Biodiversity and Conservation 27:113–128.</p></li>
+<li><p>Thorson et al.&nbsp;2016. Joint dynamic species distribution models: a tool for community ordination and spatio-temporal monitoring. Global Ecology and Biogeography 25:1144–1158.</p></li>
+<li><p>Walters 1986. Adaptive Management of Renewable Resources.</p></li>
 </ul>
 </div>
 <div class="footer footer-default">
