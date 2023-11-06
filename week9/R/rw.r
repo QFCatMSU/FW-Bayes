@@ -9,7 +9,7 @@ library(tidybayes)
 library(bayesplot)
 library(cowplot)
 
-nt <- 15 # number of time steps
+nt <- 100 # number of time steps
 x0 <- 3 # intercept
 sig_p <- 0.2 # process error
 sig_o <- 0.4 # observation error
@@ -18,10 +18,12 @@ alpha <- 0.07 # drift
 # Simulate predictors
 set.seed(2)
 x_t <- y_t <- rep(NA, nt)
-x_t[1] <- x0
+
+x_t[1] <- x0 # initialize
 for (t in 2:nt) { # process error
   x_t[t] <- x_t[t - 1] + rnorm(1, mean = alpha, sd = sig_p)
 }
+
 for (t in 1:nt) { # observation error
   y_t[t] <- x_t[t] + rnorm(1, mean = 0, sd = sig_o)
 }
@@ -37,6 +39,7 @@ sim_data %>%
   ) +
   theme_qfc()
 
+# acf(sim_data$y_t)
 # -------------------------
 # linear model
 
@@ -99,7 +102,7 @@ p1
 # generalized additive model
 
 library(mgcv)
-fit_gam = gam(sim_data$y_t ~ s(sim_data$t)) # smoother over time
+fit_gam = gam(sim_data$y_t ~ s(sim_data$t, k = 50)) # smoother over time
 y_pred_t = predict(fit_gam, se=TRUE)
 
 sim_data$med <- y_pred_t$fit
@@ -130,13 +133,13 @@ p1
 
 # compile the estimation model
 library(cmdstanr)
-mod <- cmdstanr::cmdstan_model("week9/src/rw_cp.stan")
+mod <- cmdstanr::cmdstan_model("week9/src/rw.stan")
 
 stan_data <-
   list(
     nt = nrow(sim_data),
     y_t = sim_data$y_t,
-    nt_pred = 12
+    nt_pred = 5
   )
 
 inits <- function() {
