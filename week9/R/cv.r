@@ -87,6 +87,7 @@ fit2 <- mod$sample(
 )
 
 loo2 <- fit2$loo()
+
 loo_compare(loo1, loo2)
 
 #-----------------------------------------------------------
@@ -114,6 +115,7 @@ log_pd_kfold <- matrix(nrow = 4000, ncol = nrow(data))
 
 # split the data into k chunks
 K <- 10
+set.seed(13)
 data$fold <- sample(x = 1:K, size = nrow(data), replace = TRUE)
 
 # see also kfold_split_random(K = K, N = nrow(data))
@@ -152,7 +154,7 @@ elpd(log_pd_kfold)
 
 inits <- function() {
   list(
-    vbk = 0.2,
+    vbk = 0.3,
     linf = 55,
     sd_len = sig / 10
   )
