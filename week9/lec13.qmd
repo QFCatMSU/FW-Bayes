@@ -1,0 +1,579 @@
+---
+title: "Model selection and cross validation" 
+title-slide-attributes:
+    data-background-image: "https://qfcatmsu.github.io/Images/dark-big.png"  
+    data-background-size: "40%"
+    data-background-position: "6% 95%"
+subtitle: FW 891 <br> [Click here to view presentation online](https://qfcatmsu.github.io/FW-Bayes/week7/lec10.html){style="position:absolute;top:40%;left:35%;font-size:20px;"}
+author: Christopher Cahill
+date: 8 November 2023
+date-format: "D MMMM YYYY"
+format: 
+  revealjs:
+    css: "https://qfcatmsu.github.io/css/presStyle.css"
+    slide-number: c/t  
+    theme: simple 
+editor: visual
+highlight-style: kate
+---
+
+## Purpose
+
+- Goal
+- A philosophical preface to model selection 
+- k-fold and loo cross validation 
+- Performance criteria  
+- Challenges 
+- Approximate methods to loo cross validation
+- R and Stan demo on how to implement these ideas 
+
+## Useful reference on cross validation in Stan:
+
+[https://users.aalto.fi/~ave/CV-FAQ.html](https://users.aalto.fi/~ave/CV-FAQ.html)
+
+# TLDR: Model selection is hard and requires careful thought
+
+## Model selection: are we stuck between the devil and the deep blue sea? 
+
+![](images/ba1998.png){style="width:350px; position: absolute; margin-top: 5%; left:0;"}
+![](images/sea.jpg){style="width:500px; position: absolute; margin-top: 10%; right:0;"}
+
+[Burnham and Anderson 1998; Navarro 2018; Bolker 2023]{.footerRight}
+
+## Between the devil and the deep blue sea? 
+
+- We can calculate how well we predict things
+
+[Navarro 2018; Bolker 2023]{.footerRight}
+
+## Between the devil and the deep blue sea? 
+
+- We can calculate how well we predict things
+- The difference between prediction and inference 
+
+[Navarro 2018; Bolker 2023]{.footerRight}
+
+## Between the devil and the deep blue sea? 
+
+- We can calculate how well we predict things 
+- The difference between prediction and inference 
+- If scientific reasoning takes place in a world where all our models are systematically wrong in some sense, what do we hope to achieve by selecting a model? 
+
+[Navarro 2018; Bolker 2023]{.footerRight}
+
+
+## Between the devil and the deep blue sea?
+
+- We can calculate how well we predict things 
+- The difference between prediction and inference 
+- If scientific reasoning takes place in a world where all our models are systematically wrong in some sense, what do we hope to achieve by selecting a model? 
+- *The devil*: statistical decision making 
+
+[Navarro 2018; Bolker 2023]{.footerRight}
+
+## Between the devil and the deep blue sea?
+
+- We can calculate how well we predict things 
+- The difference between prediction and inference 
+- If scientific reasoning takes place in a world where all our models are systematically wrong in some sense, what do we hope to achieve by selecting a model? 
+- *The devil*: statistical decision making 
+- *The deep blue sea*: addressing scientific questions 
+
+[Navarro 2018; Bolker 2023]{.footerRight}
+
+## Between the devil and the deep blue sea?
+
+- We can calculate how well we predict things 
+- The difference between prediction and inference 
+- If scientific reasoning takes place in a world where all our models are systematically wrong in some sense, what do we hope to achieve by selecting a model? 
+- *The devil*: statistical decision making 
+- *The deep blue sea*: addressing scientific questions 
+- A question well worth pondering that I have no intention of answering:
+
+[Navarro 2018; Bolker 2023]{.footerRight}
+
+## Between the devil and the deep blue sea?
+
+- We can calculate how well we predict things 
+- The difference between prediction and inference 
+- If scientific reasoning takes place in a world where all our models are systematically wrong in some sense, what do we hope to achieve by selecting a model? 
+- *The devil*: statistical decision making 
+- *The deep blue sea*: addressing scientific questions 
+- A question well worth pondering that I have no intention of answering:
+    - Are scientific model selection questions addressable with statistical tools? 
+
+[Navarro 2018; Bolker 2023]{.footerRight}
+
+
+## With that in mind 
+
+![](images/bunny.jpg){}
+
+[Arthur Schopenhauer the philosophy Bunny peering into the inferential abyss]{.footerLeft}
+
+## Introduction
+
+- After fitting a Bayesian model, we often want to measure its predictive accuracy 
+
+[Vehtari et al. 2019]{.footerRight}
+
+## Introduction
+
+- After fitting a Bayesian model, we often want to measure its predictive accuracy
+- We might do this to: 
+
+[Vehtari et al. 2019]{.footerRight}
+
+## Introduction
+
+- After fitting a Bayesian model, we often want to measure its predictive accuracy
+- We might do this to: 
+    - For its own sake 
+
+[Vehtari et al. 2019]{.footerRight}
+
+## Introduction
+
+- After fitting a Bayesian model, we often want to measure its predictive accuracy
+- We might do this to: 
+    - For its own sake 
+    - Compare models
+
+[Vehtari et al. 2019]{.footerRight}
+
+## Introduction
+
+- After fitting a Bayesian model, we often want to measure its predictive accuracy
+- We might do this to: 
+    - For its own sake 
+    - Compare models
+    - Model selection
+
+[Vehtari et al. 2019]{.footerRight}
+
+## Introduction
+
+- After fitting a Bayesian model, we often want to measure its predictive accuracy
+- We might do this to: 
+    - For its own sake 
+    - Compare models
+    - Model selection
+    - Model averaging 
+
+[Vehtari et al. 2019]{.footerRight}
+
+## What is cross validation? 
+
+- Cross validation is a family of techniques that try to estimate how well a model would predict previously unseen data
+    
+
+
+
+[Vehtari 2023]{.footerRight}
+
+## What is cross validation? 
+
+- Cross validation is a family of techniques that try to estimate how well a model would predict previously unseen data
+    - Typically do this by fitting the model to some subset of the data, and then predicting the left out data 
+    
+
+
+
+[Vehtari 2023]{.footerRight}
+
+## What is cross validation? 
+
+- Cross validation is a family of techniques that try to estimate how well a model would predict previously unseen data
+    - Typically do this by fitting the model to some subset of the data, and then predicting the left out data 
+- Cross validation can be used to     
+
+[Vehtari 2023]{.footerRight}
+
+## What is cross validation? 
+
+- Cross validation is a family of techniques that try to estimate how well a model would predict previously unseen data
+    - Typically do this by fitting the model to some subset of the data, and then predicting the left out data 
+- Cross validation can be used to
+    - Assess the predictive performance of a single model 
+
+[Vehtari 2023]{.footerRight}
+
+## What is cross validation? 
+
+- Cross validation is a family of techniques that try to estimate how well a model would predict previously unseen data
+    - Typically do this by fitting the model to some subset of the data, and then predicting the left out data 
+- Cross validation can be used to
+    - Assess the predictive performance of a single model 
+    - Assess model misspecification
+
+
+[Vehtari 2023]{.footerRight}
+
+## What is cross validation? 
+
+- Cross validation is a family of techniques that try to estimate how well a model would predict previously unseen data
+    - Typically do this by fitting the model to some subset of the data, and then predicting the left out data 
+- Cross validation can be used to
+    - Assess the predictive performance of a single model 
+    - Assess model misspecification
+    - Compare multiple models
+
+
+[Vehtari 2023]{.footerRight}
+
+## What is cross validation? 
+
+- Cross validation is a family of techniques that try to estimate how well a model would predict previously unseen data
+    - Typically do this by fitting the model to some subset of the data, and then predicting the left out data 
+- Cross validation can be used to
+    - Assess the predictive performance of a single model 
+    - Assess model misspecification
+    - Compare multiple models
+    - Select a single model from multiple candidates
+
+[Vehtari 2023]{.footerRight}
+
+## What is cross validation? 
+
+- Cross validation is a family of techniques that try to estimate how well a model would predict previously unseen data
+    - Typically do this by fitting the model to some subset of the data, and then predicting the left out data 
+- Cross validation can be used to
+    - Assess the predictive performance of a single model 
+    - Assess model misspecification
+    - Compare multiple models
+    - Select a single model from multiple candidates
+    - Combine the predictions of multiple models 
+
+[Vehtari 2023]{.footerRight}
+
+## K-fold and leave-one-out cross validation
+
+- K-fold cross validation refers to splitting a dataset into K approximately equal sized chunks
+
+## K-fold and leave-one-out cross validation
+
+- K-fold cross validation refers to splitting a dataset into K approximately equal sized chunks
+    - Often K = 10
+
+## K-fold and leave-one-out cross validation
+
+- K-fold cross validation refers to splitting a dataset into K approximately equal sized chunks
+    - Often K = 10
+- Procedure:
+    - Estimate the model on K-1 of the chunks then predict the left out chunk
+
+## K-fold and leave-one-out cross validation
+
+- K-fold cross validation refers to splitting a dataset into K approximately equal sized chunks
+    - Often K = 10
+- Procedure:
+    - Estimate the model on K-1 of the chunks then predict the left out chunk
+    - Repeat this process until we've shuffled through each chunk or fold of the data
+
+## K-fold and leave-one-out cross validation
+
+- K-fold cross validation refers to splitting a dataset into K approximately equal sized chunks
+    - Often K = 10
+- Procedure:
+    - Estimate the model on K-1 of the chunks then predict the left out chunk
+    - Repeat this process until we've shuffled through each chunk or fold of the data
+- Leave one out (LOO) cross validation represents the limit of K-fold cross validation, where K equals number of data points
+
+# Some measures of predictive accuracy
+
+## Mean Square Error (MSE)
+
+$$
+\frac{1}{n} \sum_{i=1}^{n}\left(y_{i}-\mathrm{E}\left(y_{i} \mid \theta\right)\right)^{2}
+$$
+
+- $y_{i}$ is data point i 
+- $\theta$ represent fitted model parameters 
+- proportional to MSE if model is normal with constant variance
+- Easy to compute and understand, but less appropriate for non-normal models 
+
+[Gelman et al. 2014; Vehtari et al. 2016]{.footerRight}
+
+## Expected log pointwise predictive density (elpd)
+
+::: {style="font-size:30px"}
+
+- Consider data $y_{1}, ... , y_{n}$ modeled as independent given parameters $\theta$
+- Also suppose we have a prior distribution $p(\theta)$ yielding a posterior $p(\theta \mid y)$ 
+- And a posterior predictive distribution $p(\tilde{y} \mid y)=\int p\left(\tilde{y}_{i} \mid \theta\right) p(\theta \mid y) d \theta$
+
+:::
+[Gelman et al. 2014; Vehtari et al. 2016]{.footerRight}
+
+## Expected log pointwise predictive density (elpd)
+
+::: {style="font-size:30px"}
+
+- Consider data $y_{1}, ... , y_{n}$ modeled as independent given parameters $\theta$
+- Also suppose we have a prior distribution $p(\theta)$ yielding a posterior $p(\theta \mid y)$ 
+- And a posterior predictive distribution $p(\tilde{y} \mid y)=\int p\left(\tilde{y}_{i} \mid \theta\right) p(\theta \mid y) d \theta$
+
+- We can then define a measure of predictive accuracy for the *n* data points as: 
+
+:::
+[Gelman et al. 2014; Vehtari et al. 2016]{.footerRight}
+
+## Expected log pointwise predictive density (elpd)
+
+::: {style="font-size:30px"}
+
+- Consider data $y_{1}, ... , y_{n}$ modeled as independent given parameters $\theta$
+- Also suppose we have a prior distribution $p(\theta)$ yielding a posterior $p(\theta \mid y)$ 
+- And a posterior predictive distribution $p(\tilde{y} \mid y)=\int p\left(\tilde{y}_{i} \mid \theta\right) p(\theta \mid y) d \theta$
+
+- We can then define a measure of predictive accuracy for the *n* data points as: 
+
+$$
+\begin{aligned}
+\text { elpd } & =\text { expected } \log \text { pointwise predictive density for a new dataset } \\
+& =\sum_{i=1}^{n} \log \left(\frac{1}{S} \sum_{s=1}^{S} p\left(y_{i} \mid \theta^{s}\right)\right) .
+\end{aligned}
+$$
+
+:::
+[Gelman et al. 2014; Vehtari et al. 2016]{.footerRight}
+
+## Expected log pointwise predictive density (elpd)
+
+::: {style="font-size:30px"}
+
+- Consider data $y_{1}, ... , y_{n}$ modeled as independent given parameters $\theta$
+- Also suppose we have a prior distribution $p(\theta)$ yielding a posterior $p(\theta \mid y)$ 
+- And a posterior predictive distribution $p(\tilde{y} \mid y)=\int p\left(\tilde{y}_{i} \mid \theta\right) p(\theta \mid y) d \theta$
+
+- We can then define a measure of predictive accuracy for the *n* data points as: 
+
+$$
+\begin{aligned}
+\text { elpd } & =\text { expected } \log \text { pointwise predictive density for a new dataset } \\
+& =\sum_{i=1}^{n} \log \left(\frac{1}{S} \sum_{s=1}^{S} p\left(y_{i} \mid \theta^{s}\right)\right) .
+\end{aligned}
+$$
+
+- where $\theta^{s}$ represent posterior simulations from $s=1, \ldots, s$
+
+:::
+[Gelman et al. 2014; Vehtari et al. 2016]{.footerRight}
+
+
+
+## Some extensions to simple k-fold cross validation
+
+- Often the data are subsetted randomly; however, this may not always represent the relevant prediction task
+
+[Roberts et al. 2017]{.footerRight}
+
+## Some extensions to simple k-fold cross validation
+
+- Often the data are subsetted randomly; however, this may not always represent the relevant prediction task
+- Ecological data are commonly correlated in space, time, groups, or even phylogenetic structure
+
+[Roberts et al. 2017]{.footerRight}
+
+## Some extensions to simple k-fold cross validation
+
+- Often the data are subsetted randomly; however, this may not always represent the relevant prediction task
+- Ecological data are commonly correlated in space, time, groups, or even phylogenetic structure
+    - Dependency in groups, space, or time 
+
+[Roberts et al. 2017]{.footerRight}
+
+## Some extensions to simple k-fold cross validation
+
+- Often the data are subsetted randomly; however, this may not always represent the relevant prediction task
+- Ecological data are commonly correlated in space, time, groups, or even phylogenetic structure
+    - Dependency in groups, space, or time 
+- Many strategies we can use depending on our prediction task 
+
+[Roberts et al. 2017]{.footerRight}
+
+# Cross validation and LOO have many limitations 
+
+## Some known issues 
+
+-  Computationally demanding
+
+[Gelman et al. 2013; Vehtari 2023]{.footerRight}
+
+## Some known issues 
+
+-  Computationally demanding
+-  Methods run into problems with sparse data 
+
+[Gelman et al. 2013; Vehtari 2023]{.footerRight}
+
+## Some known issues 
+
+-  Computationally demanding
+-  Methods run into problems with sparse data 
+-  When to not use cross-validation? 
+    - *In general, there is no need to do any model selection*
+
+[Gelman et al. 2013; Vehtari 2023]{.footerRight}
+
+## Some known issues 
+
+-  Computationally demanding
+-  Methods run into problems with sparse data 
+-  When to not use cross-validation? 
+    - *In general, there is no need to do any model selection*
+    - Best approach is to build a rich model that includes all uncertainties, do model checking, and perhaps adjust that model if necessary 
+
+[Gelman et al. 2013; Vehtari 2023]{.footerRight}
+
+## Some known issues 
+
+-  Computationally demanding
+-  Methods run into problems with sparse data 
+-  When to not use cross-validation? 
+    - *In general, there is no need to do any model selection*
+    - Best approach is to build a rich model that includes all uncertainties, do model checking, and perhaps adjust that model if necessary 
+- Cross validation cannot directly answer the question "do the data provide evidence for some effect being non-zero?"
+
+[Gelman et al. 2013; Vehtari 2023]{.footerRight}
+
+## Some known issues 
+
+-  Computationally demanding
+-  Methods run into problems with sparse data 
+-  When to not use cross-validation? 
+    - *In general, there is no need to do any model selection*
+    - Best approach is to build a rich model that includes all uncertainties, do model checking, and perhaps adjust that model if necessary 
+- Cross validation cannot directly answer the question "do the data provide evidence for some effect being non-zero?"
+- What does cross validation tell you? 
+
+[Gelman et al. 2013; Vehtari 2023]{.footerRight}
+
+## How do you view the world?  
+
+M-closed vs. M-open worlds 
+
+![](images/perspective%20.jpg)
+
+[Navarro 2019]{.footerRight}
+
+# Approximate methods for calculating elpd (sneakery)  
+
+## Approximate cross validation
+
+- Vehtari et al. (2016; 2017) introduced a method that approximates the evaluations of leave-one-out cross validation inexpensively using only the data point log likelihoods of a single model fit
+
+[Vehtari et al. 2016; 2017]{.footerRight}
+
+## Approximate cross validation
+
+- Vehtari et al. (2016; 2017) introduced a method that approximates the evaluations of leave-one-out cross validation inexpensively using only the data point log likelihoods of a single model fit
+
+- Pareto-smoothed importance sampling (PSIS-LOO) allows us to compute an approximation to LOO without re-fitting the model many times 
+
+[Vehtari et al. 2016; 2017]{.footerRight}
+
+## Importance sampling LOO
+
+::: {style="font-size:27px"}
+
+- Since we are Bayesian, we have samples from a posterior
+- Approximate the likelihood our model would give some datum if we hadn't observed that datum: 
+
+$$
+\int p\left(y_{1} \mid \theta\right) d \theta
+$$
+
+- Since we are working with samples we move from an integral to an average over samples: 
+
+$$
+\frac{1}{S} \sum_{s} p\left(y_{1} \mid \theta_{s}\right)
+$$
+
+:::
+
+[Vehtari et al. 2016; 2017]{.footerRight}
+
+## Importance sampling LOO
+
+::: {style="font-size:27px"}
+
+- Now we want to reweight the posterior samples as thought $y_{1}$ wasn't observed: 
+
+$$
+\frac{1}{\sum_{s} w_{s}} \sum_{s} w_{s} p\left(y_{1} \mid \theta_{s}\right)
+$$
+
+- The weighting we will use:
+
+$$
+\frac{1}{p\left(y_{1} \mid \theta_{s}\right)}
+$$
+
+:::
+
+[Vehtari et al. 2016; 2017]{.footerRight}
+
+## The Pareto part 
+
+- It turns out that importance sampling is very noisy, and the sampling weights have very heavy tails
+
+[Vehtari et al. 2016; 2017]{.footerRight}
+
+## The Pareto part 
+
+- It turns out that importance sampling is very noisy, and the sampling weights have very heavy tails
+- We need to smooth out the tails so that a single datum doesn't dominate our adjusted posterior
+
+[Vehtari et al. 2016; 2017]{.footerRight}
+
+## The Pareto part 
+
+- It turns out that importance sampling is very noisy, and the sampling weights have very heavy tails
+- We need to smooth out the tails so that a single datum doesn't dominate our adjusted posterior
+- Turns out the upper tail of the importance weights fits a generalized Pareto distribution nicely and we can use this to smooth out our weights $w_{s}$
+
+[Vehtari et al. 2016; 2017]{.footerRight}
+
+## PSIS-LOO implementation
+
+- If all of that overwhelms you...
+
+[Vehtari et al. 2016; 2017]{.footerRight}
+
+## PSIS-LOO implementation
+
+- If all of that overwhelms you...
+- There are packages and functions that help you do this
+
+
+[Vehtari et al. 2016; 2017]{.footerRight}
+
+## PSIS-LOO implementation
+
+- If all of that overwhelms you...
+- There are packages and functions that help you do this
+- They have a lot of diagnostics to tell you when they think they are going wrong
+
+[Vehtari et al. 2016; 2017]{.footerRight}
+
+# To the R and Stan code  
+
+## References
+
+::: {style="font-size:29px"}
+
+- Burnham and Anderson 1998.  Model selection and inference: a practical information-theoretic approach.  Springer-Verlag, New York, USA.
+
+- Gelman , A., Hwang, J. & Vehtari , A. 2014. Understanding predictive information
+criteria for Bayesian models. Stat. Comput., 24, 997 1016.
+
+- Navarro, D.J. 2019.  Between the devil and the deep blue sea: tensions between scientific judgement and statistical model selection.  Compuational Brain and Behavior.  2:28-34. 
+
+-  Vehtari, Aki, Andrew Gelman, and Jonah Gabry. 2017. “Practical Bayesian Model Evaluation Using Leave-One-Out Cross-Validation and WAIC.” Statistics and Computing 27 (5): 1413–32.
+
+- Vehtari, A., Simpson, D., Gelman, A., Yao, Y., and Gabry, J. 2019. Pareto smoothed importance sampling. preprint arXiv:1507.02646.
+
+- Vehtari 2023. [https://users.aalto.fi/~ave/CV-FAQ.html#1_What_is_cross-validation](https://users.aalto.fi/~ave/CV-FAQ.html#1_What_is_cross-validation)
+
+:::
