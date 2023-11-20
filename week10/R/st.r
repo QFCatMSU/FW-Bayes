@@ -6,7 +6,7 @@ library(tidybayes)
 
 set.seed(13)
 n_site <- 30 # number of sampling locations for each year
-n_per_site <- 5 # number samples per site
+n_per_site <- 10 # number samples per site
 # simulate random x,y site locations:
 g <- data.frame(
   easting = runif(n_site, 0, 10),
