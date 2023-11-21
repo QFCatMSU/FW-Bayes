@@ -1,0 +1,249 @@
+---
+title: "Colorado temperature analysis"
+output: 
+    html_document:
+      code_folding: show
+---
+
+```{r global_options, echo=FALSE, purl=FALSE}
+knitr::opts_chunk$set(comment = NA, tidy = TRUE)
+```
+
+## Colorado spring temperature data
+These data were originally part of the `fields` package's `COmonthlyMet` dataset.
+```{r, load_data}
+rm(list=ls())
+load("CO-temp-data.RData")
+ls()
+```
+
+Our goal is to create a complete prediction surface of minimum spring temperature with associated estimates of uncertainty. 
+
+We begin by loading the necessary packages.
+
+```{r, load_packages, message=FALSE}
+library(spNNGP)
+library(spBayes)
+library(MBA)
+library(geoR)
+library(raster)
+library(leaflet)
+library(sp)
+```
+
+Next, set up a `leaflet` basemap to help visualize the data and model output. We'll make heavy use of the pipe operator `%>%` in the leaflet code to reduce clutter.
+
+```{r, leaflet_basemap}
+blue.red <-  c("#2c7bb6","#abd9e9","#ffffbf","#fdae61","#d7191c")
+
+base.map <- leaflet(width="100%") %>%
+    addProviderTiles("OpenTopoMap", group="Terrain") %>%
+    addProviderTiles("Esri.WorldImagery", group="Satellite") %>%
+    addLayersControl(
+        baseGroup = c("Terrain", "Satellite"),
+        options = layersControlOptions(collapsed = FALSE)
+    )
+```
+
+Take a look at station locations and mean minimum spring temperatures across Colorado. This code below produces a clickable dynamic map.
+```{r, map_stations}
+pal <- colorNumeric(blue.red, domain = temp)
+
+base.map %>%
+    addCircleMarkers(lng = coords[,1], lat = coords[,2], col = pal(temp), stroke = FALSE, radius = 5, fillOpacity = 0.9, popup=paste("Mean min temp:",round(temp,1))) %>%
+    addLegend("bottomright", pal = pal, values = temp, opacity = 0.9, title = "Temperature C")
+    
+```
+
+### Fit a non-spatial regression
+Consider the non-spatial regression and a little exploratory data analysis (EDA).
+
+```{r, fit_lm}
+lm.obj <- lm(temp ~ lon + lat, data=coords)
+summary(lm.obj)
+```
+
+We'll reproject the geographic coordinates (i.e., longitude and latitude) to a coordinate system that provides more familiar distance units and reduces spatial distortion. Here we selected Universal Transverse Mercator (UTM) coordinate system (with km distance units). 
+
+```{r, reproject_coords}
+##Convert coords to spatial points and reproject.
+coordinates(coords) <- ~lon + lat
+proj4string(coords) <- "+proj=longlat +datum=WGS84"
+
+coords.utm <- spTransform(coords, CRS("+proj=utm +zone=13 +ellps=WGS84 +datum=WGS84 +units=km +no_defs"))
+coords.utm <- coordinates(coords.utm)
+
+##Convert spatial points to matrix for later mapping.
+coords <- coordinates(coords)
+```
+
+Next let's take a look at the regression model residuals, assess their spatial independence, and start thinking about variogram and covariance parameters.
+```{r, plot_variograms, fig.align="center", fig.width=10, message=FALSE}
+d.max <- max(iDist(coords.utm))
+d.max
+
+v.temp <- variog(coords=coords.utm, data=temp, uvec=(seq(0, 0.75*d.max, length=20)))
+
+v.resid <- variog(coords=coords.utm, data=resid(lm.obj), uvec=(seq(0, 0.75*d.max, length=20)))
+
+par(mfrow=c(1,2))
+plot(v.temp, xlab="Distance (km)")
+plot(v.resid, xlab="Distance (km)")
+```
+
+It is also very helpful to create an interpolated surface of the model residuals to further assess spatial structure and potentially identify missing covariates.
+
+```{r, map_residuals, warning=FALSE}
+resid.surf <- mba.surf(cbind(coords, resid(lm.obj)), no.X=200, no.Y=200, extend=TRUE, sp=TRUE)$xyz.est
+
+proj4string(resid.surf) <- "+proj=longlat +datum=WGS84"
+
+resid.surf <- raster(resid.surf)
+
+pal <- colorNumeric(blue.red, values(resid.surf), na.color = "transparent")
+
+base.map %>%
+    addRasterImage(resid.surf, colors = pal, opacity = 0.75, group="Regression residuals") %>%
+    addLegend("bottomright", pal = pal, values = values(resid.surf), opacity = 0.75, title = "<center>Regression<br> residuals</center>") %>%
+    addLayersControl(
+        baseGroup = c("Terrain", "Satellite"),
+        overlayGroups = c("Regression residuals"),
+        options = layersControlOptions(collapsed = FALSE)
+    )
+```
+
+### Fit some spatial regression models
+There's substantial evidence of residual spatial structure, so let's fit some models with spatially-structured random effects. We'll fit the model using `spNNGP()` from the `spNNGP` package (given how few observations there are you could also just use `spSVC()` in the `spBayes` package).
+
+```{r, fit_spLM, fig.align="center", fig.width=10}
+n.samples <- 5000
+
+cov.model <- "exponential"
+
+starting <- list("phi"=3/(0.5*d.max), "sigma.sq"=5, "tau.sq"=5)
+
+tuning <- list("phi"=0.5, "sigma.sq"=0.05, "tau.sq"=0.05)
+
+priors <- list("phi.Unif"=c(3/d.max, 3/(0.01*d.max)), "sigma.sq.IG"=c(2, 5), "tau.sq.IG"=c(2, 5))
+ 
+m.1 <- spNNGP(temp ~ coords, coords=coords.utm, starting=starting,
+              method = "latent", 
+              tuning=tuning, priors=priors, cov.model=cov.model,
+              n.samples=n.samples, n.report=2000, n.omp.threads = 4)
+
+summary(m.1)
+plot(m.1$p.beta.samples)
+plot(m.1$p.theta.samples)
+```
+
+Now let's take a look at the estimates of the random effects compared with the non-spatial regression residuals.
+
+```{r, map_random_effects}
+quants <- function(x){quantile(x, prob=c(0.5,0.025,0.975))}
+
+##Random effects from spNNGP
+w.m1.summary <- apply(m.1$p.w.samples, 1, quants)
+
+w.m1.surf <- mba.surf(cbind(coords, w.m1.summary[1,]), no.X=200, no.Y=200, extend=TRUE, sp=TRUE)$xyz.est
+
+proj4string(w.m1.surf) <- "+proj=longlat +datum=WGS84"
+
+w.m1.surf <- raster(w.m1.surf)
+
+##Make the color ramp
+all.values <- c(values(w.m1.surf), values(resid.surf))
+pal <- colorNumeric(blue.red, all.values, na.color = "transparent")
+
+base.map %>%
+    addRasterImage(w.m1.surf, colors = pal, opacity = 0.75, group="spNNGP m.1") %>%
+    addRasterImage(resid.surf, colors = pal, opacity = 0.75, group="Regression residuals") %>%
+    addLegend("bottomright", pal = pal, values = all.values, opacity = 0.75, title = "<center>Random effects &<br>Regression<br>residuals</center>") %>%
+    addLayersControl(
+        baseGroup = c("Terrain", "Satellite"),
+        overlayGroups = c("spNNGP m.1", "Regression residuals"),
+        options = layersControlOptions(collapsed = FALSE)
+    ) %>% hideGroup(c("spNNGP m.1", "Regression residuals"))
+
+```
+
+Looks like the spatial random effects are picking up the effect of elevation so let's just put it in the mean and refit the `spNNGP()` model.
+
+```{r, refit_spLM_with_elev}
+m.2 <- spNNGP(temp ~ elev + coords, coords=coords.utm, starting=starting,
+              method = "latent",
+              tuning=tuning, priors=priors, cov.model=cov.model,
+              n.samples=n.samples, n.report=2000)
+
+summary(m.2)
+summary(m.1) #Compare the process parameters to m.1.
+```
+
+Now let's take a look at these new random effects compared with those from `m.1`.
+```{r, map_both_models_random_effects}
+w.m2.summary <- apply(m.2$p.w.samples, 1, quants)
+
+w.m2.surf <- mba.surf(cbind(coords, w.m2.summary[1,]), no.X=200, no.Y=200, extend=TRUE, sp=TRUE)$xyz.est
+
+proj4string(w.m2.surf) <- "+proj=longlat +datum=WGS84"
+
+w.m2.surf <- raster(w.m2.surf)
+
+all.values <- c(values(w.m1.surf), values(w.m2.surf))
+pal <- colorNumeric(blue.red, all.values, na.color = "transparent")
+
+base.map %>%
+    addRasterImage(w.m2.surf, colors = pal, opacity = 0.75, group="spNNGP m.2") %>%
+    addRasterImage(w.m1.surf, colors = pal, opacity = 0.75, group="spNNGP m.1") %>%
+    addLegend("bottomright", pal = pal, values = all.values, opacity = 0.75, title = "<center>Random effects</center>") %>%
+    addLayersControl(
+        baseGroup = c("Terrain", "Satellite"),
+        overlayGroups = c("spNNGP m.1", "spNNGP m.2"),
+        options = layersControlOptions(collapsed = FALSE)
+    ) %>% hideGroup(c("spNNGP m.1"))
+```
+
+### Prediction
+
+Recall, our interest is in creating a temperature surface with associated uncertainty. This is done by sampling from posterior predictive distributions at 17,545 new locations across Colorado. These prediction locations are held in `pred.coords` with spatially coinciding elevation in `pred.elev`. Sampling is done using the `predict()` function. Ideally, we would draw more posterior predictive samples, but in the interest of time we take only a small sample to generate the summary statistics and maps. Using more CPU would greatly increase prediction speed.
+
+```{r, spPredict}
+pred.X <- cbind(1, pred.elev, pred.coords)
+
+m.2.pred <- predict(m.2, X.0=pred.X, coords.0=pred.coords, 
+                    sub.sample=list(start = 4000, thin = 10), 
+                    n.report = 5000, n.omp.threads = 4)
+
+y.p.summary <- apply(m.2.pred$p.y.0, 1, quants)
+
+y.p.width <- y.p.summary[3,]-y.p.summary[2,]
+```
+
+The summaries of the posterior predictive distributions can be mapped or exported for use in a GIS system.
+```{r, map_predictions}
+y.median.surf <- rasterFromXYZ(cbind(pred.coords, y.p.summary[1,]))
+
+proj4string(y.median.surf) <- "+proj=longlat +datum=WGS84"
+
+pal.1 <- colorNumeric(blue.red, c(values(y.median.surf), temp), na.color = "transparent")
+
+y.width.surf <- rasterFromXYZ(cbind(pred.coords, y.p.width)) 
+
+proj4string(y.width.surf) <- "+proj=longlat +datum=WGS84"
+
+pal.2 <- colorNumeric(blue.red, values(y.width.surf), na.color = "transparent")
+
+base.map %>%
+    addRasterImage(y.median.surf, colors = pal.1, opacity = 0.9, group="Predicted temperature") %>%
+    addRasterImage(y.width.surf, colors = pal.2, opacity = 0.9, group="Prediction 95% CI width") %>%
+    addCircleMarkers(lng = coords[,1], lat = coords[,2], col = pal.1(temp), fillOpacity = 0.9, stroke = FALSE,
+                     radius = 3, popup=paste("Mean min temp:",round(temp,1)), group="Stations") %>%
+      addLegend("bottomleft", pal = pal.1, values = values(y.median.surf), opacity = 0.9, title = "<center>Predicted<br>temperature C</center>") %>%
+    addLegend("bottomright", pal = pal.2, values = values(y.width.surf), opacity = 0.9, title = "<center>Prediction<br>95% CI width</center>") %>%
+    addLayersControl(
+        baseGroup = c("Terrain", "Satellite"),
+        overlayGroups = c("Predicted temperature", "Prediction 95% CI width", "Stations"),
+        options = layersControlOptions(collapsed = FALSE)
+    ) %>% hideGroup(c("Prediction 95% CI width", "Stations"))
+```
+
+
