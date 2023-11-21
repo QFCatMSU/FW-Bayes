@@ -17,15 +17,15 @@ Lesson 3 (9/6/2023):
 <https://qfcatmsu.github.io/FW-Bayes/week2/lec3.html>  
 Lesson 4 (9/11/2023):
 <https://qfcatmsu.github.io/FW-Bayes/week3/lec4.html>  
-Lesson 5: <https://qfcatmsu.github.io/FW-Bayes/week3/lec5.html>\  
-Lesson 6: <https://qfcatmsu.github.io/FW-Bayes/week4/lec6.html> \ 
-Lesson 7: <https://qfcatmsu.github.io/FW-Bayes/week5/lec7.html> \ 
-Lesson 8: <https://qfcatmsu.github.io/FW-Bayes/week5/lec8.html>\
-Lesson 9: <https://qfcatmsu.github.io/FW-Bayes/week6/lec9.html> \ 
-Lesson 10: <https://qfcatmsu.github.io/FW-Bayes/week7/lec10.html>\  
-Lesson 11: <https://qfcatmsu.github.io/FW-Bayes/week8/lec11b.html>\  
-Lesson 12: <https://qfcatmsu.github.io/FW-Bayes/week9/lec12.html>\
-Lesson 13: <https://qfcatmsu.github.io/FW-Bayes/week9/lec13.html> \ 
+Lesson 5: <https://qfcatmsu.github.io/FW-Bayes/week3/lec5.html><br>
+Lesson 6: <https://qfcatmsu.github.io/FW-Bayes/week4/lec6.html><br>
+Lesson 7: <https://qfcatmsu.github.io/FW-Bayes/week5/lec7.html><br>
+Lesson 8: <https://qfcatmsu.github.io/FW-Bayes/week5/lec8.html><br>
+Lesson 9: <https://qfcatmsu.github.io/FW-Bayes/week6/lec9.html><br>
+Lesson 10: <https://qfcatmsu.github.io/FW-Bayes/week7/lec10.html><br>
+Lesson 11: <https://qfcatmsu.github.io/FW-Bayes/week8/lec11b.html><br>
+Lesson 12: <https://qfcatmsu.github.io/FW-Bayes/week9/lec12.html><br>
+Lesson 13: <https://qfcatmsu.github.io/FW-Bayes/week9/lec13.html><br>
 Lesson 14: <https://qfcatmsu.github.io/FW-Bayes/week10/lec14.html>  
 
 ## Lecture recordings
