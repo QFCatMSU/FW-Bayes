@@ -13,8 +13,8 @@ g <- data.frame(
   northing = runif(n_site, 0, 10)
 )
 
-Locs <- unique(g)
-dist_sites <- as.matrix(dist(Locs))
+locs <- unique(g)
+dist_sites <- as.matrix(dist(locs))
 
 # set up a vector indicating the site index identifiers
 n_per_site <- 10
@@ -28,7 +28,7 @@ sd_obs <- 0.1 # observation error for likelihood
 
 sim_data <-
   list(
-    n_sites = nrow(Locs),
+    n_sites = nrow(locs),
     n = length(site_id), 
     site = site_id,
     dist_sites = dist_sites,
@@ -54,8 +54,8 @@ sim_s <- sim_mod$sample(
 # extract the simulated data
 y <- as.vector(sim_s$draws("y_obs", format = "draws_matrix"))
 out <- data.frame(y,
-                  easting = Locs$easting,
-                  northing = Locs$northing
+                  easting = locs$easting,
+                  northing = locs$northing
 )
 
 # plot it to make sure we aren't on drugs
@@ -101,7 +101,7 @@ mod <- cmdstanr::cmdstan_model("week8/src/est_s_grf.stan")
 
 stan_data <-
   list(
-    n_sites = nrow(Locs),
+    n_sites = nrow(locs),
     n = length(site_id),
     site = site_id,
     y = y,
@@ -177,7 +177,7 @@ mod <- cmdstanr::cmdstan_model("week8/src/est_s_grf_ncp.stan")
 
 stan_data <-
   list(
-    n_sites = nrow(Locs),
+    n_sites = nrow(locs),
     n = length(site_id),
     site = site_id,
     y = y,
