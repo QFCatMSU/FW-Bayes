@@ -4,10 +4,12 @@
 *_files
 !software_installation_files
 !FW891syllabus_files
+!Rubric_files
 !lec*_files
 .vscode
 *.html
 !software_installation.html
+!Rubric.html
 !FW891syllabus.html
 !lec*.html
 *.exe
