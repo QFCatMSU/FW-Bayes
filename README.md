@@ -6,6 +6,8 @@ lecture materials (.qmd, .pdf file extensions), R code (`R/` folders),
 Stan code (`src/` folders), and data (`data/` folders) for in-class
 exercises and lessons. Also, see homework folders.
 
+Project Rubric: <https://qfcatmsu.github.io/FW-Bayes/Rubric/Rubric.html>
+
 Syllabus:
 <https://qfcatmsu.github.io/FW-Bayes/syllabus/FW891syllabus.html>
 
