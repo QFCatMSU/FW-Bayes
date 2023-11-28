@@ -1,0 +1,15 @@
+---
+title: "Papers"
+format: html
+editor: visual
+---
+
+## Links to papers
+
+[Roberts et al. 2017: Cross validation strategies for data with temporal, spatial, hierarchical, or phylogenetic structure](https://ezproxy.msu.edu/login?url=https://doi.org/10.1111/ecog.02881)
+
+[Vehtari et al. 2016: Practical Bayesian model evaluation using leave-one-out cross-validation and WAIC](https://ezproxy.msu.edu/login?url=https://doi.org/10.1007/s11222-016-9696-4)
+
+[Navarro 2019: Between the Devil and the Deep Blue Sea: Tensions Between Scientific Judgement and Statistical Model Selection](https://ezproxy.msu.edu/login?url=https://doi.org/10.1007/s42113-018-0019-z)
+
+[Gelman et al. 2013: Understanding predictive information criteria for Bayesian models.](https://ezproxy.msu.edu/login?url=https://doi.org/10.1007/s11222-013-9416-2)
