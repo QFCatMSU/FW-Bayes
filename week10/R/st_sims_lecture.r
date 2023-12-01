@@ -1,5 +1,4 @@
 # simulating spatio-temporal random fields
-
 #-----------------------------------------
 # IID spatiotemporal random field:
 
